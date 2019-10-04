@@ -1,5 +1,6 @@
 ﻿public enum CharacterActionState
 {
     Idle,
-    Moving
+    Moving,
+    Action
 }
