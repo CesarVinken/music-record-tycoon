@@ -4,17 +4,23 @@ public class PlayerCharacter : MonoBehaviour
 {
     public static PlayerCharacter Instance;
 
-    public Animator Animator;
+    public Transform NavTransform;
+
+    public CharacterActionState CharacterActionState;
 
     public CharacterLocomotion PlayerLocomotion;
-    public CharacterActionState CharacterActionState;
+    public CharacterAnimationHandler CharacterAnimationHandler;
     void Awake()
     {
         //if (Animator == null)
         //    Animator = GetComponent<Animator>();
         Instance = this;
 
+        if (NavTransform == null)
+            Debug.LogError("Could not find NavTransform on character");
+
         PlayerLocomotion = gameObject.AddComponent<CharacterLocomotion>();
+        CharacterAnimationHandler = gameObject.AddComponent<CharacterAnimationHandler>();
         SetCharacterActionState(CharacterActionState.Idle);
     }
 
