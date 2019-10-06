@@ -3,7 +3,7 @@
 public class CameraController : MonoBehaviour
 {
     public float PanSpeed = 4f;
-    public float PanBorderThickness = 10f; // in pixels
+    public float PanBorderThickness = 15f; // in pixels
     public Vector2 PanMinLimit = new Vector2(8f, 12f);
     public Vector2 PanMaxLimit = new Vector2(10f, 10f);
 
@@ -45,9 +45,9 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandlePanUp(Vector2 position)
     {
-        if (Input.GetKey(KeyCode.W) || Input.mousePosition.y >= Screen.height - PanBorderThickness)
+        if (Input.GetKey(KeyCode.W) || (Input.mousePosition.y >= Screen.height - PanBorderThickness && Input.mousePosition.y <= Screen.height + PanBorderThickness * 2))
         {
-            position.y += PanSpeed * Time.deltaTime;
+            position.y += 2 * PanSpeed * Time.deltaTime;
         }
 
         return position;
@@ -55,9 +55,9 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandlePanDown(Vector2 position)
     {
-        if (Input.GetKey(KeyCode.S) || Input.mousePosition.y <= PanBorderThickness)
+        if (Input.GetKey(KeyCode.S) || (Input.mousePosition.y <= PanBorderThickness && Input.mousePosition.y >= -PanBorderThickness * 2))
         {
-            position.y -= PanSpeed * Time.deltaTime;
+            position.y -= 2 * PanSpeed * Time.deltaTime;
         }
 
         return position;
@@ -65,9 +65,9 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandlePanLeft(Vector2 position)
     {
-        if (Input.GetKey(KeyCode.D) || Input.mousePosition.x >= Screen.width - PanBorderThickness)
+        if (Input.GetKey(KeyCode.D) || (Input.mousePosition.x >= Screen.width - PanBorderThickness && Input.mousePosition.x <= Screen.width + PanBorderThickness * 2))
         {
-            position.x += PanSpeed * Time.deltaTime;
+            position.x += 2 * PanSpeed * Time.deltaTime;
         }
 
         return position;
@@ -75,9 +75,9 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandlePanRight(Vector2 position)
     {
-        if (Input.GetKey(KeyCode.A) || Input.mousePosition.x <= PanBorderThickness)
+        if (Input.GetKey(KeyCode.A) || (Input.mousePosition.x <= PanBorderThickness && Input.mousePosition.x >= -PanBorderThickness * 2))
         {
-            position.x -= PanSpeed * Time.deltaTime;
+            position.x -= 2 * PanSpeed * Time.deltaTime;
         }
 
         return position;
