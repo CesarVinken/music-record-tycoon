@@ -15,9 +15,6 @@ public class Node : IHeapItem <Node>
 
     public Node(bool walkable, Vector3 worldPosition, int gridX, int gridY, int penalty)
     {
-        if (!walkable)
-            Debug.Log("this node is not walkable ");
-
         Walkable = walkable;
         WorldPosition = worldPosition;
         GridX = gridX;

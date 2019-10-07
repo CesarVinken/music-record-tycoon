@@ -83,7 +83,6 @@ public class Grid : MonoBehaviour
                 _myGrid[x, y] = new Node(walkable, worldPoint, x, y, movementPenalty);
             }
         }
-        Debug.Log("grid size " + _myGrid.Length);
         BlurPenaltyMap(3);
     }
 

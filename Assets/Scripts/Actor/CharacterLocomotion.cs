@@ -22,6 +22,9 @@ public class CharacterLocomotion : MonoBehaviour
     }
     void Update()
     {
+        if (GameManager.MainMenuOpen)
+            return;
+
         CheckMouseInput();
         if(PlayerCharacter.Instance.CharacterActionState == CharacterActionState.Moving)
         {
@@ -91,11 +94,8 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void CalculateCharacterDirection()
     {
-
         float verticalAngle = Vector3.Angle(_characterNavTransform.forward, transform.up);
         float horizontalAngle = Vector3.Angle(_characterNavTransform.forward, -transform.right);  //This expects the playerGO always to be pointed to the right
-        Debug.Log(verticalAngle);
-        Debug.Log(horizontalAngle);
 
         if (horizontalAngle < 75)//we are moving left if the angle is less than 90
         {

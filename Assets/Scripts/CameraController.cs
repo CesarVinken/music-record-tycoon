@@ -2,11 +2,23 @@
 
 public class CameraController : MonoBehaviour
 {
-    public float PanSpeed = 4f;
+    public float PanSpeed = 8f;
     public float PanBorderThickness = 15f; // in pixels
-    public Vector2 PanMinLimit = new Vector2(8f, 12f);
-    public Vector2 PanMaxLimit = new Vector2(10f, 10f);
+    public Vector2 PanMinLimit = new Vector2(30f, 30f);
+    public Vector2 PanMaxLimit = new Vector2(30f, 30f);
 
+    private float _panSpeed;
+    private float _panBorderThickness;
+    private Vector2 _panMinLimit;
+    private Vector2 _panMaxLimit;
+
+    public void Awake()
+    {
+        _panSpeed = PanSpeed;
+        _panBorderThickness = PanBorderThickness;
+        _panMinLimit = PanMinLimit;
+        _panMaxLimit = PanMaxLimit;
+    }
     void Update()
     {
         Vector2 position = new Vector2(transform.position.x, transform.position.y);
@@ -47,7 +59,7 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W) || (Input.mousePosition.y >= Screen.height - PanBorderThickness && Input.mousePosition.y <= Screen.height + PanBorderThickness * 2))
         {
-            position.y += 2 * PanSpeed * Time.deltaTime;
+            position.y += PanSpeed * Time.deltaTime;
         }
 
         return position;
@@ -57,7 +69,7 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.S) || (Input.mousePosition.y <= PanBorderThickness && Input.mousePosition.y >= -PanBorderThickness * 2))
         {
-            position.y -= 2 * PanSpeed * Time.deltaTime;
+            position.y -= PanSpeed * Time.deltaTime;
         }
 
         return position;
@@ -67,7 +79,7 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.D) || (Input.mousePosition.x >= Screen.width - PanBorderThickness && Input.mousePosition.x <= Screen.width + PanBorderThickness * 2))
         {
-            position.x += 2 * PanSpeed * Time.deltaTime;
+            position.x += PanSpeed * Time.deltaTime;
         }
 
         return position;
@@ -77,7 +89,7 @@ public class CameraController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A) || (Input.mousePosition.x <= PanBorderThickness && Input.mousePosition.x >= -PanBorderThickness * 2))
         {
-            position.x -= 2 * PanSpeed * Time.deltaTime;
+            position.x -= PanSpeed * Time.deltaTime;
         }
 
         return position;
