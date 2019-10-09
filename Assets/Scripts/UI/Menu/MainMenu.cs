@@ -31,9 +31,8 @@ public class MainMenu : MenuScreen
             NewGameBtn.SetActive(false);      
         }
 
-        if(Application.isMobilePlatform)
+        if(GameManager.Instance.CurrentPlatform == Platform.Android)
         {
-            Debug.Log("We are on Android");
             QuitGameBtn.SetActive(false);
         }
     }

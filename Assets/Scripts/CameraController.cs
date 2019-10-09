@@ -7,17 +7,16 @@ public class CameraController : MonoBehaviour
     public Vector2 PanMinLimit = new Vector2(30f, 30f);
     public Vector2 PanMaxLimit = new Vector2(30f, 30f);
 
-    private float _panSpeed;
     private float _panBorderThickness;
     private Vector2 _panMinLimit;
     private Vector2 _panMaxLimit;
 
-    public void Awake()
+    public void Start()
     {
-        _panSpeed = PanSpeed;
         _panBorderThickness = PanBorderThickness;
         _panMinLimit = PanMinLimit;
         _panMaxLimit = PanMaxLimit;
+        PanSpeed = GameManager.Instance.Configuration.PanSpeed;
     }
     void Update()
     {
