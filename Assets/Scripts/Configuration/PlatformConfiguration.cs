@@ -14,7 +14,7 @@ public class AndroidConfiguration : IPlatformConfiguration
 
     public AndroidConfiguration()
     {
-        PanSpeed = 0.8f;
+        PanSpeed = 1f;
     }
 
     public float PanSpeed

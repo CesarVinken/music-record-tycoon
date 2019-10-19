@@ -4,6 +4,7 @@ public class OptionsMenu : MenuScreen
 {
     void Awake()
     {
-        //MainMenuCanvas.Instance.PauseMenu = gameObject;
+        if (MainMenuPrefab == null)
+            Debug.LogError("Canot find MainMenuPrefab");
     }
 }

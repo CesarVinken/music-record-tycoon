@@ -183,21 +183,21 @@ public class Grid : MonoBehaviour
     }
 
 
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawWireCube(transform.position, new Vector3(GridWorldSize.x, GridWorldSize.y, 1));
+    //public void OnDrawGizmos()
+    //{
+    //    Gizmos.DrawWireCube(transform.position, new Vector3(GridWorldSize.x, GridWorldSize.y, 1));
 
-        if (_myGrid != null && DisplayRouteGizmos)
-        {
-            foreach (Node n in _myGrid)
-            {
-                Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(_penaltyMin, _penaltyMax, n.MovementPenalty));
-                Gizmos.color = (n.Walkable) ? Gizmos.color : Color.red;
+    //    if (_myGrid != null && DisplayRouteGizmos)
+    //    {
+    //        foreach (Node n in _myGrid)
+    //        {
+    //            Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(_penaltyMin, _penaltyMax, n.MovementPenalty));
+    //            Gizmos.color = (n.Walkable) ? Gizmos.color : Color.red;
 
-                 Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter));
-            }
-        }
-    }   
+    //             Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter));
+    //        }
+    //    }
+    //}   
 
     [System.Serializable]
     public class TerrainType

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CharacterLocomotion : MonoBehaviour
 {
@@ -24,6 +25,10 @@ public class CharacterLocomotion : MonoBehaviour
     {
         if (GameManager.MainMenuOpen)
             return;
+
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
 
         CheckMouseInput();
         if(PlayerCharacter.Instance.CharacterActionState == CharacterActionState.Moving)
@@ -68,22 +73,7 @@ public class CharacterLocomotion : MonoBehaviour
         if (!PlayerCharacter.Instance.PlayerNav.FollowingPath)
         {
             _characterAnimationHandler.InLocomotion = false;
-            //PlayerCharacter.Instance.SetPlayerState(CharacterState.Idle, LocomotionDirection);
         }
-    }
-
-    public bool IsColliding(Vector2 newPosition)
-    {
-        //Debug.DrawLine(transform.position, transform.position + transform.right * 3, Color.red, 1f);
-
-        // do raycasthit to check if there is collision with an object in front of the player
-        // in case of an upcoming collision, make the player stop in time so that he can listen to new movement commands.
-        RaycastHit2D collisionTest = Physics2D.Raycast(transform.position, _characterNavTransform.right, .8f);
-
-        if (collisionTest)
-            return true;
-
-        return false;
     }
 
     public void StopLocomotion()

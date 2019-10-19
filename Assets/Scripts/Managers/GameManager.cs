@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public static bool MainMenuOpen;    //that should block interactivity of level ui elements
+    public static bool InBuildMode;
 
     public Platform CurrentPlatform;
     public IPlatformConfiguration Configuration;
@@ -14,7 +15,8 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
 
-        GameManager.MainMenuOpen = false;
+        MainMenuOpen = false;
+        InBuildMode = false;
 
         if (Application.isMobilePlatform)
         {

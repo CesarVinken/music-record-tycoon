@@ -14,8 +14,22 @@ public class MainMenu : MenuScreen
 
     public void Awake()
     {
-        //if(MainMenuCanvas.Instance != null)
-        //    MainMenuCanvas.Instance.PauseMenu = gameObject;
+        if (SavePanelPrefab == null)
+            Debug.LogError("Cannot find SavePanelPrefab");
+        if (LoadPanelPrefab == null)
+            Debug.LogError("Cannot find LoadPanelPrefab");
+        if (OptionsPanelPrefab == null)
+            Debug.LogError("Cannot find OptionsPanelPrefab");
+
+        if (NewGameBtn == null)
+            Debug.LogError("Cannot find NewGameBtn");
+        if (ToSavePanel == null)
+            Debug.LogError("Cannot find ToSavePanel");
+        if (ResumeGameBtn == null)
+            Debug.LogError("Cannot find ResumeGameBtn");
+        if (QuitGameBtn == null)
+            Debug.LogError("Cannot find QuitGameBtn");
+
     }
 
     public void Start()
@@ -28,12 +42,12 @@ public class MainMenu : MenuScreen
         }
         else
         {
-            NewGameBtn.SetActive(false);      
-        }
+            NewGameBtn.SetActive(false);
 
-        if(GameManager.Instance.CurrentPlatform == Platform.Android)
-        {
-            QuitGameBtn.SetActive(false);
+            if (GameManager.Instance.CurrentPlatform == Platform.Android)
+            {
+                QuitGameBtn.SetActive(false);
+            }
         }
     }
 
@@ -68,6 +82,7 @@ public class MainMenu : MenuScreen
 
     public void QuitGame()
     {
+        Debug.Log("Quit application");
         Application.Quit();
     }
 

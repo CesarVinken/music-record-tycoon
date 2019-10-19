@@ -13,6 +13,10 @@ public class MainMenuCanvas : MonoBehaviour
     public void Awake()
     {
         Instance = this;
+
+        if (MainMenuPrefab == null)
+            Debug.LogError("Could not find MainMenuPrefab");
+
     }
 
     public void FreezeUI()

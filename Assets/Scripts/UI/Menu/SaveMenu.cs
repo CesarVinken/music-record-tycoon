@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SaveMenu : MenuScreen
@@ -10,6 +9,13 @@ public class SaveMenu : MenuScreen
 
     public void Awake()
     {
+        if (MainMenuPrefab == null)
+            Debug.LogError("Canot find MainMenuPrefab");
+        if (SaveSlotPrefab == null)
+            Debug.LogError("Canot find SaveSlotPrefab");
+        if (EmptySlotPrefab == null)
+            Debug.LogError("Canot find EmptySlotPrefab");
+
         //MainMenuCanvas.Instance.PauseMenu = gameObject;
         FileInfo[] files = GetSaveSlotList();
 
