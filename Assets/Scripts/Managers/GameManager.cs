@@ -1,22 +1,21 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
     public static bool MainMenuOpen;    //that should block interactivity of level ui elements
-    public static bool InBuildMode;
 
     public Platform CurrentPlatform;
     public IPlatformConfiguration Configuration;
+
+    public BuilderManager BuilderManager;
 
     public void Awake()
     {
         Instance = this;
 
         MainMenuOpen = false;
-        InBuildMode = false;
 
         if (Application.isMobilePlatform)
         {
@@ -27,6 +26,9 @@ public class GameManager : MonoBehaviour
             CurrentPlatform = Platform.PC;
             Configuration = new PCConfiguration();
         }
+
+        if (BuilderManager == null)
+            Debug.LogError("Cannot find BuilderManager");
     }
 
     public void Update()

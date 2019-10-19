@@ -26,10 +26,6 @@ public class CharacterLocomotion : MonoBehaviour
         if (GameManager.MainMenuOpen)
             return;
 
-        if (EventSystem.current.IsPointerOverGameObject())
-            return;
-
-
         CheckMouseInput();
         if(PlayerCharacter.Instance.CharacterActionState == CharacterActionState.Moving)
         {
@@ -40,6 +36,12 @@ public class CharacterLocomotion : MonoBehaviour
 
     private void CheckMouseInput()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
+        if (BuilderManager.HasRoomSelected)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 target = Camera.main.ScreenToWorldPoint(Input.mousePosition);

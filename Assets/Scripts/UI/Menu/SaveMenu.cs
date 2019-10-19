@@ -9,14 +9,10 @@ public class SaveMenu : MenuScreen
 
     public void Awake()
     {
-        if (MainMenuPrefab == null)
-            Debug.LogError("Canot find MainMenuPrefab");
-        if (SaveSlotPrefab == null)
-            Debug.LogError("Canot find SaveSlotPrefab");
-        if (EmptySlotPrefab == null)
-            Debug.LogError("Canot find EmptySlotPrefab");
+        Guard.CheckIsNull(MainMenuPrefab, "MainMenuPrefab");
+        Guard.CheckIsNull(SaveSlotPrefab, "SaveSlotPrefab");
+        Guard.CheckIsNull(EmptySlotPrefab, "EmptySlotPrefab");
 
-        //MainMenuCanvas.Instance.PauseMenu = gameObject;
         FileInfo[] files = GetSaveSlotList();
 
         DisplaySaveSlots(files);

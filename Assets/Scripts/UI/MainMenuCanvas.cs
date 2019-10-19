@@ -4,19 +4,14 @@ public class MainMenuCanvas : MonoBehaviour
 {
     public static MainMenuCanvas Instance;
 
-    //public GameObject PauseMenuPrefab;
-    //public GameObject PauseMenu;
-
-
     public GameObject MainMenuPrefab;
     public GameObject CurrentMainMenuPanel;
+
     public void Awake()
     {
         Instance = this;
 
-        if (MainMenuPrefab == null)
-            Debug.LogError("Could not find MainMenuPrefab");
-
+        Guard.CheckIsNull(MainMenuPrefab, "MainMenuPrefab");
     }
 
     public void FreezeUI()

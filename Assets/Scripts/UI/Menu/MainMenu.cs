@@ -14,22 +14,14 @@ public class MainMenu : MenuScreen
 
     public void Awake()
     {
-        if (SavePanelPrefab == null)
-            Debug.LogError("Cannot find SavePanelPrefab");
-        if (LoadPanelPrefab == null)
-            Debug.LogError("Cannot find LoadPanelPrefab");
-        if (OptionsPanelPrefab == null)
-            Debug.LogError("Cannot find OptionsPanelPrefab");
+        Guard.CheckIsNull(SavePanelPrefab, "SavePanelPrefab");
+        Guard.CheckIsNull(LoadPanelPrefab, "LoadPanelPrefab");
+        Guard.CheckIsNull(OptionsPanelPrefab, "OptionsPanelPrefab");
 
-        if (NewGameBtn == null)
-            Debug.LogError("Cannot find NewGameBtn");
-        if (ToSavePanel == null)
-            Debug.LogError("Cannot find ToSavePanel");
-        if (ResumeGameBtn == null)
-            Debug.LogError("Cannot find ResumeGameBtn");
-        if (QuitGameBtn == null)
-            Debug.LogError("Cannot find QuitGameBtn");
-
+        Guard.CheckIsNull(NewGameBtn, "NewGameBtn");
+        Guard.CheckIsNull(ToSavePanel, "ToSavePanel");
+        Guard.CheckIsNull(ResumeGameBtn, "ResumeGameBtn");
+        Guard.CheckIsNull(QuitGameBtn, "QuitGameBtn");
     }
 
     public void Start()
