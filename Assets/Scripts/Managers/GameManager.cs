@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public Platform CurrentPlatform;
     public IPlatformConfiguration Configuration;
+    public Grid PathfindingGrid;    // might move to different location
 
     public BuilderManager BuilderManager;
 
@@ -29,6 +30,8 @@ public class GameManager : MonoBehaviour
 
         if (BuilderManager == null)
             Debug.LogError("Cannot find BuilderManager");
+        if (PathfindingGrid == null)
+            Debug.LogError("Cannot find PathfindingGrid");
     }
 
     public void Update()

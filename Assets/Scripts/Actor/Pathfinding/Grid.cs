@@ -194,10 +194,10 @@ public class Grid : MonoBehaviour
     //            Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(_penaltyMin, _penaltyMax, n.MovementPenalty));
     //            Gizmos.color = (n.Walkable) ? Gizmos.color : Color.red;
 
-    //             Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter));
+    //            Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter));
     //        }
     //    }
-    //}   
+    //}
 
     [System.Serializable]
     public class TerrainType
