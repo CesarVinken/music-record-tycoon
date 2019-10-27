@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in to a script for a specific confirmation modal that is attached to the confirmationModal GO.
 {
@@ -17,6 +15,7 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
     {
         _roomBuildPlot.Build();
         DestroyConfirmationModal();
+        BuildModeContainer.Instance.DestroyBuildingPlots();
     }
 
     public void Cancel()

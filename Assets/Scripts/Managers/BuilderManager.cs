@@ -78,7 +78,6 @@ public class BuilderManager : MonoBehaviour
 
     public void DrawAvaiablePlots()
     {
-        Debug.Log("DRAW PLOTS");
         BuildModeContainer.Instance.DestroyBuildingPlots();
 
         // calculate where there should be plots
