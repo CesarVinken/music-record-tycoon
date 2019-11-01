@@ -12,10 +12,12 @@ public class BuildModeContainer : MonoBehaviour
         RoomBuildPlots = new List<RoomBuildPlot>();
     }
 
-    public void CreateBuildingPlot(GameObject buildingPlot)
+    public void CreateBuildingPlot(GameObject buildingPlot, Room room, Vector2 startingPoint)
     {
         RoomBuildPlot plot = Instantiate(buildingPlot, transform).GetComponent<RoomBuildPlot>();
         RoomBuildPlots.Add(plot);
+
+        plot.Setup(room, startingPoint);
     }
 
     public void DestroyBuildingPlots()

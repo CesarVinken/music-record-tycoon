@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class RoomBuildPlot : MonoBehaviour
 {
@@ -7,7 +8,7 @@ public class RoomBuildPlot : MonoBehaviour
 
     public GameObject BuildTrigger;
 
-    private Vector2 _furthestPoint = new Vector2(0, 0);
+    private Vector2 _midpoint = new Vector2(0, 0);
     private Vector2 _startingPoint = new Vector2(0, 0);
 
     private GameObject _confirmationModal;
@@ -18,20 +19,17 @@ public class RoomBuildPlot : MonoBehaviour
     {
         if (LineRenderer == null)
             Debug.LogError("Cannot find LineRenderer");
-        //if (Collider == null)
-        //    Debug.LogError("Cannot find PolygonCollider2D");
 
         Guard.CheckIsNull(BuildTrigger, "BuildTrigger");
     }
-    void Start()
+    public void Setup(Room room, Vector2 startingPoint)
     {
-        Vector2 startingPoint = CalculateLocationOnGrid(Vector2.zero, 0, 0);  // later not hardcoded
-        int rightUpAxisLength = 7;  // later not hardcoded but taken from Room property
-        int leftUpAxisLength = 5; // later not hardcoded
+        int rightUpAxisLength = room.RightUpAxisLength;  // later not hardcoded but taken from Room database specifics
+        int leftUpAxisLength = room.LeftUpAxisLength;
 
-        Vector2 point1 = CalculateLocationOnGrid(startingPoint, rightUpAxisLength, 0);
-        Vector2 point2 = CalculateLocationOnGrid(point1, 0, -leftUpAxisLength);
-        Vector2 point3 = CalculateLocationOnGrid(point2, -rightUpAxisLength, 0);
+        Vector2 point1 = BuilderManager.CalculateLocationOnGrid(startingPoint, rightUpAxisLength, 0);
+        Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, -leftUpAxisLength);
+        Vector2 point3 = BuilderManager.CalculateLocationOnGrid(point2, -rightUpAxisLength, 0);
 
         LineRenderer.positionCount = 5;
         LineRenderer.SetPosition(0, startingPoint);
@@ -42,19 +40,19 @@ public class RoomBuildPlot : MonoBehaviour
 
         SetColliderPath(startingPoint, rightUpAxisLength, leftUpAxisLength);
 
-        _furthestPoint = CalculateLocationOnGrid(startingPoint, rightUpAxisLength, -leftUpAxisLength);
         _startingPoint = startingPoint;
+        _midpoint = _startingPoint + (point2 - _startingPoint) / 2;
 
         BuildTrigger.transform.SetParent(MainCanvas.Instance.transform);
-        BuildTrigger.transform.position = Camera.main.WorldToScreenPoint(new Vector2(_furthestPoint.x / 2, _furthestPoint.y / 2));
+        BuildTrigger.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
     }
 
     public void Update()
     {
-        BuildTrigger.transform.position = Camera.main.WorldToScreenPoint(new Vector2(_furthestPoint.x / 2, _furthestPoint.y / 2));
+        BuildTrigger.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
         if(_confirmationModal)
         {
-            _confirmationModal.transform.position = Camera.main.WorldToScreenPoint(new Vector2(_furthestPoint.x / 2, _furthestPoint.y / 2));
+            _confirmationModal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
         }
 
     }
@@ -78,22 +76,12 @@ public class RoomBuildPlot : MonoBehaviour
 
     public void SetColliderPath(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)
     {
-        Vector2 colliderPoint1 = CalculateColliderLocationOnGrid(startingPoint, rightUpAxisLength, 0);
-        Vector2 colliderPoint2 = CalculateColliderLocationOnGrid(colliderPoint1, 0, -leftUpAxisLength);
-        Vector2 colliderPoint3 = CalculateColliderLocationOnGrid(colliderPoint2, -rightUpAxisLength, 0);
+        Vector2 colliderPoint1 = BuilderManager.CalculateColliderLocationOnGrid(startingPoint, rightUpAxisLength, 0);
+        Vector2 colliderPoint2 = BuilderManager.CalculateColliderLocationOnGrid(colliderPoint1, 0, -leftUpAxisLength);
+        Vector2 colliderPoint3 = BuilderManager.CalculateColliderLocationOnGrid(colliderPoint2, -rightUpAxisLength, 0);
 
         Vector2[] positions = new Vector2[] { startingPoint, colliderPoint1, colliderPoint2, colliderPoint3, startingPoint };
         Collider.SetPath(0, positions);
-    }
-
-    public Vector2 CalculateLocationOnGrid(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)
-    {
-        return new Vector2(startingPoint.x + (rightUpAxisLength + leftUpAxisLength) * 5f, startingPoint.y + (rightUpAxisLength - leftUpAxisLength) * 2.5f);
-    }
-
-    public Vector2 CalculateColliderLocationOnGrid(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)
-    {
-        return new Vector2(startingPoint.x + (rightUpAxisLength + leftUpAxisLength) * 6f, startingPoint.y + (rightUpAxisLength - leftUpAxisLength) * 3f);
     }
 
     public void CreateBuildConfirmation()
@@ -101,9 +89,8 @@ public class RoomBuildPlot : MonoBehaviour
         if (_confirmationModal)
             return;
 
-        Debug.Log("Do you really want to build?");
         GameObject modal = Instantiate(MainCanvas.Instance.ConfirmationModalPrefab);
-        modal.transform.position = Camera.main.WorldToScreenPoint(new Vector2(_furthestPoint.x / 2, _furthestPoint.y / 2));
+        modal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
         modal.transform.SetParent(MainCanvas.Instance.transform);
         _confirmationModal = modal;
         _confirmationModal.GetComponent<ConfirmationModal>().Setup(this);
@@ -112,8 +99,26 @@ public class RoomBuildPlot : MonoBehaviour
 
     public void Build()
     {
-        GameObject room = Instantiate(BuilderManager.Instance.SelectedRoomPrefab, BuilderManager.Instance.RoomsContainer.transform);
-        room.transform.position = _startingPoint;
+        GameObject roomGO = Instantiate(BuilderManager.Instance.SelectedRoomPrefab, BuilderManager.Instance.RoomsContainer.transform);
+        roomGO.transform.position = _startingPoint;
+
+        Room room = roomGO.GetComponent<Room>();
+        RoomManager.Instance.AddRoom(room);
+
+        Vector2 point1 = BuilderManager.CalculateLocationOnGrid(_startingPoint, room.RightUpAxisLength, 0);
+        Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, -room.LeftUpAxisLength);
+        Vector2 point3 = BuilderManager.CalculateLocationOnGrid(point2, -room.RightUpAxisLength, 0);
+
+        Dictionary<RoomCorner, Vector2> roomCorners = new Dictionary<RoomCorner, Vector2>()
+        {
+            { RoomCorner.Bottom, _startingPoint },
+            { RoomCorner.Right, point1 },
+            { RoomCorner.Top, point2 },
+            { RoomCorner.Left, point3 },
+        };
+        room.SetupCorners(roomCorners);
+
+        BuilderManager.Instance.UpdateBuildingTiles(room);
         GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
     }
 

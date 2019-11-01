@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Grid PathfindingGrid;    // might move to different location
 
     public BuilderManager BuilderManager;
+    public RoomManager RoomManager;
 
     public void Awake()
     {
@@ -30,6 +31,8 @@ public class GameManager : MonoBehaviour
 
         if (BuilderManager == null)
             Debug.LogError("Cannot find BuilderManager");
+        if (RoomManager == null)
+            Debug.LogError("Cannot find RoomManager");
         if (PathfindingGrid == null)
             Debug.LogError("Cannot find PathfindingGrid");
     }

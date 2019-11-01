@@ -6,6 +6,5 @@ public class BuildModeButton : MonoBehaviour
     public void EnterBuildMode()
     {
         GameManager.Instance.BuilderManager.EnterBuildMode();
-        Debug.Log("Build mode is " + BuilderManager.InBuildMode);
     }
 }
