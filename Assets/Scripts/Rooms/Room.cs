@@ -9,9 +9,9 @@ public class Room : MonoBehaviour
 
     private List<BuildingTile> _roomEdgeTiles = new List<BuildingTile>();
 
-    public Dictionary<RoomCorner, Vector2> RoomCorners;
+    public Dictionary<Direction, Vector2> RoomCorners;
 
-    public void SetupCorners(Dictionary<RoomCorner, Vector2> roomCorners)
+    public void SetupCorners(Dictionary<Direction, Vector2> roomCorners)
     {
         if(RightUpAxisLength % 3 != 0 || LeftUpAxisLength % 3 != 0)
         {
@@ -28,21 +28,19 @@ public class Room : MonoBehaviour
 
     public List<BuildingTile> GetRoomEdgeTiles()
     {
-        Debug.Log("Room" + RoomCorners[RoomCorner.Bottom]);
-
         // Get all building tiles in the location of the room and make them UNAVAILABLE
         List<BuildingTile> roomSquareTiles = BuilderManager.Instance.BuildingTiles.FindAll(tile =>
-            tile.StartingPoint.x >= RoomCorners[RoomCorner.Left].x &&
-            tile.StartingPoint.x <= RoomCorners[RoomCorner.Right].x &&
-            tile.StartingPoint.y <= RoomCorners[RoomCorner.Top].y &&
-            tile.StartingPoint.y >= RoomCorners[RoomCorner.Bottom].y
+            tile.StartingPoint.x >= RoomCorners[Direction.Left].x &&
+            tile.StartingPoint.x <= RoomCorners[Direction.Right].x &&
+            tile.StartingPoint.y <= RoomCorners[Direction.Up].y &&
+            tile.StartingPoint.y >= RoomCorners[Direction.Down].y
         );
 
         for (int i = 0; i <= RightUpAxisLength; i += 3)
         {
             for (int j = LeftUpAxisLength; j >= 0; j -= 3)
             {
-                Vector2 location = BuilderManager.CalculateLocationOnGrid(RoomCorners[RoomCorner.Bottom], i, -j);
+                Vector2 location = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j);
                 BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
                 tile.IsAvailable = false;
                 if (i == 0 || i == RightUpAxisLength || j == 0 || j == LeftUpAxisLength)
@@ -52,9 +50,4 @@ public class Room : MonoBehaviour
 
         return _roomEdgeTiles;
     }
-}
-
-public enum RoomCorner
-{
-    Top, Right, Bottom, Left
 }

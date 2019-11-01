@@ -6,7 +6,6 @@ public class BuildingTile
 {
     public Vector2 StartingPoint;
     public bool IsAvailable = true;
-    public Dictionary<Neighbour, Vector2> Neighours = new Dictionary<Neighbour, Vector2>();
 
     public static BuildingTile CreateBuildingTile(int rightUpStartPosition, int leftUpStartPosition, bool isAvailable)
     {
@@ -25,12 +24,4 @@ public class BuildingTile
         BuilderManager.Instance.BuildingTileLocations.Add(buildingTile.StartingPoint);
         return buildingTile;
     }
-}
-
-public enum Neighbour
-{
-    RightUp,
-    RightDown,
-    LeftDown,
-    LeftUp
 }

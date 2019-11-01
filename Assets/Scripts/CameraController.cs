@@ -1,45 +1,25 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     public float PanSpeed = 8f;
     public float PanBorderThickness = 15f; // in pixels
 
-    private Vector2 _panMaxLimit;
-    private Vector2 _panMinLimit;
-
-    public Vector2 PanMinLimit
-    {
-        get
-        {
-            return _panMinLimit;
-        }
-
-        set
-        {
-            _panMinLimit = value;
-        }
-    }
-    public Vector2 PanMaxLimit
-    {
-        get
-        {
-            return _panMaxLimit;
-        }
-
-        set
-        {
-            _panMaxLimit = value;
-        }
-    }
+    public static Dictionary<Direction, float> PanLimits;
 
     private float _panBorderThickness;
 
     public void Start()
     {
         _panBorderThickness = PanBorderThickness;
-        PanMinLimit = new Vector2(100f, 40f);
-        PanMaxLimit = new Vector2(40f, 40f);
+        PanLimits = new Dictionary<Direction, float>
+        {
+            { Direction.Up, 40f },
+            { Direction.Right, 40f },
+            { Direction.Down, -40f },
+            { Direction.Left, -40f },
+        };
         PanSpeed = GameManager.Instance.Configuration.PanSpeed;
     }
 
@@ -51,8 +31,8 @@ public class CameraController : MonoBehaviour
         position = HandleComputerPanning(position);
 
         // binding to the limits of the map
-        position.x = Mathf.Clamp(position.x, -PanMinLimit.x, PanMaxLimit.x);
-        position.y = Mathf.Clamp(position.y, -PanMinLimit.y, PanMaxLimit.y);
+        position.x = Mathf.Clamp(position.x, PanLimits[Direction.Left], PanLimits[Direction.Right]);
+        position.y = Mathf.Clamp(position.y, PanLimits[Direction.Down], PanLimits[Direction.Up]);
 
         transform.position = new Vector3(position.x, position.y, transform.position.z);
     }

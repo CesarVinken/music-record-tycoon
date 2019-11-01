@@ -109,12 +109,12 @@ public class RoomBuildPlot : MonoBehaviour
         Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, -room.LeftUpAxisLength);
         Vector2 point3 = BuilderManager.CalculateLocationOnGrid(point2, -room.RightUpAxisLength, 0);
 
-        Dictionary<RoomCorner, Vector2> roomCorners = new Dictionary<RoomCorner, Vector2>()
+        Dictionary<Direction, Vector2> roomCorners = new Dictionary<Direction, Vector2>()
         {
-            { RoomCorner.Bottom, _startingPoint },
-            { RoomCorner.Right, point1 },
-            { RoomCorner.Top, point2 },
-            { RoomCorner.Left, point3 },
+            { Direction.Down, _startingPoint },
+            { Direction.Right, point1 },
+            { Direction.Up, point2 },
+            { Direction.Left, point3 },
         };
         room.SetupCorners(roomCorners);
 

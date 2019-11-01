@@ -46,6 +46,22 @@ public class BuilderManager : MonoBehaviour
         }
     }
 
+    public void SetupInitialBuildingTiles()
+    {
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 0, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 0, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 0, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 0, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, -3, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, -3, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, -3, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, -3, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, -6, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, -6, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, -6, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, -6, true));
+    }
+
     public void EnterBuildMode()
     {
         InBuildMode = true;
@@ -89,27 +105,27 @@ public class BuilderManager : MonoBehaviour
 
         for (int i = 0; i < RoomManager.Rooms.Count; i++)
         {
-            Vector2 existingRoomStartingPoint = RoomManager.Rooms[i].RoomCorners[RoomCorner.Bottom];
+            Vector2 existingRoomStartingPoint = RoomManager.Rooms[i].RoomCorners[Direction.Down];
 
-            if (PlotIsAvailable(selectedRoom, existingRoomStartingPoint, 0, RoomManager.Rooms[i].LeftUpAxisLength))
+            if (GetPlotIsAvailable(selectedRoom, existingRoomStartingPoint, 0, RoomManager.Rooms[i].LeftUpAxisLength))
             {
                 Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(existingRoomStartingPoint, 0, RoomManager.Rooms[i].LeftUpAxisLength);
                 BuildModeContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, plotLocationStartingPoint);
             }
 
-            if (PlotIsAvailable(selectedRoom, existingRoomStartingPoint, 0, -RoomManager.Rooms[i].LeftUpAxisLength))
+            if (GetPlotIsAvailable(selectedRoom, existingRoomStartingPoint, 0, -RoomManager.Rooms[i].LeftUpAxisLength))
             {
                 Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(existingRoomStartingPoint, 0, -RoomManager.Rooms[i].LeftUpAxisLength); // left up
                 BuildModeContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, plotLocationStartingPoint);
             }
 
-            if (PlotIsAvailable(selectedRoom, existingRoomStartingPoint, RoomManager.Rooms[i].RightUpAxisLength, 0))
+            if (GetPlotIsAvailable(selectedRoom, existingRoomStartingPoint, RoomManager.Rooms[i].RightUpAxisLength, 0))
             {
                 Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(existingRoomStartingPoint, RoomManager.Rooms[i].RightUpAxisLength, 0); // right up
                 BuildModeContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, plotLocationStartingPoint);
             }
 
-            if (PlotIsAvailable(selectedRoom, existingRoomStartingPoint, - RoomManager.Rooms[i].RightUpAxisLength, 0))
+            if (GetPlotIsAvailable(selectedRoom, existingRoomStartingPoint, - RoomManager.Rooms[i].RightUpAxisLength, 0))
             {
                 Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(existingRoomStartingPoint, -RoomManager.Rooms[i].RightUpAxisLength, 0);
                 BuildModeContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, plotLocationStartingPoint);
@@ -123,7 +139,7 @@ public class BuilderManager : MonoBehaviour
         }
     }
 
-    public bool PlotIsAvailable(Room selectedRoomType, Vector2 existingRoomStartingPoint, int rightUpAxisLocationFromCurrentRoom, int leftUpAxisLocationFromCurrentRoom)
+    public bool GetPlotIsAvailable(Room selectedRoomType, Vector2 existingRoomStartingPoint, int rightUpAxisLocationFromCurrentRoom, int leftUpAxisLocationFromCurrentRoom)
     {
         bool isAvailable = true;
         Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(existingRoomStartingPoint, rightUpAxisLocationFromCurrentRoom, leftUpAxisLocationFromCurrentRoom);
@@ -183,34 +199,17 @@ public class BuilderManager : MonoBehaviour
         return new Vector2(startingPoint.x + (rightUpAxisLength + leftUpAxisLength) * 6f, startingPoint.y + (rightUpAxisLength - leftUpAxisLength) * 3f);
     }
 
-    public void SetupInitialBuildingTiles()
-    {
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, -3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, -3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, -3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, -3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, -6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, -6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, -6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, -6, true));
-    }
-
     public void UpdateBuildingTiles(Room room)
     {
-        Debug.Log("update building tiles for room " + room.RoomCorners[RoomCorner.Bottom]);
         // Get all building tiles in the location of the room and make them UNAVAILABLE
         List<BuildingTile> roomEdgeTiles = room.GetRoomEdgeTiles();
 
         // All tiles in the square of the room + the distance up to the fourth rank of tilse
         List<BuildingTile> surroundingSquareTiles = BuildingTiles.FindAll(tile =>
-            tile.StartingPoint.x >= room.RoomCorners[RoomCorner.Left].x - 3 * 15 &&
-            tile.StartingPoint.x <= room.RoomCorners[RoomCorner.Right].x + 3 * 15 &&
-            tile.StartingPoint.y <= room.RoomCorners[RoomCorner.Top].y + 3 * 15 &&
-            tile.StartingPoint.y >= room.RoomCorners[RoomCorner.Bottom].y - 3 * 15
+            tile.StartingPoint.x >= room.RoomCorners[Direction.Left].x - 3 * 15 &&
+            tile.StartingPoint.x <= room.RoomCorners[Direction.Right].x + 3 * 15 &&
+            tile.StartingPoint.y <= room.RoomCorners[Direction.Up].y + 3 * 15 &&
+            tile.StartingPoint.y >= room.RoomCorners[Direction.Down].y - 3 * 15
         );
 
         // Create new AVAILABLE tiles rings around the room
@@ -218,6 +217,8 @@ public class BuilderManager : MonoBehaviour
         List<BuildingTile> secondRankNewTiles = CreateTileRing(firstRankNewTiles, surroundingSquareTiles);
         List<BuildingTile> thirdRankNewTiles = CreateTileRing(secondRankNewTiles, surroundingSquareTiles);
         List<BuildingTile> fourthRankNewTiles = CreateTileRing(thirdRankNewTiles, surroundingSquareTiles);
+
+        SetMapPanMaximum(room.RoomCorners);
     }
 
     public List<BuildingTile> CreateTileRing(List<BuildingTile> tileRing, List<BuildingTile> surroundingSquareTiles)
@@ -263,6 +264,25 @@ public class BuilderManager : MonoBehaviour
             return existingTile;
         }
         return null;
+    }
+
+    public void SetMapPanMaximum(Dictionary<Direction, Vector2> newRoomCorners)
+    {
+        float currentMaxY = CameraController.PanLimits[Direction.Up];
+        float currentMaxX = CameraController.PanLimits[Direction.Right];
+        float currentMinY = CameraController.PanLimits[Direction.Down];
+        float currentMinX = CameraController.PanLimits[Direction.Left];
+        float panPadding = 20f;
+
+        if (currentMaxY <= newRoomCorners[Direction.Up].y + panPadding)
+            CameraController.PanLimits[Direction.Up] = newRoomCorners[Direction.Up].y + panPadding;
+        if (currentMaxX <= newRoomCorners[Direction.Right].x + panPadding)
+            CameraController.PanLimits[Direction.Right] = newRoomCorners[Direction.Right].x + panPadding;
+        if (currentMinY >= newRoomCorners[Direction.Down].y - panPadding)
+            CameraController.PanLimits[Direction.Down] = newRoomCorners[Direction.Down].y - panPadding;
+        if (currentMinX >= newRoomCorners[Direction.Left].x - panPadding)
+            CameraController.PanLimits[Direction.Left] = newRoomCorners[Direction.Left].x - panPadding;
+
     }
 
     public void OnDrawGizmos()
