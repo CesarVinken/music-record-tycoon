@@ -6,20 +6,20 @@ public class CameraController : MonoBehaviour
     public float PanSpeed = 8f;
     public float PanBorderThickness = 15f; // in pixels
 
-    public static Dictionary<Direction, float> PanLimits;
-
-    private float _panBorderThickness;
-
-    public void Start()
-    {
-        _panBorderThickness = PanBorderThickness;
-        PanLimits = new Dictionary<Direction, float>
+    public static Dictionary<Direction, float> PanLimits = new Dictionary<Direction, float>
         {
             { Direction.Up, 40f },
             { Direction.Right, 40f },
             { Direction.Down, -40f },
             { Direction.Left, -40f },
         };
+
+    private float _panBorderThickness;
+
+    public void Start()
+    {
+        _panBorderThickness = PanBorderThickness;
+
         PanSpeed = GameManager.Instance.Configuration.PanSpeed;
     }
 

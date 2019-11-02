@@ -5,7 +5,8 @@ public class Grid : MonoBehaviour
 {
     public bool DisplayRouteGizmos;
     public LayerMask UnwalkableMask;
-    public Vector2 GridWorldSize;   //this should be based on the size of the background image
+    public int GridWorldSizeX;   //this should be based on the size of the background image
+    public int GridWorldSizeY;   //this should be based on the size of the background image
     public float NodeRadius;
     public TerrainType[] WalkableRegions;
     public int ObstacleProximityPenalty = 40;
@@ -23,17 +24,11 @@ public class Grid : MonoBehaviour
     public void Awake()
     {
         _nodeDiameter = NodeRadius * 2;
-        if(GridWorldSize.x <= 0 || GridWorldSize.y <= 0)
-        {
-            Debug.LogError("Invalid world grid values");
-        }
+
         if(NodeRadius <= 0)
         {
             Debug.LogError("Node radius must be larger than 0");
         }
-
-        _gridSizeX = Mathf.RoundToInt(GridWorldSize.x / _nodeDiameter);
-        _gridSizeY = Mathf.RoundToInt(GridWorldSize.y / _nodeDiameter);
 
         foreach (TerrainType region in WalkableRegions)
         {
@@ -55,9 +50,14 @@ public class Grid : MonoBehaviour
     public void CreateGrid()
     {
         Debug.Log("Create grid");
+        GridWorldSizeX = Mathf.RoundToInt(-CameraController.PanLimits[Direction.Left] + CameraController.PanLimits[Direction.Right]);
+        GridWorldSizeY = Mathf.RoundToInt(-CameraController.PanLimits[Direction.Down] + CameraController.PanLimits[Direction.Up]);
+        _gridSizeX = Mathf.RoundToInt(GridWorldSizeX / _nodeDiameter);
+        _gridSizeY = Mathf.RoundToInt(GridWorldSizeY / _nodeDiameter);
+
         _myGrid = new Node[_gridSizeX, _gridSizeY];
 
-        Vector3 worldBottomLeft = transform.position - Vector3.right * GridWorldSize.x / 2 - Vector3.up * GridWorldSize.y / 2;
+        Vector3 worldBottomLeft = new Vector3(CameraController.PanLimits[Direction.Left], CameraController.PanLimits[Direction.Down], 0);
 
         for (int x = 0; x < _gridSizeX; x++)
         {
@@ -170,8 +170,8 @@ public class Grid : MonoBehaviour
 
     public Node NodeFromWorldPoint(Vector3 worldPosition)
     {
-        float percentX = (worldPosition.x + GridWorldSize.x / 2) / GridWorldSize.x;
-        float percentY = (worldPosition.y + GridWorldSize.y / 2) / GridWorldSize.y;
+        float percentX = (worldPosition.x + GridWorldSizeX / 2) / GridWorldSizeX;
+        float percentY = (worldPosition.y + GridWorldSizeY / 2) / GridWorldSizeY;
 
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
@@ -185,7 +185,7 @@ public class Grid : MonoBehaviour
 
     public void DrawPathfindingGridGizmos()
     {
-        Gizmos.DrawWireCube(transform.position, new Vector3(GridWorldSize.x, GridWorldSize.y, 1));
+        Gizmos.DrawWireCube(transform.position, new Vector3(GridWorldSizeX, GridWorldSizeY, 1));
 
         if (_myGrid != null && DisplayRouteGizmos)
         {

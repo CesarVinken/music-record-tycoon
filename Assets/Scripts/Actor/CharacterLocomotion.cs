@@ -57,7 +57,6 @@ public class CharacterLocomotion : MonoBehaviour
         PlayerCharacter.Instance.SetCharacterActionState(CharacterActionState.Moving);
 
         PlayerCharacter.Instance.PlayerNav.Target = new Vector3(newTarget.x, newTarget.y, PlayerCharacter.Instance.transform.position.z);
-
     }
 
     private void HandleMovement()

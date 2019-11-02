@@ -35,7 +35,6 @@ public class NavActor : MonoBehaviour
         {
             yield return new WaitForSeconds(.3f);
         }
-        PathRequestManager.RequestPath(transform.position, Target, OnPathFound);
 
         float sqrMoveThreshold = PATH_UPDATE_MOVE_THRESHOLD * PATH_UPDATE_MOVE_THRESHOLD;
         Vector3 targetPosOld = Target;
