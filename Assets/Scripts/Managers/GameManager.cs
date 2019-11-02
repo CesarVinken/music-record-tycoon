@@ -44,4 +44,16 @@ public class GameManager : MonoBehaviour
             MainMenuCanvas.Instance.ToggleMainMenu();
         }
     }
+
+    //Central function to turn on/off different gizmos
+    public void OnDrawGizmos()
+    {
+        PathfindingGrid.DrawPathfindingGridGizmos();
+
+        if(PlayerCharacter.Instance != null)
+            PlayerCharacter.Instance.PlayerNav.DrawPathGizmo();
+
+        if (BuilderManager.Instance != null)
+            BuilderManager.Instance.DrawBuildingTilesGizmos();
+    }
 }

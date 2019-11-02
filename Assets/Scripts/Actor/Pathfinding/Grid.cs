@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class Grid : MonoBehaviour
 {
     public bool DisplayRouteGizmos;
-    //public Transform Player;
     public LayerMask UnwalkableMask;
     public Vector2 GridWorldSize;   //this should be based on the size of the background image
     public float NodeRadius;
@@ -55,6 +54,7 @@ public class Grid : MonoBehaviour
 
     public void CreateGrid()
     {
+        Debug.Log("Create grid");
         _myGrid = new Node[_gridSizeX, _gridSizeY];
 
         Vector3 worldBottomLeft = transform.position - Vector3.right * GridWorldSize.x / 2 - Vector3.up * GridWorldSize.y / 2;
@@ -183,21 +183,21 @@ public class Grid : MonoBehaviour
     }
 
 
-    //public void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawWireCube(transform.position, new Vector3(GridWorldSize.x, GridWorldSize.y, 1));
+    public void DrawPathfindingGridGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position, new Vector3(GridWorldSize.x, GridWorldSize.y, 1));
 
-    //    if (_myGrid != null && DisplayRouteGizmos)
-    //    {
-    //        foreach (Node n in _myGrid)
-    //        {
-    //            Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(_penaltyMin, _penaltyMax, n.MovementPenalty));
-    //            Gizmos.color = (n.Walkable) ? Gizmos.color : Color.red;
+        if (_myGrid != null && DisplayRouteGizmos)
+        {
+            foreach (Node n in _myGrid)
+            {
+                Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(_penaltyMin, _penaltyMax, n.MovementPenalty));
+                Gizmos.color = (n.Walkable) ? Gizmos.color : Color.red;
 
-    //            Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter));
-    //        }
-    //    }
-    //}
+                Gizmos.DrawCube(n.WorldPosition, Vector3.one * (_nodeDiameter));
+            }
+        }
+    }
 
     [System.Serializable]
     public class TerrainType

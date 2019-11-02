@@ -96,7 +96,7 @@ public class NavActor : MonoBehaviour
         }
     }
 
-    public void OnDrawGizmos()
+    public void DrawPathGizmo()
     {
         if(Path != null)
         {

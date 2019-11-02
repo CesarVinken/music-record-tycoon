@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -219,6 +220,9 @@ public class BuilderManager : MonoBehaviour
         List<BuildingTile> fourthRankNewTiles = CreateTileRing(thirdRankNewTiles, surroundingSquareTiles);
 
         SetMapPanMaximum(room.RoomCorners);
+
+        IEnumerator coroutine = WaitAndUpdateGrid();
+        StartCoroutine(coroutine);
     }
 
     public List<BuildingTile> CreateTileRing(List<BuildingTile> tileRing, List<BuildingTile> surroundingSquareTiles)
@@ -285,7 +289,7 @@ public class BuilderManager : MonoBehaviour
 
     }
 
-    public void OnDrawGizmos()
+    public void DrawBuildingTilesGizmos()
     {
         // Draw available/unavailable building tiles
         for (int i = 0; i < BuildingTiles.Count; i++)
@@ -300,38 +304,9 @@ public class BuilderManager : MonoBehaviour
         }
     }
 
-
-
-
-
-
-    //public void OnDrawGizmos()
-    //{
-    //    Vector2 startingPoint = CalculateLocationOnGrid(Vector2.zero, 4, 0);
-    //    int rightUpAxisLength = 7;
-    //    int leftUpAxisLength = 5;
-
-    //    Gizmos.DrawCube(new Vector2(0, 0), new Vector3(1, 1));
-    //    Vector2 furthestPoint = CalculateLocationOnGrid(startingPoint, rightUpAxisLength, -leftUpAxisLength);
-    //    Gizmos.DrawCube(new Vector2(furthestPoint.x / 2, furthestPoint.y / 2), new Vector3(1, 1));
-
-    //    DrawRect(startingPoint, rightUpAxisLength, leftUpAxisLength);
-    //}
-
-    //public void DrawRect(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)
-    //{
-    //    Vector2 point1 = CalculateLocationOnGrid(startingPoint, rightUpAxisLength, 0);
-    //    Vector2 point2 = CalculateLocationOnGrid(point1, 0, -leftUpAxisLength);
-    //    Vector2 point3 = CalculateLocationOnGrid(point2, -rightUpAxisLength, 0);
-
-    //    Gizmos.DrawLine(startingPoint, point1);
-    //    Gizmos.DrawLine(point1, point2);
-    //    Gizmos.DrawLine(point2, point3);
-    //    Gizmos.DrawLine(point3, startingPoint);
-    //}
-
-    //public Vector2 CalculateLocationOnGrid(Vector2 startingPoint, int rightUpAxis, int leftUpAxis)
-    //{
-    //    return new Vector2(startingPoint.x + (rightUpAxis + leftUpAxis) * 5f, startingPoint.y + (rightUpAxis - leftUpAxis) * 2.5f);
-    //}
+    public IEnumerator WaitAndUpdateGrid()
+    {
+        yield return new WaitForSeconds(0.01f);
+        GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
+    }
 }

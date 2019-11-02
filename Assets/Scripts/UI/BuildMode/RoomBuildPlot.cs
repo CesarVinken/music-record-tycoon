@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RoomBuildPlot : MonoBehaviour
@@ -119,7 +120,6 @@ public class RoomBuildPlot : MonoBehaviour
         room.SetupCorners(roomCorners);
 
         BuilderManager.Instance.UpdateBuildingTiles(room);
-        GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
     }
 
     public void MakePlotAvailable()
