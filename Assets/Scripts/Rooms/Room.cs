@@ -10,6 +10,7 @@ public class Room : MonoBehaviour
     private List<BuildingTile> _roomEdgeTiles = new List<BuildingTile>();
 
     public Dictionary<Direction, Vector2> RoomCorners;
+    public Dictionary<Door, bool> Doors;
 
     public void SetupCorners(Dictionary<Direction, Vector2> roomCorners)
     {
@@ -49,5 +50,10 @@ public class Room : MonoBehaviour
         }
 
         return _roomEdgeTiles;
+    }
+
+    public void AddDoorToDictionary(Door door, bool IsAccessible)
+    {
+        Doors.Add(door, IsAccessible);
     }
 }
