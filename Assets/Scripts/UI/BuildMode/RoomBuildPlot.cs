@@ -25,8 +25,8 @@ public class RoomBuildPlot : MonoBehaviour
     }
     public void Setup(Room room, Vector2 startingPoint)
     {
-        int rightUpAxisLength = room.RightUpAxisLength;  // later not hardcoded but taken from Room database specifics
-        int leftUpAxisLength = room.LeftUpAxisLength;
+        int rightUpAxisLength = RoomBlueprint.RightUpAxisLength;  // later not hardcoded but taken from Room database specifics
+        int leftUpAxisLength = RoomBlueprint.LeftUpAxisLength;
 
         Vector2 point1 = BuilderManager.CalculateLocationOnGrid(startingPoint, rightUpAxisLength, 0);
         Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, -leftUpAxisLength);
@@ -106,9 +106,9 @@ public class RoomBuildPlot : MonoBehaviour
         Room room = roomGO.GetComponent<Room>();
         RoomManager.Instance.AddRoom(room);
 
-        Vector2 point1 = BuilderManager.CalculateLocationOnGrid(_startingPoint, room.RightUpAxisLength, 0);
-        Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, -room.LeftUpAxisLength);
-        Vector2 point3 = BuilderManager.CalculateLocationOnGrid(point2, -room.RightUpAxisLength, 0);
+        Vector2 point1 = BuilderManager.CalculateLocationOnGrid(_startingPoint, RoomBlueprint.RightUpAxisLength, 0);
+        Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, -RoomBlueprint.LeftUpAxisLength);
+        Vector2 point3 = BuilderManager.CalculateLocationOnGrid(point2, -RoomBlueprint.RightUpAxisLength, 0);
 
         Dictionary<Direction, Vector2> roomCorners = new Dictionary<Direction, Vector2>()
         {

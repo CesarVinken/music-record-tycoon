@@ -49,7 +49,7 @@ public class Grid : MonoBehaviour
 
     public void CreateGrid()
     {
-        Debug.Log("Create grid");
+        //Debug.Log("Create grid");
         GridWorldSizeX = Mathf.RoundToInt(-CameraController.PanLimits[Direction.Left] + CameraController.PanLimits[Direction.Right]);
         GridWorldSizeY = Mathf.RoundToInt(-CameraController.PanLimits[Direction.Down] + CameraController.PanLimits[Direction.Up]);
         _gridSizeX = Mathf.RoundToInt(GridWorldSizeX / _nodeDiameter);
