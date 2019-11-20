@@ -14,6 +14,8 @@ public class RoomBuildPlot : MonoBehaviour
 
     private GameObject _confirmationModal;
 
+    private List<Room> _adjacentRooms = new List<Room>();
+
     private bool plotIsFree = true;
 
     public void Awake()
@@ -55,7 +57,6 @@ public class RoomBuildPlot : MonoBehaviour
         {
             _confirmationModal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
         }
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -100,26 +101,7 @@ public class RoomBuildPlot : MonoBehaviour
 
     public void Build()
     {
-        GameObject roomGO = Instantiate(BuilderManager.Instance.SelectedRoomPrefab, BuilderManager.Instance.RoomsContainer.transform);
-        roomGO.transform.position = _startingPoint;
-
-        Room room = roomGO.GetComponent<Room>();
-        RoomManager.Instance.AddRoom(room);
-
-        Vector2 point1 = BuilderManager.CalculateLocationOnGrid(_startingPoint, RoomBlueprint.RightUpAxisLength, 0);
-        Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, -RoomBlueprint.LeftUpAxisLength);
-        Vector2 point3 = BuilderManager.CalculateLocationOnGrid(point2, -RoomBlueprint.RightUpAxisLength, 0);
-
-        Dictionary<Direction, Vector2> roomCorners = new Dictionary<Direction, Vector2>()
-        {
-            { Direction.Down, _startingPoint },
-            { Direction.Right, point1 },
-            { Direction.Up, point2 },
-            { Direction.Left, point3 },
-        };
-        room.SetupCorners(roomCorners);
-
-        BuilderManager.Instance.UpdateBuildingTiles(room);
+        BuilderManager.Instance.BuildRoom(_startingPoint);
     }
 
     public void MakePlotAvailable()

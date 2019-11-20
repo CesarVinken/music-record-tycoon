@@ -137,7 +137,7 @@ public class BuilderManager : MonoBehaviour
             }
         }
 
-        //Initial room to avoid an empty map.
+        //Initial room space to avoid an empty map.
         if (RoomManager.Rooms.Count == 0)
         {
             BuildModeContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, new Vector2(0, 0));
@@ -187,6 +187,31 @@ public class BuilderManager : MonoBehaviour
         }
 
         return isAvailable;
+    }
+
+    public void BuildRoom(Vector2 startingPoint)
+    {
+        GameObject roomGO = Instantiate(SelectedRoomPrefab, Instance.RoomsContainer.transform);
+        roomGO.transform.position = startingPoint;
+
+        Room room = roomGO.GetComponent<Room>();
+        RoomManager.Instance.AddRoom(room);
+
+        Vector2 point1 = CalculateLocationOnGrid(startingPoint, RoomBlueprint.RightUpAxisLength, 0);
+        Vector2 point2 = CalculateLocationOnGrid(point1, 0, -RoomBlueprint.LeftUpAxisLength);
+        Vector2 point3 = CalculateLocationOnGrid(point2, -RoomBlueprint.RightUpAxisLength, 0);
+
+        Dictionary<Direction, Vector2> roomCorners = new Dictionary<Direction, Vector2>()
+        {
+            { Direction.Down, startingPoint },
+            { Direction.Right, point1 },
+            { Direction.Up, point2 },
+            { Direction.Left, point3 },
+        };
+        room.SetupCorners(roomCorners);
+        //room.EnableDoors();
+
+        UpdateBuildingTiles(room);
     }
 
     public bool GetPlotIsAvailable(Room selectedRoomType, Vector2 roomStartingPoint)
@@ -259,6 +284,8 @@ public class BuilderManager : MonoBehaviour
     {
         // Get all building tiles in the location of the room and make them UNAVAILABLE
         List<BuildingTile> roomEdgeTiles = room.GetRoomEdgeTiles();
+        room.setAdjacentRooms();
+        room.EnableDoors();
 
         // All tiles in the square of the room + the distance up to the fourth rank of tilse
         List<BuildingTile> surroundingSquareTiles = BuildingTiles.FindAll(tile =>

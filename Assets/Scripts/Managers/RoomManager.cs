@@ -22,4 +22,15 @@ public class RoomManager : MonoBehaviour
     {
         Rooms.Remove(Room);
     }
+
+    public void EnableDoor(Door newDoor)
+    {
+        foreach (Room room in Rooms)
+        {
+            foreach (KeyValuePair<Door, bool> door in room.Doors)
+            {
+                Debug.Log("find doors and enable when needed");
+            }
+        }
+    }
 }

@@ -41,6 +41,7 @@ public class Door : MonoBehaviour
             DisabledDoorWallPieces[j].SetActive(false);
         }
         DisabledDoorCollider.enabled = false;
+        IsAccessible = true;
     }
 
     public void DisableDoor()
@@ -54,5 +55,6 @@ public class Door : MonoBehaviour
             DisabledDoorWallPieces[j].SetActive(true);
         }
         DisabledDoorCollider.enabled = true;
+        IsAccessible = false;
     }
 }

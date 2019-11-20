@@ -6,6 +6,7 @@ public class BuildingTile
 {
     public Vector2 StartingPoint;
     public bool IsAvailable = true;
+    public List<Room> BuildingTileRooms = new List<Room>(); // the rooms of which this tile is a part
 
     public static BuildingTile CreateBuildingTile(int rightUpStartPosition, int leftUpStartPosition, bool isAvailable)
     {
