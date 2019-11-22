@@ -31,6 +31,8 @@ public class PathRequestManager : MonoBehaviour
         {
             CurrentPathRequest = PathRequestQueue.Dequeue();
             IsProcessingPath = true;
+            Debug.Log("request path from " + CurrentPathRequest.PathStart + " to " + CurrentPathRequest.PathEnd);
+
             Pathfinding.StartFindPath(CurrentPathRequest.PathStart, CurrentPathRequest.PathEnd);
         }
     }

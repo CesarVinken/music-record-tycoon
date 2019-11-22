@@ -25,7 +25,6 @@ public class NavPath
 
     Vector2 V3ToV2(Vector3 v3)
     {
-   //     return new Vector2(v3.x, v3.z);
         return new Vector2(v3.x, v3.y);
     }
 

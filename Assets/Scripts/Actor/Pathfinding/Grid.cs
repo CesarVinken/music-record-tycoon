@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class Grid : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class Grid : MonoBehaviour
     private float _nodeDiameter;
     private int _gridSizeX;
     private int _gridSizeY;
+    private float _normalisedWorldOffsetX;  // Used if the map is more to the right than to the left
+    private float _normalisedWorldOffsetY;  // User if the map is more up than down
+    private Vector2 _minimumNodeLocation;
 
     int _penaltyMin = int.MaxValue;
     int _penaltyMax = int.MinValue;
@@ -25,7 +29,7 @@ public class Grid : MonoBehaviour
     {
         _nodeDiameter = NodeRadius * 2;
 
-        if(NodeRadius <= 0)
+        if (NodeRadius <= 0)
         {
             Debug.LogError("Node radius must be larger than 0");
         }
@@ -49,15 +53,38 @@ public class Grid : MonoBehaviour
 
     public void CreateGrid()
     {
-        //Debug.Log("Create grid");
+        Debug.Log("Create grid");
         GridWorldSizeX = Mathf.RoundToInt(-CameraController.PanLimits[Direction.Left] + CameraController.PanLimits[Direction.Right]);
         GridWorldSizeY = Mathf.RoundToInt(-CameraController.PanLimits[Direction.Down] + CameraController.PanLimits[Direction.Up]);
         _gridSizeX = Mathf.RoundToInt(GridWorldSizeX / _nodeDiameter);
         _gridSizeY = Mathf.RoundToInt(GridWorldSizeY / _nodeDiameter);
 
         _myGrid = new Node[_gridSizeX, _gridSizeY];
-
         Vector3 worldBottomLeft = new Vector3(CameraController.PanLimits[Direction.Left], CameraController.PanLimits[Direction.Down], 0);
+        Vector2 firstNodeLocation = worldBottomLeft + Vector3.right * (0 * _nodeDiameter + NodeRadius) + Vector3.up * (0 * _nodeDiameter + NodeRadius);
+        Vector2 lastNodeLocation = worldBottomLeft + Vector3.right * (_gridSizeX - 1 * _nodeDiameter + NodeRadius) + Vector3.up * (_gridSizeY - 1 * _nodeDiameter + NodeRadius);
+        _normalisedWorldOffsetY = Math.Abs(lastNodeLocation.y) - Math.Abs(firstNodeLocation.y);
+        if (Math.Abs(firstNodeLocation.x) > Math.Abs(lastNodeLocation.x))
+        {
+            _minimumNodeLocation.x = Math.Abs(firstNodeLocation.x);
+            _normalisedWorldOffsetX = 0;
+        }
+        else
+        {
+            _minimumNodeLocation.x = Math.Abs(lastNodeLocation.x);
+            _normalisedWorldOffsetX = Math.Abs(lastNodeLocation.x) - Math.Abs(firstNodeLocation.x);
+        }
+
+        if (Math.Abs(firstNodeLocation.y) > Math.Abs(lastNodeLocation.y))
+        {
+            _minimumNodeLocation.y = Math.Abs(firstNodeLocation.y);
+            _normalisedWorldOffsetY = 0;
+        }
+        else
+        {
+            _minimumNodeLocation.y = Math.Abs(lastNodeLocation.y);
+            _normalisedWorldOffsetY = Math.Abs(lastNodeLocation.y) - Math.Abs(firstNodeLocation.y);
+        }
 
         for (int x = 0; x < _gridSizeX; x++)
         {
@@ -70,12 +97,12 @@ public class Grid : MonoBehaviour
 
                 Ray ray = new Ray(worldPoint + Vector3.up * 50, Vector3.down);
                 RaycastHit hit;
-                if(Physics.Raycast(ray, out hit, 100, _walkableMask))    //get terrain layer of node
+                if (Physics.Raycast(ray, out hit, 100, _walkableMask))    //get terrain layer of node
                 {
                     _walkableRegionsDictionary.TryGetValue(hit.collider.gameObject.layer, out movementPenalty);
                 }
 
-                if(!walkable)
+                if (!walkable)
                 {
                     movementPenalty += ObstacleProximityPenalty;
                 }
@@ -132,11 +159,11 @@ public class Grid : MonoBehaviour
                 _myGrid[x, y].MovementPenalty = blurredPenalty;
 
 
-                if(blurredPenalty > _penaltyMax)
+                if (blurredPenalty > _penaltyMax)
                 {
                     _penaltyMax = blurredPenalty;
                 }
-                if(blurredPenalty < _penaltyMin)
+                if (blurredPenalty < _penaltyMin)
                 {
                     _penaltyMin = blurredPenalty;
                 }
@@ -158,7 +185,7 @@ public class Grid : MonoBehaviour
                 int checkX = node.GridX + x;
                 int checkY = node.GridY + y;
 
-                if(checkX >= 0 && checkX < _gridSizeX && checkY >= 0 && checkY < _gridSizeY)
+                if (checkX >= 0 && checkX < _gridSizeX && checkY >= 0 && checkY < _gridSizeY)
                 {
                     neighbours.Add(_myGrid[checkX, checkY]);
                 }
@@ -170,18 +197,20 @@ public class Grid : MonoBehaviour
 
     public Node NodeFromWorldPoint(Vector3 worldPosition)
     {
-        float percentX = (worldPosition.x + GridWorldSizeX / 2) / GridWorldSizeX;
-        float percentY = (worldPosition.y + GridWorldSizeY / 2) / GridWorldSizeY;
+        Vector2 NormalisedWorldSize = new Vector2(_minimumNodeLocation.x * 2, _minimumNodeLocation.y * 2); // take the minumum point on the grid and mirror it in order to get a world size in which the negative range is as large as the positive range. Then we can take the percentage of that worldSize
+        float percentX = (worldPosition.x + NormalisedWorldSize.x / 2) / NormalisedWorldSize.x;
+        float percentY = (worldPosition.y + NormalisedWorldSize.y / 2) / NormalisedWorldSize.y;
 
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
+        float _gridSizeFoNormalisedWorldSizeX = Mathf.RoundToInt(NormalisedWorldSize.x / _nodeDiameter);
+        float _gridSizeForNormalisedWorldSizeY = Mathf.RoundToInt(NormalisedWorldSize.y / _nodeDiameter);
 
-        int x = Mathf.RoundToInt((_gridSizeX - 1) * percentX);
-        int y = Mathf.RoundToInt((_gridSizeY - 1) * percentY);
+        int nodeX = Mathf.RoundToInt((_gridSizeFoNormalisedWorldSizeX - 1) * percentX) - Mathf.RoundToInt(_normalisedWorldOffsetX / _nodeDiameter);
+        int nodeY = Mathf.RoundToInt((_gridSizeForNormalisedWorldSizeY - 1) * percentY) - Mathf.RoundToInt(_normalisedWorldOffsetY / _nodeDiameter);
 
-        return _myGrid[x, y];
+        return _myGrid[nodeX, nodeY];
     }
-
 
     public void DrawPathfindingGridGizmos()
     {
