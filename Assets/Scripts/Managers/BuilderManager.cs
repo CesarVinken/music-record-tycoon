@@ -9,6 +9,7 @@ public class BuilderManager : MonoBehaviour
     public static BuilderManager Instance;
 
     public static bool InBuildMode;
+    public static bool InDeleteRoomMode;
     public static bool HasRoomSelected;
 
     public GameObject Room1Prefab; 
@@ -24,6 +25,7 @@ public class BuilderManager : MonoBehaviour
     {
         Instance = this;
         InBuildMode = false;
+        InDeleteRoomMode = false;
         HasRoomSelected = false;
 
         SelectedRoom = null;
@@ -66,6 +68,8 @@ public class BuilderManager : MonoBehaviour
 
     public void EnterBuildMode()
     {
+        if (InDeleteRoomMode) ExitDeleteRoomMode();
+        
         InBuildMode = true;
         InGameButtons.Instance.CreateButtonsForBuildMode();
         InGameButtons.Instance.DeleteButtonsForBuildMode();
@@ -73,6 +77,7 @@ public class BuilderManager : MonoBehaviour
 
     public void ExitBuildMode()
     {
+        if (InDeleteRoomMode) ExitDeleteRoomMode();
         InBuildMode = false;
         HasRoomSelected = false;
         SelectedRoom = null;
@@ -85,8 +90,25 @@ public class BuilderManager : MonoBehaviour
             ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
     }
 
+    public void EnterDeleteRoomMode()
+    {
+        InBuildMode = false;
+        HasRoomSelected = false;
+        SelectedRoom = null;
+        InDeleteRoomMode = true;
+        Debug.Log("we are now in delete room mode");
+    }
+
+    public void ExitDeleteRoomMode()
+    {
+        Debug.Log("we exited delete room mode");
+        InDeleteRoomMode = false;
+    }
+
     public void SetSelectedRoom(Room room)
     {
+        if (InDeleteRoomMode) ExitDeleteRoomMode();
+        
         // Should maybe become Room type? For example: SelectedRoom = room.Prefab
         SelectedRoom = room;
 
