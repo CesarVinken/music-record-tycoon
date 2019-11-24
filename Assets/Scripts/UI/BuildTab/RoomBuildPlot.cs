@@ -23,6 +23,8 @@ public class RoomBuildPlot : MonoBehaviour
         if (LineRenderer == null)
             Debug.LogError("Cannot find LineRenderer");
 
+        _confirmationModal = BuilderManager.Instance.ConfirmationModalGO;
+
         Guard.CheckIsNull(BuildTrigger, "BuildTrigger");
     }
     public void Setup(Room room, Vector2 startingPoint)
@@ -96,7 +98,6 @@ public class RoomBuildPlot : MonoBehaviour
         modal.transform.SetParent(MainCanvas.Instance.transform);
         _confirmationModal = modal;
         _confirmationModal.GetComponent<ConfirmationModal>().Setup(this);
-        
     }
 
     public void Build()

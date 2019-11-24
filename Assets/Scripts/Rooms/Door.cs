@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Door : MonoBehaviour
 {
+    public string Id = "";
     public Room Room;
     public GameObject[] DisabledDoorWallPieces; // Wall to show when room is disabled
     public GameObject[] EnabledDoorWallPieces; // Wall to show when room is enabled
     public bool IsAccessible;
     public PolygonCollider2D DisabledDoorCollider;
+    public Door DoorConnection = null;
 
     void Awake()
     {
@@ -27,11 +30,13 @@ public class Door : MonoBehaviour
             Debug.LogError("Could not find DisabledDoorCollider for door");
         }
         IsAccessible = false;
-        Room.AddDoorToDictionary(this, IsAccessible);
+        Room.AddDoorToRoom(this);
+        Id = Guid.NewGuid().ToString();
     }
 
     public void EnableDoor()
     {
+        Debug.Log("Enable Door");
         for (int i = 0; i < EnabledDoorWallPieces.Length; i++)
         {
             EnabledDoorWallPieces[i].SetActive(true);

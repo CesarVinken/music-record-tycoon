@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildModeContainer : MonoBehaviour
+public class BuildTabContainer : MonoBehaviour
 {
-    public static BuildModeContainer Instance;
+    public static BuildTabContainer Instance;
     public List<RoomBuildPlot> RoomBuildPlots = new List<RoomBuildPlot>();
 
     void Awake()
@@ -28,4 +28,5 @@ public class BuildModeContainer : MonoBehaviour
         }
         RoomBuildPlots.Clear();
     }
+
 }

@@ -6,43 +6,43 @@ public class InGameButtons : MonoBehaviour
 
     // Button containers
     public GameObject RightRow;
-    public GameObject BuildModeButtonsGO;
+    public GameObject BuildTabButtonsGO;
 
     // Buttons
     public GameObject MainMenuButton;
-    public GameObject BuildModeButton;
+    public GameObject BuildTabButton;
 
     // Prefabs
-    public GameObject BuildModeButtonPrefab;
+    public GameObject BuildTabButtonPrefab;
 
     public void Awake()
     {
         Instance = this;
 
         Guard.CheckIsNull(RightRow, "RightRow");
-        Guard.CheckIsNull(BuildModeButtonsGO, "BuildModeButtonsGO");
+        Guard.CheckIsNull(BuildTabButtonsGO, "BuildTabButtonsGO");
 
-        Guard.CheckIsNull(BuildModeButtonPrefab, "BuildModeButtonPrefab");
+        Guard.CheckIsNull(BuildTabButtonPrefab, "BuildTabButtonPrefab");
     }
 
-    public void CreateButtonsForBuildMode()
+    public void CreateButtonsForBuildTabMode()
     {
-        BuildModeButtons.Instance.CreateAllButtons();
+        BuildTabButtons.Instance.CreateAllButtons();
     }
 
     public void CreateButtonsForPlayMode()
     {
-        BuildModeButton = Instantiate(BuildModeButtonPrefab, RightRow.transform);
+        BuildTabButton = Instantiate(BuildTabButtonPrefab, RightRow.transform);
     }
 
-    public void DeleteButtonsForBuildMode()
+    public void DeleteButtonsForBuildTabMode()
     {
-        if (BuildModeButton != null)
-            Destroy(BuildModeButton);  
+        if (BuildTabButton != null)
+            Destroy(BuildTabButton);  
     }
 
     public void DeleteButtonsForPlayMode()
     {
-        BuildModeButtons.Instance.DeleteAllButtons();
+        BuildTabButtons.Instance.DeleteAllButtons();
     }
 }

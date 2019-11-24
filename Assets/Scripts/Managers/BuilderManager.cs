@@ -8,14 +8,22 @@ public class BuilderManager : MonoBehaviour
 {
     public static BuilderManager Instance;
 
-    public static bool InBuildMode;
+    public static bool BuildTabActivated;
+    public static bool InRoomBuildMode;
     public static bool InDeleteRoomMode;
     public static bool HasRoomSelected;
 
-    public GameObject Room1Prefab; 
-    public GameObject SelectedRoomPrefab;
-    public Room SelectedRoom;
+
+    public GameObject Room1Prefab;
     public GameObject Room1BuildPlotPrefab;
+    public GameObject SelectedRoomPrefab;
+    public GameObject DeleteRoomTriggerPrefab;
+
+    public Room SelectedRoom;
+
+
+    public GameObject ConfirmationModalGO;
+
     public GameObject RoomsContainer;
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();
@@ -24,7 +32,8 @@ public class BuilderManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        InBuildMode = false;
+        BuildTabActivated = false;
+        InRoomBuildMode = false;
         InDeleteRoomMode = false;
         HasRoomSelected = false;
 
@@ -33,7 +42,7 @@ public class BuilderManager : MonoBehaviour
         Guard.CheckIsNull(Room1Prefab, "Room1Prefab");
         Guard.CheckIsNull(Room1BuildPlotPrefab, "Room1BuildPlotPrefab");
         Guard.CheckIsNull(RoomsContainer, "RoomsContainer");
-
+        Guard.CheckIsNull(DeleteRoomTriggerPrefab, "DeleteRoomTriggerPrefab");
 
         SelectedRoomPrefab = Room1Prefab;  // Should become generic later on.
 
@@ -66,49 +75,71 @@ public class BuilderManager : MonoBehaviour
         BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, -6, true));
     }
 
-    public void EnterBuildMode()
+    public void ActivateBuildTabMode()
     {
-        if (InDeleteRoomMode) ExitDeleteRoomMode();
-        
-        InBuildMode = true;
-        InGameButtons.Instance.CreateButtonsForBuildMode();
-        InGameButtons.Instance.DeleteButtonsForBuildMode();
+        BuildTabActivated = true;
+
+        InGameButtons.Instance.CreateButtonsForBuildTabMode();
+        InGameButtons.Instance.DeleteButtonsForBuildTabMode();
+
+        ActivateRoomBuildMode();
     }
 
-    public void ExitBuildMode()
+    public void DeactivateBuildTabMode()
     {
-        if (InDeleteRoomMode) ExitDeleteRoomMode();
-        InBuildMode = false;
-        HasRoomSelected = false;
-        SelectedRoom = null;
+        BuildTabActivated = false;
 
         InGameButtons.Instance.CreateButtonsForPlayMode();
         InGameButtons.Instance.DeleteButtonsForPlayMode();
-        BuildModeContainer.Instance.DestroyBuildingPlots();
 
+        if (InRoomBuildMode) DeactivateRoomBuildMode();
+        if (InDeleteRoomMode) DeactivateDeleteRoomMode();
+    }
+
+    public void ActivateRoomBuildMode()
+    {
+        if (InDeleteRoomMode) DeactivateDeleteRoomMode();
+        
+        InRoomBuildMode = true;
+    }
+
+    public void DeactivateRoomBuildMode()
+    {
+        InRoomBuildMode = false;
+        HasRoomSelected = false;
+        SelectedRoom = null;
+
+        BuildTabContainer.Instance.DestroyBuildingPlots();
         if (ConfirmationModal.CurrentConfirmationModal)
             ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
     }
 
-    public void EnterDeleteRoomMode()
+    public void ActivateDeleteRoomMode()
     {
-        InBuildMode = false;
-        HasRoomSelected = false;
-        SelectedRoom = null;
+        if (InRoomBuildMode) DeactivateRoomBuildMode();
+
         InDeleteRoomMode = true;
-        Debug.Log("we are now in delete room mode");
+
+        foreach (Room room in RoomManager.Rooms)
+        {
+            DeleteRoomTrigger deleteRoomTrigger = Instantiate(DeleteRoomTriggerPrefab, MainCanvas.Instance.transform).GetComponent<DeleteRoomTrigger>();
+            deleteRoomTrigger.Setup(room);
+        }
     }
 
-    public void ExitDeleteRoomMode()
+    public void DeactivateDeleteRoomMode()
     {
-        Debug.Log("we exited delete room mode");
         InDeleteRoomMode = false;
+
+        DeleteRoomTrigger.DeleteDeleteRoomTriggers();
+        if (ConfirmationModal.CurrentConfirmationModal)
+            ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
     }
 
     public void SetSelectedRoom(Room room)
     {
-        if (InDeleteRoomMode) ExitDeleteRoomMode();
-        
+        if (!InRoomBuildMode) ActivateRoomBuildMode();
+
         // Should maybe become Room type? For example: SelectedRoom = room.Prefab
         SelectedRoom = room;
 
@@ -125,25 +156,25 @@ public class BuilderManager : MonoBehaviour
 
     public void DrawAvailablePlots(Room selectedRoom)
     {
-        BuildModeContainer.Instance.DestroyBuildingPlots();
+        BuildTabContainer.Instance.DestroyBuildingPlots();
 
         // for each door, check if it aligns with the doors of the selected room
         for (int i = 0; i < RoomManager.Rooms.Count; i++)
         {
             Room room = RoomManager.Rooms[i];
             // for each door, check if it aligns with the doors of the selected room
-            foreach (KeyValuePair<Door, bool> door in room.Doors)
+            for (int j = 0; j < room.Doors.Count; j++)
             {
-                if (door.Value) continue; // if the door is already activated, no need to check for new connections
+                Door door = room.Doors[j];
+                if (door.DoorConnection != null) continue; // if the door is already activated, no need to check for new connections
 
                 // the doors that are already on the map
-                GridLocation roomStartPosition = CalculateGridLocationFromVector2(room.RoomCorners[Direction.Down]);
-                GridLocation doorPosition = CalculateGridLocationFromVector2(door.Key.transform.position);
+                GridLocation doorPosition = CalculateGridLocationFromVector2(door.transform.position);
 
-                for (int j = 0; j < RoomBlueprint.DoorLocations.Length; j++)
+                for (int k = 0; k < RoomBlueprint.DoorLocations.Length; k++)
                 {
                     // for each door location, check if a building plot is available starting at the roomDoorPosition - bluePrintDoorPosition
-                    GridLocation blueprintDoorPosition = RoomBlueprint.DoorLocations[j];
+                    GridLocation blueprintDoorPosition = RoomBlueprint.DoorLocations[k];
 
                     if ((doorPosition.UpRight == blueprintDoorPosition.UpRight) && (doorPosition.UpLeft == blueprintDoorPosition.UpLeft)) continue;
                     if (doorPosition.UpRight % 3 != blueprintDoorPosition.UpRight % 3 && doorPosition.UpLeft % 3 != blueprintDoorPosition.UpLeft % 3) continue;
@@ -153,7 +184,7 @@ public class BuilderManager : MonoBehaviour
                     Vector2 blueprintRoomStartPositionVector = CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
                     if (GetPlotIsAvailable(selectedRoom, blueprintRoomStartPositionVector))
                     {
-                        BuildModeContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, blueprintRoomStartPositionVector);
+                        BuildTabContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, blueprintRoomStartPositionVector);
                     }
                 }
             }
@@ -162,7 +193,7 @@ public class BuilderManager : MonoBehaviour
         //Initial room space to avoid an empty map.
         if (RoomManager.Rooms.Count == 0)
         {
-            BuildModeContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, new Vector2(0, 0));
+            BuildTabContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, new Vector2(0, 0));
         }
     }
 
@@ -231,7 +262,6 @@ public class BuilderManager : MonoBehaviour
             { Direction.Left, point3 },
         };
         room.SetupCorners(roomCorners);
-        //room.EnableDoors();
 
         UpdateBuildingTiles(room);
     }
@@ -306,7 +336,9 @@ public class BuilderManager : MonoBehaviour
     {
         // Get all building tiles in the location of the room and make them UNAVAILABLE
         List<BuildingTile> roomEdgeTiles = room.GetRoomEdgeTiles();
+
         room.setAdjacentRooms();
+
         room.EnableDoors();
 
         // All tiles in the square of the room + the distance up to the fourth rank of tilse
@@ -325,8 +357,9 @@ public class BuilderManager : MonoBehaviour
 
         SetMapPanMaximum(room.RoomCorners);
 
-        IEnumerator coroutine = WaitAndUpdateGrid();
-        StartCoroutine(coroutine);
+        IEnumerator updateGrid = WaitAndUpdateGrid();
+        StartCoroutine(updateGrid);
+
     }
 
     public List<BuildingTile> CreateTileRing(List<BuildingTile> tileRing, List<BuildingTile> surroundingSquareTiles)
@@ -420,12 +453,12 @@ public class BuilderManager : MonoBehaviour
         {
             Room room = RoomManager.Rooms[i];
 
-            foreach (KeyValuePair<Door, bool> door in room.Doors)
+            for (int j = 0; j < room.Doors.Count; j++)
             {
                 Gizmos.color = Color.blue;
-                Gizmos.DrawCube(door.Key.transform.position, new Vector3(1.5f, 1.5f));
+                Gizmos.DrawCube(room.Doors[j].transform.position, new Vector3(1.5f, 1.5f));
 
-            }
+            }      
         }
     }
 }
