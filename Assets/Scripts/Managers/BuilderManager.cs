@@ -13,7 +13,6 @@ public class BuilderManager : MonoBehaviour
     public static bool InDeleteRoomMode;
     public static bool HasRoomSelected;
 
-
     public GameObject Room1Prefab;
     public GameObject Room1BuildPlotPrefab;
     public GameObject SelectedRoomPrefab;
@@ -21,9 +20,7 @@ public class BuilderManager : MonoBehaviour
 
     public Room SelectedRoom;
 
-
     public GameObject ConfirmationModalGO;
-
     public GameObject RoomsContainer;
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();
@@ -357,9 +354,8 @@ public class BuilderManager : MonoBehaviour
 
         SetMapPanMaximum(room.RoomCorners);
 
-        IEnumerator updateGrid = WaitAndUpdateGrid();
+        IEnumerator updateGrid = WaitAndUpdatePathfindingGrid();
         StartCoroutine(updateGrid);
-
     }
 
     public List<BuildingTile> CreateTileRing(List<BuildingTile> tileRing, List<BuildingTile> surroundingSquareTiles)
@@ -441,7 +437,7 @@ public class BuilderManager : MonoBehaviour
         }
     }
 
-    public IEnumerator WaitAndUpdateGrid()
+    public IEnumerator WaitAndUpdatePathfindingGrid()
     {
         yield return new WaitForSeconds(0.01f);
         GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
@@ -457,7 +453,6 @@ public class BuilderManager : MonoBehaviour
             {
                 Gizmos.color = Color.blue;
                 Gizmos.DrawCube(room.Doors[j].transform.position, new Vector3(1.5f, 1.5f));
-
             }      
         }
     }

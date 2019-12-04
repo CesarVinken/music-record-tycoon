@@ -36,7 +36,6 @@ public class Door : MonoBehaviour
 
     public void EnableDoor()
     {
-        Debug.Log("Enable Door");
         for (int i = 0; i < EnabledDoorWallPieces.Length; i++)
         {
             EnabledDoorWallPieces[i].SetActive(true);

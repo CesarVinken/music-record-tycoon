@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DeleteRoomTrigger : MonoBehaviour
@@ -45,12 +46,24 @@ public class DeleteRoomTrigger : MonoBehaviour
 
     public void DeleteRoom()
     {
+        Room tempRoomCopy = _room;
         _room.RemoveDoorConnectionFromAdjacentRooms();
-        _room.UpdateAdjacentRooms();
+        _room.RemoveThisRoomFromAdjacentRooms();
         _room.DeleteRoom();
+        Debug.LogWarning("I AM BEING DELETED: " + tempRoomCopy.Id);
+        tempRoomCopy.CleanUpDeletedRoomTiles();
 
-        // Redraw doors
+
+        // Reevaluate available tiles
         // Redraw pathfinding grid
+
+        IEnumerator updateGrid = BuilderManager.Instance.WaitAndUpdatePathfindingGrid();
+        StartCoroutine(updateGrid);
+
+        for (int l = 0; l < RoomManager.Rooms.Count; l++)
+        {
+            Debug.Log(RoomManager.Rooms[l].Id + " has " + RoomManager.Rooms[l].AdjacentRooms.Count + " adjacent rooms");
+        }
     }
 
     public static void DeleteDeleteRoomTriggers()
