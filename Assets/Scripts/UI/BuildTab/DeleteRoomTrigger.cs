@@ -53,12 +53,7 @@ public class DeleteRoomTrigger : MonoBehaviour
         Debug.LogWarning("I AM BEING DELETED: " + tempRoomCopy.Id);
         tempRoomCopy.CleanUpDeletedRoomTiles();
 
-
-        // Reevaluate available tiles
-        // Redraw pathfinding grid
-
-        IEnumerator updateGrid = BuilderManager.Instance.WaitAndUpdatePathfindingGrid();
-        StartCoroutine(updateGrid);
+        BuilderManager.Instance.UpdatePathfindingGrid();
 
         for (int l = 0; l < RoomManager.Rooms.Count; l++)
         {

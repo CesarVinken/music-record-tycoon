@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -354,6 +353,11 @@ public class BuilderManager : MonoBehaviour
 
         SetMapPanMaximum(room.RoomCorners);
 
+        UpdatePathfindingGrid();
+    }
+
+    public void UpdatePathfindingGrid()
+    {
         IEnumerator updateGrid = WaitAndUpdatePathfindingGrid();
         StartCoroutine(updateGrid);
     }
