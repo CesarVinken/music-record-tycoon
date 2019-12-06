@@ -118,7 +118,9 @@ public class BuilderManager : MonoBehaviour
 
         foreach (Room room in RoomManager.Rooms)
         {
+
             DeleteRoomTrigger deleteRoomTrigger = Instantiate(DeleteRoomTriggerPrefab, MainCanvas.Instance.transform).GetComponent<DeleteRoomTrigger>();
+            if (room.CharactersInRoom.Count > 0) deleteRoomTrigger.gameObject.SetActive(false);
             deleteRoomTrigger.Setup(room);
         }
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public float PanSpeed = 8f;
+    public float PanSpeed = 11f;
     public float PanBorderThickness = 15f; // in pixels
 
     public static Dictionary<Direction, float> PanLimits = new Dictionary<Direction, float>

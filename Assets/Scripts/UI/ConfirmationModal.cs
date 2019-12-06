@@ -15,6 +15,8 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
 
     public void Setup(RoomBuildPlot roomBuildPlot)
     {
+        if (CurrentConfirmationModal) CurrentConfirmationModal.DestroyConfirmationModal();
+
         CurrentConfirmationModal = this;
         _buildAction = BuildAction.CreateRoomPlot;
         _roomBuildPlot = roomBuildPlot;
@@ -22,6 +24,8 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
 
     public void Setup(DeleteRoomTrigger deleteRoomTrigger)
     {
+        if (CurrentConfirmationModal) CurrentConfirmationModal.DestroyConfirmationModal();
+
         CurrentConfirmationModal = this;
         _buildAction = BuildAction.DeleteRoom;
         _deleteRoomTrigger = deleteRoomTrigger;

@@ -11,9 +11,14 @@ public class PlayerCharacter : MonoBehaviour
 
     public CharacterLocomotion PlayerLocomotion;
     public CharacterAnimationHandler CharacterAnimationHandler;
+
+    public Room CurrentRoom;
+    public string Id;
+
     void Awake()
     {
         Instance = this;
+        Id = "Player"; // TODO: Make generic!
 
         if (NavTransform == null)
             Debug.LogError("Could not find NavTransform on character");

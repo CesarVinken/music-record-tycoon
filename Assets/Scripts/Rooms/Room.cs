@@ -9,38 +9,66 @@ public class Room : MonoBehaviour
 
     private List<BuildingTile> _roomEdgeTiles = new List<BuildingTile>();
 
-    public List<BuildingTile> RoomEdgeTiles = new List<BuildingTile>();
-
-    public List<Room> AdjacentRooms = new List<Room>();
-
     public Dictionary<Direction, Vector2> RoomCorners;
-    public List<Door> Doors = new List<Door>();
     public PolygonCollider2D Collider;
     public RoomBlueprint RoomBlueprint;
+
+    public List<Door> Doors = new List<Door>();
+    public List<Room> AdjacentRooms = new List<Room>();
+    public List<BuildingTile> RoomEdgeTiles = new List<BuildingTile>();
+    public List<PlayerCharacter> CharactersInRoom = new List<PlayerCharacter>();
+    private DeleteRoomTrigger _deleteRoomTrigger;
 
     public void Awake()
     {
         Id = Guid.NewGuid().ToString();
         AdjacentRooms.Clear();
+        CharactersInRoom.Clear();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("someone entered room " + Id);
-        //if (plotIsFree)
-        //{
-        //    MakePlotUnavailable();
-        //}
+        Debug.Log(collision.gameObject.name);
+        PlayerCharacter character = collision.gameObject.GetComponent<PlayerCharacter>();
+        if (character)
+        {
+            // A character entered the room
+            Debug.Log(character.Id + " entered room " + Id);
+            character.CurrentRoom = this;
+            CharactersInRoom.Add(character);
+            if(_deleteRoomTrigger)
+            {
+                _deleteRoomTrigger.HideDeleteRoomTrigger();
+            }
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        Debug.Log("someone left room " + Id);
 
-        //if (!plotIsFree)
-        //{
-        //    MakePlotAvailable();
-        //}
+        PlayerCharacter character = collision.gameObject.GetComponent<PlayerCharacter>();
+        if (character)
+        {
+            Debug.Log(character.Id + " left room " + Id);
+            if (character.CurrentRoom == this)
+            {
+                character.CurrentRoom = null;
+            }
+            foreach (PlayerCharacter c in CharactersInRoom)
+            {
+                if (c.Id == character.Id)
+                {
+                    Debug.Log("Remove character " + CharactersInRoom.Count);
+                    CharactersInRoom.Remove(c);
+                    Debug.Log("Removed character " + CharactersInRoom.Count);
+                    if (CharactersInRoom.Count == 0 && _deleteRoomTrigger)
+                    {
+                        _deleteRoomTrigger.ShowDeleteRoomTrigger();
+                    }
+                    return;
+                }
+            }
+        }
     }
 
     public void SetupCorners(Dictionary<Direction, Vector2> roomCorners)
@@ -155,16 +183,6 @@ public class Room : MonoBehaviour
             Doors[i].DoorConnection.IsAccessible = false;
             Doors[i].DoorConnection.DoorConnection = null;
             Doors[i].DoorConnection = null;
-
-            // This is probably not needed
-            //foreach (KeyValuePair<Door, Door>otherDoor in door.Value.Room.Doors)
-            //{
-            //    if (door.Key.Id == otherDoor.Key.Id)
-            //    {
-            //        otherDoor.Key.IsAccessible = false;
-            //        otherDoor.Value.IsAccessible = false;
-            //    }
-            //}
         }
     }
 
@@ -258,5 +276,15 @@ public class Room : MonoBehaviour
         RoomManager.Instance.RemoveRoom(this);
         Destroy(gameObject);
         Destroy(this);
+    }
+
+    public DeleteRoomTrigger GetDeleteRoomTrigger()
+    {
+        return _deleteRoomTrigger;
+    }
+
+    public void SetDeleteRoomTrigger(DeleteRoomTrigger deleteRoomTrigger)
+    {
+        _deleteRoomTrigger = deleteRoomTrigger;
     }
 }

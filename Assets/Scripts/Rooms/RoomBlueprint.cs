@@ -28,9 +28,4 @@ public class GridLocation
         UpRight = upRight;    
         UpLeft = upLeft;
     }
-
-    //public static GridLocation CreateRoundedOffGridLocation(float upRight, float upLeft)
-    //{
-    //    return new GridLocation((float)Math.Floor(upRight / 3) * 3, (float)Math.Floor(upLeft / 3) * 3);
-    //}
 }

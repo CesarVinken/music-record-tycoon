@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class DeleteRoomTrigger : MonoBehaviour
@@ -19,6 +18,7 @@ public class DeleteRoomTrigger : MonoBehaviour
     public void Setup(Room room)
     {
         _room = room;
+        _room.SetDeleteRoomTrigger(this);
         _midpoint = _room.RoomCorners[Direction.Down] + (_room.RoomCorners[Direction.Up] - _room.RoomCorners[Direction.Down]) / 2;
         transform.position = Camera.main.WorldToScreenPoint(_midpoint);
     }
@@ -40,6 +40,8 @@ public class DeleteRoomTrigger : MonoBehaviour
         GameObject modal = Instantiate(MainCanvas.Instance.ConfirmationModalPrefab);
         modal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
         modal.transform.SetParent(MainCanvas.Instance.transform);
+
+
         _confirmationModal = modal;
         _confirmationModal.GetComponent<ConfirmationModal>().Setup(this);
     }
@@ -72,6 +74,26 @@ public class DeleteRoomTrigger : MonoBehaviour
 
     public static void DeleteDeleteRoomTrigger(DeleteRoomTrigger deleteRoomTrigger)
     {
+        if (deleteRoomTrigger._room) deleteRoomTrigger._room.SetDeleteRoomTrigger(null);
+
         Destroy(deleteRoomTrigger.gameObject);
+    }
+
+    public void HideDeleteRoomTrigger()
+    {
+        gameObject.SetActive(false);
+        if (_confirmationModal)
+        {
+            _confirmationModal.SetActive(false);
+        }
+    }
+
+    public void ShowDeleteRoomTrigger()
+    {
+        gameObject.SetActive(true);
+        if (_confirmationModal)
+        { 
+            _confirmationModal.SetActive(true);
+        }
     }
 }
