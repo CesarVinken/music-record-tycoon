@@ -11,7 +11,7 @@ public class RoomBuildPlot : MonoBehaviour
 
     private Vector2 _midpoint = new Vector2(0, 0);
     private Vector2 _startingPoint = new Vector2(0, 0);
-
+    private Vector2[] _edgePoints;
     private GameObject _confirmationModal;
 
     private List<Room> _adjacentRooms = new List<Room>();
@@ -27,7 +27,7 @@ public class RoomBuildPlot : MonoBehaviour
 
         Guard.CheckIsNull(BuildTrigger, "BuildTrigger");
     }
-    public void Setup(Room room, Vector2 startingPoint)
+    public void Setup(RoomBlueprint room, Vector2 startingPoint)
     {
         int rightUpAxisLength = RoomBlueprint.RightUpAxisLength;  // later not hardcoded but taken from Room database specifics
         int leftUpAxisLength = RoomBlueprint.LeftUpAxisLength;
@@ -84,8 +84,8 @@ public class RoomBuildPlot : MonoBehaviour
         Vector2 colliderPoint2 = BuilderManager.CalculateColliderLocationOnGrid(colliderPoint1, 0, -leftUpAxisLength);
         Vector2 colliderPoint3 = BuilderManager.CalculateColliderLocationOnGrid(colliderPoint2, -rightUpAxisLength, 0);
 
-        Vector2[] positions = new Vector2[] { startingPoint, colliderPoint1, colliderPoint2, colliderPoint3, startingPoint };
-        Collider.SetPath(0, positions);
+        _edgePoints = new Vector2[] { startingPoint, colliderPoint1, colliderPoint2, colliderPoint3, startingPoint };
+        Collider.SetPath(0, _edgePoints);
     }
 
     public void CreateBuildConfirmation()

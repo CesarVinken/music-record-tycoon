@@ -17,7 +17,7 @@ public class BuilderManager : MonoBehaviour
     public GameObject SelectedRoomPrefab;
     public GameObject DeleteRoomTriggerPrefab;
 
-    public Room SelectedRoom;
+    public RoomBlueprint SelectedRoom;
 
     public GameObject ConfirmationModalGO;
     public GameObject RoomsContainer;
@@ -61,14 +61,14 @@ public class BuilderManager : MonoBehaviour
         BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 0, true));
         BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 0, true));
         BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, -3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, -3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, -3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, -3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, -6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, -6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, -6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, -6, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 3, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 3, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 3, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 3, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 6, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 6, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 6, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 6, true));
     }
 
     public void ActivateBuildTabMode()
@@ -132,15 +132,15 @@ public class BuilderManager : MonoBehaviour
             ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
     }
 
-    public void SetSelectedRoom(Room room)
+    public void SetSelectedRoom(RoomBlueprint blueprint)
     {
         if (!InRoomBuildMode) ActivateRoomBuildMode();
 
         // Should maybe become Room type? For example: SelectedRoom = room.Prefab
-        SelectedRoom = room;
+        SelectedRoom = blueprint;
 
         HasRoomSelected = true;
-        DrawAvailablePlots(room);
+        DrawAvailablePlots(blueprint);
     }
 
     public void UnsetSelectedRoom()
@@ -150,11 +150,10 @@ public class BuilderManager : MonoBehaviour
         Debug.Log("no room selected.");
     }
 
-    public void DrawAvailablePlots(Room selectedRoom)
+    public void DrawAvailablePlots(RoomBlueprint selectedRoom)
     {
         BuildTabContainer.Instance.DestroyBuildingPlots();
 
-        // for each door, check if it aligns with the doors of the selected room
         for (int i = 0; i < RoomManager.Rooms.Count; i++)
         {
             Room room = RoomManager.Rooms[i];
@@ -173,12 +172,17 @@ public class BuilderManager : MonoBehaviour
                     GridLocation blueprintDoorPosition = RoomBlueprint.DoorLocations[k];
 
                     if ((doorPosition.UpRight == blueprintDoorPosition.UpRight) && (doorPosition.UpLeft == blueprintDoorPosition.UpLeft)) continue;
-                    if (doorPosition.UpRight % 3 != blueprintDoorPosition.UpRight % 3 && doorPosition.UpLeft % 3 != blueprintDoorPosition.UpLeft % 3) continue;
 
-                    GridLocation blueprintRoomStartPosition = new GridLocation(doorPosition.UpRight - blueprintDoorPosition.UpRight, -(doorPosition.UpLeft - blueprintDoorPosition.UpLeft));
+                    GridLocation blueprintRoomStartPosition = new GridLocation(doorPosition.UpRight - blueprintDoorPosition.UpRight, (doorPosition.UpLeft - blueprintDoorPosition.UpLeft));
+
+                    if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
+                    {
+                        Debug.Log("This room would not start on a tile location. Skip. ");
+                        continue;
+                    }
 
                     Vector2 blueprintRoomStartPositionVector = CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
-                    if (GetPlotIsAvailable(selectedRoom, blueprintRoomStartPositionVector))
+                    if (GetPlotIsAvailable(blueprintRoomStartPositionVector))
                     {
                         BuildTabContainer.Instance.CreateBuildingPlot(Room1BuildPlotPrefab, selectedRoom, blueprintRoomStartPositionVector);
                     }
@@ -193,7 +197,7 @@ public class BuilderManager : MonoBehaviour
         }
     }
 
-    public bool GetPlotIsAvailable(Room selectedRoomType, Vector2 existingRoomStartingPoint, int rightUpAxisLocationFromCurrentRoom, int leftUpAxisLocationFromCurrentRoom)
+    public bool GetPlotIsAvailable(Vector2 existingRoomStartingPoint, int rightUpAxisLocationFromCurrentRoom, int leftUpAxisLocationFromCurrentRoom)
     {
         bool isAvailable = true;
         Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(existingRoomStartingPoint, rightUpAxisLocationFromCurrentRoom, leftUpAxisLocationFromCurrentRoom);
@@ -258,11 +262,13 @@ public class BuilderManager : MonoBehaviour
             { Direction.Left, point3 },
         };
         room.SetupCorners(roomCorners);
+        room.SetupCollider(SelectedRoom);
 
         UpdateBuildingTiles(room);
     }
 
-    public bool GetPlotIsAvailable(Room selectedRoomType, Vector2 roomStartingPoint)
+    // check all tiles where the plot would be drawn if the building tile is available. Only draw a plot when all tiles are available
+    public bool GetPlotIsAvailable(Vector2 roomStartingPoint)
     {
         bool isAvailable = true;
         Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(roomStartingPoint, 0, 0);
@@ -310,12 +316,12 @@ public class BuilderManager : MonoBehaviour
     public static GridLocation CalculateGridLocationFromVector2(Vector2 vectorPosition)
     {
         Vector3Int gridCoordinates = GameManager.Instance.WorldGrid.WorldToCell(vectorPosition);
-        return new GridLocation(gridCoordinates.x + 13, gridCoordinates.y + 13);
+        return new GridLocation(gridCoordinates.x, gridCoordinates.y);
     }
 
     public static Vector2 CalculateLocationOnGrid(int rightUpAxisPosition, int leftUpAxisPosition)
     {
-        return new Vector2((rightUpAxisPosition + leftUpAxisPosition) * 5f, (rightUpAxisPosition - leftUpAxisPosition) * 2.5f);
+        return new Vector2((rightUpAxisPosition - leftUpAxisPosition) * 5f, (rightUpAxisPosition + leftUpAxisPosition) * 2.5f);
     }
 
     public static Vector2 CalculateLocationOnGrid(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)

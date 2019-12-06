@@ -11,7 +11,8 @@ public class RoomButton : MonoBehaviour
 
     public void SelectRoom()
     {
-        Room room = RoomPrefab.GetComponent<Room>();    //Temporary!
-        GameManager.Instance.BuilderManager.SetSelectedRoom(room);
+        //Room room = RoomPrefab.GetComponent<Room>();    //Temporary!
+        RoomBlueprint blueprint = new RoomBlueprint();
+        GameManager.Instance.BuilderManager.SetSelectedRoom(blueprint);
     }
 }

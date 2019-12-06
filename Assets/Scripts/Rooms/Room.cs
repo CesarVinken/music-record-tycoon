@@ -15,11 +15,32 @@ public class Room : MonoBehaviour
 
     public Dictionary<Direction, Vector2> RoomCorners;
     public List<Door> Doors = new List<Door>();
+    public PolygonCollider2D Collider;
+    public RoomBlueprint RoomBlueprint;
 
     public void Awake()
     {
         Id = Guid.NewGuid().ToString();
         AdjacentRooms.Clear();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("someone entered room " + Id);
+        //if (plotIsFree)
+        //{
+        //    MakePlotUnavailable();
+        //}
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        Debug.Log("someone left room " + Id);
+
+        //if (!plotIsFree)
+        //{
+        //    MakePlotAvailable();
+        //}
     }
 
     public void SetupCorners(Dictionary<Direction, Vector2> roomCorners)
@@ -35,6 +56,20 @@ public class Room : MonoBehaviour
         }
 
         RoomCorners = roomCorners;
+    }
+
+    public void SetupCollider(RoomBlueprint roomBlueprint)
+    {
+        if (RoomCorners.Count == 0) Debug.LogError("Room corders were not set up");
+
+        Collider = gameObject.AddComponent<PolygonCollider2D>();
+
+        Vector2 colliderPoint1 = BuilderManager.CalculateLocationOnGrid(RoomBlueprint.RightUpAxisLength, 0);
+        Vector2 colliderPoint2 = BuilderManager.CalculateLocationOnGrid(RoomBlueprint.RightUpAxisLength, RoomBlueprint.LeftUpAxisLength);
+        Vector2 colliderPoint3 = BuilderManager.CalculateLocationOnGrid(0 , RoomBlueprint.LeftUpAxisLength);
+
+        Vector2[] positions = new Vector2[] { new Vector2(0, 0), colliderPoint1, colliderPoint2, colliderPoint3, new Vector2(0, 0) };
+        Collider.SetPath(0, positions);
     }
 
     public void setAdjacentRooms()
