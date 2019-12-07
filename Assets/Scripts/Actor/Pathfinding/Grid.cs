@@ -31,7 +31,7 @@ public class Grid : MonoBehaviour
 
         if (NodeRadius <= 0)
         {
-            Debug.LogError("Node radius must be larger than 0");
+            Logger.Error(Logger.Pathfinding, "Node radius must be larger than 0");
         }
 
         foreach (TerrainType region in WalkableRegions)
@@ -53,7 +53,7 @@ public class Grid : MonoBehaviour
 
     public void CreateGrid()
     {
-        Debug.Log("Create grid");
+        Logger.Log(Logger.Pathfinding, "Create grid");
         GridWorldSizeX = Mathf.RoundToInt(-CameraController.PanLimits[Direction.Left] + CameraController.PanLimits[Direction.Right]);
         GridWorldSizeY = Mathf.RoundToInt(-CameraController.PanLimits[Direction.Down] + CameraController.PanLimits[Direction.Up]);
         _gridSizeX = Mathf.RoundToInt(GridWorldSizeX / _nodeDiameter);

@@ -52,14 +52,14 @@ public class DeleteRoomTrigger : MonoBehaviour
         _room.RemoveDoorConnectionFromAdjacentRooms();
         _room.RemoveThisRoomFromAdjacentRooms();
         _room.DeleteRoom();
-        Debug.LogWarning("I AM BEING DELETED: " + tempRoomCopy.Id);
+        Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
         tempRoomCopy.CleanUpDeletedRoomTiles();
 
         BuilderManager.Instance.UpdatePathfindingGrid();
 
         for (int l = 0; l < RoomManager.Rooms.Count; l++)
         {
-            Debug.Log(RoomManager.Rooms[l].Id + " has " + RoomManager.Rooms[l].AdjacentRooms.Count + " adjacent rooms");
+            Logger.Log(Logger.Building, "{0} has {1} adjacent rooms", RoomManager.Rooms[l].Id, RoomManager.Rooms[l].AdjacentRooms.Count);
         }
     }
 

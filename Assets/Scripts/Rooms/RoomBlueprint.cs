@@ -18,7 +18,7 @@ public class RoomBlueprint
 
 }
 
-public class GridLocation
+public struct GridLocation
 {
     public float UpRight;
     public float UpLeft;

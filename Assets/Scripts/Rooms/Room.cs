@@ -28,12 +28,11 @@ public class Room : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision.gameObject.name);
         PlayerCharacter character = collision.gameObject.GetComponent<PlayerCharacter>();
         if (character)
         {
             // A character entered the room
-            Debug.Log(character.Id + " entered room " + Id);
+            Logger.Log(Logger.Locomotion, "{0} entered room {1}", character.Id, Id);
             character.CurrentRoom = this;
             CharactersInRoom.Add(character);
             if(_deleteRoomTrigger)
@@ -49,7 +48,7 @@ public class Room : MonoBehaviour
         PlayerCharacter character = collision.gameObject.GetComponent<PlayerCharacter>();
         if (character)
         {
-            Debug.Log(character.Id + " left room " + Id);
+            Logger.Log(Logger.Locomotion, "{0} left room {1}", character.Id, Id);
             if (character.CurrentRoom == this)
             {
                 character.CurrentRoom = null;
@@ -58,9 +57,9 @@ public class Room : MonoBehaviour
             {
                 if (c.Id == character.Id)
                 {
-                    Debug.Log("Remove character " + CharactersInRoom.Count);
+                    Logger.Log(Logger.Locomotion, "Remove character {0}", CharactersInRoom.Count);
                     CharactersInRoom.Remove(c);
-                    Debug.Log("Removed character " + CharactersInRoom.Count);
+                    Logger.Log(Logger.Locomotion, "Removed character {0}", CharactersInRoom.Count);
                     if (CharactersInRoom.Count == 0 && _deleteRoomTrigger)
                     {
                         _deleteRoomTrigger.ShowDeleteRoomTrigger();
@@ -75,12 +74,12 @@ public class Room : MonoBehaviour
     {
         if(RoomBlueprint.RightUpAxisLength % 3 != 0 || RoomBlueprint.LeftUpAxisLength % 3 != 0)
         {
-            Debug.LogError($"RightUpAxisLength ({RoomBlueprint.RightUpAxisLength}) and LeftUpAxisLength ({RoomBlueprint.LeftUpAxisLength}) of room should always be divisible by 3");
+            Logger.Error(Logger.Initialisation, "RightUpAxisLength ({0}) and LeftUpAxisLength ({1}) of room should always be divisible by 3", RoomBlueprint.RightUpAxisLength, RoomBlueprint.LeftUpAxisLength);
         }
 
         if (roomCorners.Count < 4)
         {
-            Debug.LogError("There should be 4 roomCorners for this room");
+            Logger.Error(Logger.Initialisation, "There should be 4 roomCorners for this room");
         }
 
         RoomCorners = roomCorners;
@@ -88,7 +87,7 @@ public class Room : MonoBehaviour
 
     public void SetupCollider(RoomBlueprint roomBlueprint)
     {
-        if (RoomCorners.Count == 0) Debug.LogError("Room corders were not set up");
+        if (RoomCorners.Count == 0) Logger.Error(Logger.Initialisation, "Room corders were not set up");
 
         Collider = gameObject.AddComponent<PolygonCollider2D>();
 
@@ -148,7 +147,7 @@ public class Room : MonoBehaviour
 
     public void EnableDoors()
     {
-        Debug.LogWarning("Enable doors for " + Id + ", the NEW room");
+        Logger.Warning(Logger.Building, "Enable doors for {0}, the NEW room", Id);
         for (int i = 0; i < Doors.Count; i++)
         {
             Vector3 doorPosition = Doors[i].transform.position;

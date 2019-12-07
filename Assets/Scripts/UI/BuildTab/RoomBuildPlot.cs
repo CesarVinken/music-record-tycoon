@@ -21,7 +21,7 @@ public class RoomBuildPlot : MonoBehaviour
     public void Awake()
     {
         if (LineRenderer == null)
-            Debug.LogError("Cannot find LineRenderer");
+            Logger.Error(Logger.Initialisation, "Cannot find LineRenderer");
 
         _confirmationModal = BuilderManager.Instance.ConfirmationModalGO;
 
@@ -63,7 +63,7 @@ public class RoomBuildPlot : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("something entered collider");
+        Logger.Log(Logger.Locomotion, "something entered collider");
         if (plotIsFree)
         {
             MakePlotUnavailable();

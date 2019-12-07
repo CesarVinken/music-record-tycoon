@@ -9,9 +9,9 @@ public class NewGameSlot : MonoBehaviour
 
     //public void NewGame()
     //{
-    //    Debug.Log("Click button");
+    //    Logger.Log("Click button");
     //    GameDataManager.LoadedSaveFile = LoadNewGameFile();
-    //    Debug.Log(GameDataManager.LoadedSaveFile.PlayerLocation);
+    //    Logger.Log(GameDataManager.LoadedSaveFile.PlayerLocation);
     //    GameManager.GameStarted = false;
     //    SceneManager.LoadScene("Up");
     //}
@@ -21,7 +21,7 @@ public class NewGameSlot : MonoBehaviour
     //    if (!Directory.Exists(Application.dataPath + "/Saves"))
     //    {
     //        Directory.CreateDirectory(Application.dataPath + "/Saves");
-    //        Debug.Log("created Saves folder");
+    //        Logger.Log("created Saves folder");
     //    }
 
     //    string filePath = Application.dataPath + "/Saves/newGame.json";
@@ -33,7 +33,7 @@ public class NewGameSlot : MonoBehaviour
     //    }
     //    else
     //    {
-    //        Debug.LogError("Could not find newGame.json. We need to generate the New Game file.");
+    //        Logger.LogError("Could not find newGame.json. We need to generate the New Game file.");
     //        SaveFileData saveFileData = GenerateNewGameFile();
     //        return saveFileData;
     //    }
@@ -69,7 +69,7 @@ public class NewGameSlot : MonoBehaviour
 
     //    string dataAsJson = JsonUtility.ToJson(saveFile);
     //    File.WriteAllText(filePath, dataAsJson);
-    //    Debug.Log("Created newGame file.");
+    //    Logger.Log("Created newGame file.");
 
     //    return saveFile;
     //}

@@ -10,7 +10,7 @@ public class LoadGameSlot : MonoBehaviour
 
     public void LoadGame()
     {
-        Debug.Log("Load game. To be implemented.");
+        Logger.Log("Load game. To be implemented.");
         //    GameDataManager.LoadedSaveFile = LoadSaveFile();
         //    GameManager.GameStarted = false;
         //    SceneManager.LoadScene(GameDataManager.LoadedSaveFile.CurrentScene);
@@ -27,7 +27,7 @@ public class LoadGameSlot : MonoBehaviour
         //    }
         //    else
         //    {
-        //        Debug.LogError("Could not find the save file");
+        //        Logger.Error(Logger.Datawriting, "Could not find the save file");
         //        return null;
         //    }
     }

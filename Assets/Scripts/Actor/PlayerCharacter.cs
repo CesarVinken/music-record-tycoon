@@ -21,24 +21,18 @@ public class PlayerCharacter : MonoBehaviour
         Id = "Player"; // TODO: Make generic!
 
         if (NavTransform == null)
-            Debug.LogError("Could not find NavTransform on character");
+            Logger.Log(Logger.Initialisation, "Could not find NavTransform on character");
         if (PlayerNav == null)
-            Debug.LogError("Could not find PlayerNav on character");
+            Logger.Log(Logger.Initialisation, "Could not find PlayerNav on character");
 
         PlayerLocomotion = gameObject.AddComponent<CharacterLocomotion>();
         CharacterAnimationHandler = gameObject.AddComponent<CharacterAnimationHandler>();
         SetCharacterActionState(CharacterActionState.Idle);
     }
 
-
-    void Update()
-    {
-        
-    }
-
     public void SetCharacterActionState(CharacterActionState newState)
     {
-        Debug.Log($"CharacterActionState set to {newState}");
+        Logger.Log(Logger.Character, "CharacterActionState set to {0}", newState);
         CharacterActionState = newState;
     }
 }

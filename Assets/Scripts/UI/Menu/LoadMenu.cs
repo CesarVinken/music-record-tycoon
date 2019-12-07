@@ -22,24 +22,24 @@ public class LoadMenu : MenuScreen
 
     public FileInfo[] GetSaveSlotList()
     {
-        Debug.Log("Get saves slot list");
+        Logger.Log(Logger.Datareading, "Get saves slot list");
 
         //if (!Directory.Exists(Application.dataPath + "/Saves"))
         //{
         //    Directory.CreateDirectory(Application.dataPath + "/Saves");
-        //    Debug.Log("created Saves folder");
+        //    Logger.Log("created Saves folder");
         //}
 
         //DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/Saves");
         //int count = dir.GetFiles().Length;
-        ////Debug.Log("number of files: " + count + " at " + dir);
+        ////Logger.Log("number of files: " + count + " at " + dir);
         //return dir.GetFiles("*.json");
         return null;
     }
 
     public void DisplaySaveSlots(FileInfo[] files)
     {
-        Debug.Log("Display save slots");
+        Logger.Log(Logger.UI, "Display save slots");
 
         //if(files.Length <= 1)   //1 file because there is a new Game.json
         //{

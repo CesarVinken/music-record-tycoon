@@ -67,14 +67,14 @@ public class MainMenu : MenuScreen
     public void ResumeGame()
     {
         if (MainMenuCanvas.Instance == null)
-            Debug.LogError("Cannot find MainMenuCanvas");
+            Logger.Error(Logger.UI, "Cannot find MainMenuCanvas");
 
         MainMenuCanvas.Instance.CloseMainMenu();
     }
 
     public void QuitGame()
     {
-        Debug.Log("Quit application");
+        Logger.Log(Logger.General, "Quit application");
         Application.Quit();
     }
 

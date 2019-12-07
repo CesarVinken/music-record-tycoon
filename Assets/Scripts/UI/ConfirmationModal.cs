@@ -44,7 +44,7 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
                 DeleteRoomTrigger.DeleteDeleteRoomTriggers();
                 break;
             default:
-                Debug.LogError("BuildAction not yet implemented: " + _buildAction);
+                Logger.Error(Logger.UI, "The buildAction {0} is not yet implemented", _buildAction);
                 break;
         }
 
@@ -58,6 +58,8 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
 
     public void DestroyConfirmationModal()
     {
+        if (CurrentConfirmationModal == this) CurrentConfirmationModal = null;
+
         Destroy(gameObject);
     }
 }

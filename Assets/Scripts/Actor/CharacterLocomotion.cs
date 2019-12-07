@@ -51,7 +51,7 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void SetLocomotionTarget(Vector3 newTarget)
     {
-        Debug.Log("New location target set for player: " + newTarget);
+        Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
 
         _characterAnimationHandler.InLocomotion = true;
         PlayerCharacter.Instance.SetCharacterActionState(CharacterActionState.Moving);

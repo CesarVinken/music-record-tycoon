@@ -15,19 +15,19 @@ public class Door : MonoBehaviour
     {
         if (Room == null)
         {
-            Debug.LogError("Could not find parent room for door");
+            Logger.Error(Logger.Initialisation, "Could not find parent room for door");
         }
         if (DisabledDoorWallPieces == null || DisabledDoorWallPieces.Length == 0)
         {
-            Debug.LogError("Could not find DisabledDoorWallPieces for door");
+            Logger.Error(Logger.Initialisation, "Could not find DisabledDoorWallPieces for door");
         }
         if (EnabledDoorWallPieces == null || EnabledDoorWallPieces.Length == 0)
         {
-            Debug.LogError("Could not find EnabledDoorWallPieces for door");
+            Logger.Error(Logger.Initialisation, "Could not find EnabledDoorWallPieces for door");
         }
         if (DisabledDoorCollider == null)
         {
-            Debug.LogError("Could not find DisabledDoorCollider for door");
+            Logger.Error(Logger.Initialisation, "Could not find DisabledDoorCollider for door");
         }
         IsAccessible = false;
         Room.AddDoorToRoom(this);

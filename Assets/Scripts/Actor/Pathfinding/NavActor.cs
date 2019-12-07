@@ -69,8 +69,6 @@ public class NavActor : MonoBehaviour
                 Vector2 pos2D = new Vector2(transform.position.x, transform.position.y);
                 while (Path.TurnBoundaries[pathIndex].HasCrossedLine(pos2D))
                 {
-                    //Debug.LogWarning(pathIndex + " out of " + Path.FinishLineIndex);
-
                     if (pathIndex == Path.FinishLineIndex)
                     {
                         FollowingPath = false;

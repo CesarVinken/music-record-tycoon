@@ -149,7 +149,7 @@ public class BuilderManager : MonoBehaviour
     {
         SelectedRoom = null;
         HasRoomSelected = false;
-        Debug.Log("no room selected.");
+        Logger.Log(Logger.Building, "no room selected.");
     }
 
     public void DrawAvailablePlots(RoomBlueprint selectedRoom)
@@ -179,7 +179,7 @@ public class BuilderManager : MonoBehaviour
 
                     if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
                     {
-                        Debug.Log("This room would not start on a tile location. Skip. ");
+                        Logger.Log(Logger.Building, "This room would not start on a tile location. Skip. ");
                         continue;
                     }
 
@@ -230,7 +230,7 @@ public class BuilderManager : MonoBehaviour
 
                 if (tile == null)
                 {
-                    Debug.LogError("Could not find tile at " + location);
+                    Logger.Error(Logger.Building, "Could not find tile at {0}", location);
                 }
 
                 if (!tile.IsAvailable)
@@ -301,7 +301,7 @@ public class BuilderManager : MonoBehaviour
 
                 if (tile == null)
                 {
-                    Debug.LogError("Could not find tile at " + location);
+                    Logger.Error(Logger.Building, "Could not find tile at {0]", location);
                 }
 
                 if (!tile.IsAvailable)
@@ -375,7 +375,7 @@ public class BuilderManager : MonoBehaviour
         List<BuildingTile> newTiles = new List<BuildingTile>();
         for (int k = 0; k < tileRing.Count; k++)
         {
-            //Debug.Log("tilering tile " + tileRing[k].StartingPoint);
+            Logger.Log(Logger.Building, "tilering tile {0}", tileRing[k].StartingPoint);
             BuildingTile upRight = CreateNeighbourTile(tileRing[k].StartingPoint, 3, 3, surroundingSquareTiles);
             if (upRight != null)
                 newTiles.Add(upRight);
