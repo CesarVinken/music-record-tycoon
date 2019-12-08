@@ -18,9 +18,6 @@ public class GameManager : MonoBehaviour
     {
         InitialiseLoggers();
 
-        //Logger.Log(Logger.Locomotion, "This is an example {0} and argument 2 is {1}", 54, "ss");
-        //Logger.Warning(Logger.Locomotion, "This is an example {0} and argument 2 is {1}", 54, "ss");
-        //Logger.Error(Logger.Locomotion, "This is an example {0} and argument 2 is {1}", 54, "ss");
         Instance = this;
 
         MainMenuOpen = false;
@@ -35,12 +32,9 @@ public class GameManager : MonoBehaviour
             Configuration = new PCConfiguration();
         }
 
-        if (BuilderManager == null)
-            Logger.Error(Logger.Initialisation, "Cannot find BuilderManager");
-        if (RoomManager == null)
-            Logger.Error(Logger.Initialisation, "Cannot find RoomManager");
-        if (PathfindingGrid == null)
-            Logger.Error(Logger.Initialisation, "Cannot find PathfindingGrid");
+        Guard.CheckIsNull(BuilderManager, "BuilderManager");
+        Guard.CheckIsNull(BuilderManager, "RoomManager");
+        Guard.CheckIsNull(BuilderManager, "PathfindingGrid");
     }
 
     public void Update()

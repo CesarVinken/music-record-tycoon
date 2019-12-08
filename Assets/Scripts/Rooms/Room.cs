@@ -17,6 +17,7 @@ public class Room : MonoBehaviour
     public List<Room> AdjacentRooms = new List<Room>();
     public List<BuildingTile> RoomEdgeTiles = new List<BuildingTile>();
     public List<PlayerCharacter> CharactersInRoom = new List<PlayerCharacter>();
+    public List<WallPiece> WallPieces;
     private DeleteRoomTrigger _deleteRoomTrigger;
 
     public void Awake()
@@ -33,7 +34,7 @@ public class Room : MonoBehaviour
         {
             // A character entered the room
             Logger.Log(Logger.Locomotion, "{0} entered room {1}", character.Id, Id);
-            character.CurrentRoom = this;
+            character.EnterRoom(this);
             CharactersInRoom.Add(character);
             if(_deleteRoomTrigger)
             {
@@ -51,7 +52,7 @@ public class Room : MonoBehaviour
             Logger.Log(Logger.Locomotion, "{0} left room {1}", character.Id, Id);
             if (character.CurrentRoom == this)
             {
-                character.CurrentRoom = null;
+                character.LeaveRoom();
             }
             foreach (PlayerCharacter c in CharactersInRoom)
             {
@@ -285,5 +286,100 @@ public class Room : MonoBehaviour
     public void SetDeleteRoomTrigger(DeleteRoomTrigger deleteRoomTrigger)
     {
         _deleteRoomTrigger = deleteRoomTrigger;
+    }
+
+    public void LowerWallPieces()
+    {
+        for (int i = 0; i < WallPieces.Count ; i++)
+        {
+            if (WallPieces[i].WallPieceType == WallPieceType.DownLeft || WallPieces[i].WallPieceType == WallPieceType.DownRight || WallPieces[i].WallPieceType == WallPieceType.CornerDown)
+            {
+                WallPieces[i].SetWallSprite(WallPieceDisplayMode.Short);
+            }
+        }
+
+        for (int j = 0; j < AdjacentRooms.Count; j++)
+        {
+            Room adjacentRoom = AdjacentRooms[j];
+            if(adjacentRoom.RoomCorners[Direction.Down].x < RoomCorners[Direction.Down].x)
+            {
+                if (adjacentRoom.RoomCorners[Direction.Down].y < RoomCorners[Direction.Down].y) // This room is down and left of the current room
+                {
+                    for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
+                    {
+                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerRight)
+                        {
+                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Short);
+                        }
+                    }
+                }
+            }
+            else if (adjacentRoom.RoomCorners[Direction.Down].x > RoomCorners[Direction.Down].x)
+            {
+                if(adjacentRoom.RoomCorners[Direction.Down].y < RoomCorners[Direction.Down].y) // This room is down and right of the current room
+                {
+                    for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
+                    {
+                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerLeft)
+                        {
+                            //bool overlapsWithOriginalRoom = false;
+                            //for (int l = 0; l < adjacentRoom.RoomEdgeTiles.Count; l++)
+                            //{
+
+                            //}
+
+                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Short);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void RaiseWallPieces(Room futureCurrentRoom = null)
+    {
+        for (int i = 0; i < WallPieces.Count; i++)
+        {
+                WallPieces[i].SetWallSprite(WallPieceDisplayMode.Tall);
+        }
+
+        for (int j = 0; j < AdjacentRooms.Count; j++)
+        {
+            Room adjacentRoom = AdjacentRooms[j];
+            if (adjacentRoom.RoomCorners[Direction.Down].x < RoomCorners[Direction.Down].x)
+            {
+                if (adjacentRoom.RoomCorners[Direction.Down].y < RoomCorners[Direction.Down].y) // This room is down and left of the current room
+                {
+                    for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
+                    {
+                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerRight)
+                        {
+                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Tall);
+                        }
+                    }
+                }
+            }
+            else if (adjacentRoom.RoomCorners[Direction.Down].x > RoomCorners[Direction.Down].x)
+            {
+                if (adjacentRoom.RoomCorners[Direction.Down].y < RoomCorners[Direction.Down].y) // This room is down and right of the current room
+                {
+                    Logger.Warning("found the room RIGHT and DOWN");
+                    for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
+                    {
+                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerLeft)
+                        {
+                            Logger.Log("Wallpiece {0} is {1}", k, adjacentRoom.WallPieces[k].WallPieceType);
+                            //bool overlapsWithOriginalRoom = false;
+                            //for (int l = 0; l < adjacentRoom.RoomEdgeTiles.Count; l++)
+                            //{
+
+                            //}
+
+                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Tall);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

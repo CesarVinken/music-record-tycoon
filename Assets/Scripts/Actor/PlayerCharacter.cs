@@ -35,4 +35,25 @@ public class PlayerCharacter : MonoBehaviour
         Logger.Log(Logger.Character, "CharacterActionState set to {0}", newState);
         CharacterActionState = newState;
     }
+
+    public void EnterRoom(Room newRoom)
+    {
+        Room previousRoom = CurrentRoom;
+
+        if(previousRoom != null && previousRoom != newRoom)
+        {
+            Logger.Log("Raise the walls");
+            previousRoom.RaiseWallPieces(newRoom);
+        }
+
+        CurrentRoom = newRoom;
+        Logger.Log("Lower the walls");
+
+        newRoom.LowerWallPieces();
+    }
+
+    public void LeaveRoom()
+    {
+        //CurrentRoom = null;
+    }
 }

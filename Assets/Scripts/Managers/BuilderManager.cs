@@ -45,6 +45,11 @@ public class BuilderManager : MonoBehaviour
         SetupInitialBuildingTiles();    // Temporary, should only happen for empty map!
     }
 
+    public void Start()
+    {
+        SetupInitialRoom();
+    }
+
     void Update()
     {
         if (HasRoomSelected && !GameManager.MainMenuOpen)
@@ -69,6 +74,11 @@ public class BuilderManager : MonoBehaviour
         BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 6, true));
         BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 6, true));
         BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 6, true));
+    }
+
+    public void SetupInitialRoom()
+    {
+        BuildRoom(new Vector2(0, 0));
     }
 
     public void ActivateBuildTabMode()
@@ -267,6 +277,15 @@ public class BuilderManager : MonoBehaviour
         room.SetupCollider(SelectedRoom);
 
         UpdateBuildingTiles(room);
+
+        // When building a room that is next to the room where the currently selected character is, then the bordering wall graphicals should be switched to the 'low' wall versions
+        for (int i = 0; i < room.AdjacentRooms.Count; i++)
+        {
+            if(room.AdjacentRooms[i].Id == PlayerCharacter.Instance.CurrentRoom.Id)
+            {
+                PlayerCharacter.Instance.CurrentRoom.LowerWallPieces();
+            }
+        }
     }
 
     // check all tiles where the plot would be drawn if the building tile is available. Only draw a plot when all tiles are available
