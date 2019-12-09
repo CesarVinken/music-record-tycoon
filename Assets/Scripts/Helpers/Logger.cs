@@ -19,7 +19,7 @@ public static class Logger
 
     public static Color stringColor = new Color(253, 210, 29);
     public static Color intColor = new Color(54, 0, 153);
-    public static Color objectColor = new Color(82, 128, 176);
+    public static Color objectColor = new Color(72, 109, 132);
 
     public static void Log(params object[] args)
     {

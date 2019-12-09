@@ -15,9 +15,9 @@ public class Room : MonoBehaviour
 
     public List<Door> Doors = new List<Door>();
     public List<Room> AdjacentRooms = new List<Room>();
-    public List<BuildingTile> RoomEdgeTiles = new List<BuildingTile>();
+    public List<BuildingTile> RoomEdgeTiles = new List<BuildingTile>(); // possible optimisation: already divide pieces into correct side: upleft, downleft etc.
     public List<PlayerCharacter> CharactersInRoom = new List<PlayerCharacter>();
-    public List<WallPiece> WallPieces;
+    public List<WallPiece> WallPieces;  // possible optimisation: already divide pieces into correct wall side: upleft, downleft etc.
     private DeleteRoomTrigger _deleteRoomTrigger;
 
     public void Awake()
@@ -290,6 +290,7 @@ public class Room : MonoBehaviour
 
     public void LowerWallPieces()
     {
+        // Lower walls in the down parts of the current room
         for (int i = 0; i < WallPieces.Count ; i++)
         {
             if (WallPieces[i].WallPieceType == WallPieceType.DownLeft || WallPieces[i].WallPieceType == WallPieceType.DownRight || WallPieces[i].WallPieceType == WallPieceType.CornerDown)
@@ -298,6 +299,7 @@ public class Room : MonoBehaviour
             }
         }
 
+        // Lower the walls where needed in the upper walls for the adjacent rooms
         for (int j = 0; j < AdjacentRooms.Count; j++)
         {
             Room adjacentRoom = AdjacentRooms[j];
@@ -309,7 +311,12 @@ public class Room : MonoBehaviour
                     {
                         if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerRight)
                         {
-                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Short);
+                            // Don't turn off the whole wall, but only the parts that overlap with the current room.
+                            if (adjacentRoom.WallPieces[k].transform.position.x < RoomCorners[Direction.Down].x && 
+                                adjacentRoom.WallPieces[k].transform.position.x >= RoomCorners[Direction.Left].x - 1)   // the -1 is because the wall pieces might not be exactly positioned on the spot of the tile
+                            {
+                                adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Short);
+                            }
                         }
                     }
                 }
@@ -322,13 +329,12 @@ public class Room : MonoBehaviour
                     {
                         if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerLeft)
                         {
-                            //bool overlapsWithOriginalRoom = false;
-                            //for (int l = 0; l < adjacentRoom.RoomEdgeTiles.Count; l++)
-                            //{
-
-                            //}
-
-                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Short);
+                            // Don't turn off the whole wall, but only the parts that overlap with the current room.
+                            if (adjacentRoom.WallPieces[k].transform.position.x > RoomCorners[Direction.Down].x &&
+                               adjacentRoom.WallPieces[k].transform.position.x <= RoomCorners[Direction.Right].x + 1)    // the +1 is because the wall pieces might not be exactly positioned on the spot of the tile
+                            {
+                                adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Short);
+                            }
                         }
                     }
                 }
@@ -340,7 +346,7 @@ public class Room : MonoBehaviour
     {
         for (int i = 0; i < WallPieces.Count; i++)
         {
-                WallPieces[i].SetWallSprite(WallPieceDisplayMode.Tall);
+            WallPieces[i].SetWallSprite(WallPieceDisplayMode.Tall);
         }
 
         for (int j = 0; j < AdjacentRooms.Count; j++)
@@ -363,18 +369,10 @@ public class Room : MonoBehaviour
             {
                 if (adjacentRoom.RoomCorners[Direction.Down].y < RoomCorners[Direction.Down].y) // This room is down and right of the current room
                 {
-                    Logger.Warning("found the room RIGHT and DOWN");
                     for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
                     {
                         if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerLeft)
                         {
-                            Logger.Log("Wallpiece {0} is {1}", k, adjacentRoom.WallPieces[k].WallPieceType);
-                            //bool overlapsWithOriginalRoom = false;
-                            //for (int l = 0; l < adjacentRoom.RoomEdgeTiles.Count; l++)
-                            //{
-
-                            //}
-
                             adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Tall);
                         }
                     }
