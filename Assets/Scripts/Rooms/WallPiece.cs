@@ -8,25 +8,23 @@ public class WallPiece : MonoBehaviour
     public SpriteRenderer SpriteRenderer;
 
     public Sprite TallSprite;
-    public Sprite ShortSprite;
 
     public void Awake()
     {
         Debug.Log("Halo");
         Guard.CheckIsNull(SpriteRenderer, "SpriteRenderer");
         Guard.CheckIsNull(TallSprite, "TallSprite");
-        Guard.CheckIsNull(ShortSprite, "ShortSprite");
     }
 
     public void SetWallSprite(WallPieceDisplayMode wallPieceDisplayMode)
     {
-        if (wallPieceDisplayMode == WallPieceDisplayMode.Tall)
+        if (wallPieceDisplayMode == WallPieceDisplayMode.Visible)
         {
-            SpriteRenderer.sprite = TallSprite;
+            SpriteRenderer.color = new Color(1,1,1,1);
         }
         else
         {
-            SpriteRenderer.sprite = ShortSprite;
+            SpriteRenderer.color = new Color(1, 1, 1, .4f);
         }
     }
 }
@@ -45,6 +43,6 @@ public enum WallPieceType
 
 public enum WallPieceDisplayMode
 {
-    Tall,
-    Short
+    Visible,
+    Transparent
 }

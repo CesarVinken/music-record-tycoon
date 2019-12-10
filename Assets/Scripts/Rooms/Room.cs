@@ -295,7 +295,7 @@ public class Room : MonoBehaviour
         {
             if (WallPieces[i].WallPieceType == WallPieceType.DownLeft || WallPieces[i].WallPieceType == WallPieceType.DownRight || WallPieces[i].WallPieceType == WallPieceType.CornerDown)
             {
-                WallPieces[i].SetWallSprite(WallPieceDisplayMode.Short);
+                WallPieces[i].SetWallSprite(WallPieceDisplayMode.Transparent);
             }
         }
 
@@ -309,13 +309,13 @@ public class Room : MonoBehaviour
                 {
                     for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
                     {
-                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerRight)
+                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerUp)
                         {
                             // Don't turn off the whole wall, but only the parts that overlap with the current room.
                             if (adjacentRoom.WallPieces[k].transform.position.x < RoomCorners[Direction.Down].x && 
                                 adjacentRoom.WallPieces[k].transform.position.x >= RoomCorners[Direction.Left].x - 1)   // the -1 is because the wall pieces might not be exactly positioned on the spot of the tile
                             {
-                                adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Short);
+                                adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Transparent);
                             }
                         }
                     }
@@ -327,13 +327,13 @@ public class Room : MonoBehaviour
                 {
                     for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
                     {
-                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerLeft)
+                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerUp)
                         {
                             // Don't turn off the whole wall, but only the parts that overlap with the current room.
                             if (adjacentRoom.WallPieces[k].transform.position.x > RoomCorners[Direction.Down].x &&
                                adjacentRoom.WallPieces[k].transform.position.x <= RoomCorners[Direction.Right].x + 1)    // the +1 is because the wall pieces might not be exactly positioned on the spot of the tile
                             {
-                                adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Short);
+                                adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Transparent);
                             }
                         }
                     }
@@ -346,7 +346,7 @@ public class Room : MonoBehaviour
     {
         for (int i = 0; i < WallPieces.Count; i++)
         {
-            WallPieces[i].SetWallSprite(WallPieceDisplayMode.Tall);
+            WallPieces[i].SetWallSprite(WallPieceDisplayMode.Visible);
         }
 
         for (int j = 0; j < AdjacentRooms.Count; j++)
@@ -358,9 +358,9 @@ public class Room : MonoBehaviour
                 {
                     for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
                     {
-                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerRight)
+                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerRight || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerUp)
                         {
-                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Tall);
+                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Visible);
                         }
                     }
                 }
@@ -371,9 +371,9 @@ public class Room : MonoBehaviour
                 {
                     for (int k = 0; k < adjacentRoom.WallPieces.Count; k++)
                     {
-                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerLeft)
+                        if (adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.UpLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerLeft || adjacentRoom.WallPieces[k].WallPieceType == WallPieceType.CornerUp)
                         {
-                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Tall);
+                            adjacentRoom.WallPieces[k].SetWallSprite(WallPieceDisplayMode.Visible);
                         }
                     }
                 }
