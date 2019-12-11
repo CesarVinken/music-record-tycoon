@@ -10,6 +10,11 @@ public class CharacterLocomotion : MonoBehaviour
 
     private Transform _characterNavTransform;
     private CharacterAnimationHandler _characterAnimationHandler;
+    private float m_TouchTime;
+    private float m_TapTimeMinThreshold;
+    private Vector2 m_FingerDownPosition;
+    private bool tapRequested;
+    private bool isDragging = false;
 
     public void Awake()
     {
@@ -42,10 +47,34 @@ public class CharacterLocomotion : MonoBehaviour
         if (BuilderManager.HasRoomSelected)
             return;
 
-        if (Input.GetMouseButtonDown(0))
+        if (GameManager.Instance.CurrentPlatform == Platform.PC)
         {
-            Vector2 target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            SetLocomotionTarget(target);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector2 target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                SetLocomotionTarget(target);
+            }
+        }
+        else if (Input.touchCount > 0) { 
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                m_FingerDownPosition = touch.position;
+            }
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                Vector2 releaseDistance = m_FingerDownPosition - touch.position;
+
+                if((releaseDistance.x < 12 && releaseDistance.x > -12) && (releaseDistance.y < 12 && releaseDistance.y > -12))  // tapping start position is roughly the same as the release position
+                {
+                    Vector2 target = Camera.main.ScreenToWorldPoint(touch.position);
+                    SetLocomotionTarget(target);
+                }
+                else
+                {
+                    Logger.Log("{0} and {1}", m_FingerDownPosition, touch.position);
+                }
+            }
         }
     }
 

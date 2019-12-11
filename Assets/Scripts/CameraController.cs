@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public float PanSpeed = 11f;
+
+    public float PanSpeed;
     public float PanBorderThickness = 15f; // in pixels
 
     public static Dictionary<Direction, float> PanLimits = new Dictionary<Direction, float>
@@ -15,12 +16,30 @@ public class CameraController : MonoBehaviour
         };
 
     private float _panBorderThickness;
+    private float _touchesPreviousPositionDifference;
+    private float _touchesCurrentPositionDifference;
+    private float _zoomModifier;
+
+    private Vector2 _firstTouchPreviousPosition;
+    private Vector2 _secondTouchPreviousPosition;
+
+    private float _zoomModifierSpeed;
+
+    private Camera _camera;
+
+    public void Awake()
+    {
+        _camera = GetComponent<Camera>();
+        if (!_camera)
+            Logger.Error(Logger.Initialisation, "Could not find main camera");
+    }
 
     public void Start()
     {
         _panBorderThickness = PanBorderThickness;
 
         PanSpeed = GameManager.Instance.Configuration.PanSpeed;
+        _zoomModifierSpeed = GameManager.Instance.Configuration.ZoomModifierSpeed;
     }
 
     void Update()
@@ -39,7 +58,32 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandleMobilePanning(Vector2 position)
     {
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+
+        if (Input.touchCount == 2)
+        {
+            Touch firstTouch = Input.GetTouch(0);
+            Touch secondTouch = Input.GetTouch(1);
+
+            _firstTouchPreviousPosition = firstTouch.position - firstTouch.deltaPosition;
+            _secondTouchPreviousPosition = secondTouch.position - secondTouch.deltaPosition;
+
+            _touchesPreviousPositionDifference = (_firstTouchPreviousPosition - _secondTouchPreviousPosition).magnitude;
+            _touchesCurrentPositionDifference = (firstTouch.position - secondTouch.position).magnitude;
+
+            _zoomModifier = (firstTouch.deltaPosition - secondTouch.deltaPosition).magnitude * _zoomModifierSpeed;
+
+            if (_touchesPreviousPositionDifference > _touchesCurrentPositionDifference)
+            {
+                _camera.orthographicSize += _zoomModifier;
+            }
+            if (_touchesPreviousPositionDifference < _touchesCurrentPositionDifference)
+            {
+                _camera.orthographicSize -= _zoomModifier;
+            }
+
+            _camera.orthographicSize = Mathf.Clamp(_camera.orthographicSize, 35f, 80f);
+        }
+        else if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
             Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
             position.x += -touchDeltaPosition.x * PanSpeed * Time.deltaTime;
@@ -61,7 +105,7 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandlePanUp(Vector2 position)
     {
-        if (Input.GetKey(KeyCode.W) || (Input.mousePosition.y >= Screen.height - PanBorderThickness && Input.mousePosition.y <= Screen.height + PanBorderThickness * 2))
+        if (Input.GetKey(KeyCode.W) || (Input.mousePosition.y >= Screen.height - _panBorderThickness && Input.mousePosition.y <= Screen.height + _panBorderThickness * 2))
         {
             position.y += PanSpeed * Time.deltaTime;
         }
@@ -71,7 +115,7 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandlePanDown(Vector2 position)
     {
-        if (Input.GetKey(KeyCode.S) || (Input.mousePosition.y <= PanBorderThickness && Input.mousePosition.y >= -PanBorderThickness * 2))
+        if (Input.GetKey(KeyCode.S) || (Input.mousePosition.y <= _panBorderThickness && Input.mousePosition.y >= -_panBorderThickness * 2))
         {
             position.y -= PanSpeed * Time.deltaTime;
         }
@@ -81,7 +125,7 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandlePanLeft(Vector2 position)
     {
-        if (Input.GetKey(KeyCode.D) || (Input.mousePosition.x >= Screen.width - PanBorderThickness && Input.mousePosition.x <= Screen.width + PanBorderThickness * 2))
+        if (Input.GetKey(KeyCode.D) || (Input.mousePosition.x >= Screen.width - _panBorderThickness && Input.mousePosition.x <= Screen.width + _panBorderThickness * 2))
         {
             position.x += PanSpeed * Time.deltaTime;
         }
@@ -91,7 +135,7 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandlePanRight(Vector2 position)
     {
-        if (Input.GetKey(KeyCode.A) || (Input.mousePosition.x <= PanBorderThickness && Input.mousePosition.x >= -PanBorderThickness * 2))
+        if (Input.GetKey(KeyCode.A) || (Input.mousePosition.x <= _panBorderThickness && Input.mousePosition.x >= -_panBorderThickness * 2))
         {
             position.x -= PanSpeed * Time.deltaTime;
         }

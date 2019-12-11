@@ -11,7 +11,6 @@ public class WallPiece : MonoBehaviour
 
     public void Awake()
     {
-        Debug.Log("Halo");
         Guard.CheckIsNull(SpriteRenderer, "SpriteRenderer");
         Guard.CheckIsNull(TallSprite, "TallSprite");
     }

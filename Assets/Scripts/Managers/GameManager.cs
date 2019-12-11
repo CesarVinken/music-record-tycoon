@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
     {
         Logger.General.enableLogs = true;
         Logger.Locomotion.enableLogs = true;
-        Logger.Building.enableLogs = true;
+        Logger.Building.enableLogs = false;
         Logger.Pathfinding.enableLogs = true;
         Logger.Initialisation.enableLogs = true;
     }
