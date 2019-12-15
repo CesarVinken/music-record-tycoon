@@ -15,5 +15,7 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         Logger.Log("on image");
+        RoomBlueprint blueprint = new RoomBlueprint();
+        BuilderManager.Instance.DrawAvailablePlots(blueprint);
     }
 }

@@ -106,6 +106,8 @@ public class BuilderManager : MonoBehaviour
         BuildMenuContainer.Instance.IsOpen = false;
         BuildMenuContainer.Instance.RemoveBuildMenuContent();
 
+        BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
+
         //    InGameButtons.Instance.CreateButtonsForPlayMode();
         //    InGameButtons.Instance.DeleteButtonsForPlayMode();
 

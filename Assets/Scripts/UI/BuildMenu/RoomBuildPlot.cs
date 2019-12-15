@@ -48,7 +48,7 @@ public class RoomBuildPlot : MonoBehaviour
         _startingPoint = startingPoint;
         _midpoint = _startingPoint + (point2 - _startingPoint) / 2;
 
-        BuildTrigger.transform.SetParent(MainCanvas.Instance.transform);
+        BuildTrigger.transform.SetParent(InGameButtons.Instance.BuildTriggerContainer.transform);
         BuildTrigger.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
     }
 
@@ -95,7 +95,7 @@ public class RoomBuildPlot : MonoBehaviour
 
         GameObject modal = Instantiate(MainCanvas.Instance.ConfirmationModalPrefab);
         modal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
-        modal.transform.SetParent(MainCanvas.Instance.transform);
+        modal.transform.SetParent(InGameButtons.Instance.ConfirmationModalContainer.transform);
         _confirmationModal = modal;
         _confirmationModal.GetComponent<ConfirmationModal>().Setup(this);
     }
