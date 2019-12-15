@@ -50,10 +50,10 @@ public class Room : MonoBehaviour
         if (character)
         {
             Logger.Log(Logger.Locomotion, "{0} left room {1}", character.Id, Id);
-            if (character.CurrentRoom == this)
-            {
-                character.LeaveRoom();
-            }
+            //if (character.CurrentRoom == this)
+            //{
+            //    character.LeaveRoom();
+            //}
             foreach (PlayerCharacter c in CharactersInRoom)
             {
                 if (c.Id == character.Id)

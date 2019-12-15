@@ -10,11 +10,7 @@ public class CharacterLocomotion : MonoBehaviour
 
     private Transform _characterNavTransform;
     private CharacterAnimationHandler _characterAnimationHandler;
-    private float m_TouchTime;
-    private float m_TapTimeMinThreshold;
     private Vector2 m_FingerDownPosition;
-    private bool tapRequested;
-    private bool isDragging = false;
 
     public void Awake()
     {
@@ -44,13 +40,10 @@ public class CharacterLocomotion : MonoBehaviour
         if (EventSystem.current.IsPointerOverGameObject())
             return;
 
-        if (BuilderManager.HasRoomSelected)
-            return;
-
         if (GameManager.Instance.CurrentPlatform == Platform.PC)
         {
             if (Input.GetMouseButtonDown(0))
-            {
+            {                
                 Vector2 target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 SetLocomotionTarget(target);
             }
@@ -80,6 +73,9 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void SetLocomotionTarget(Vector3 newTarget)
     {
+        if (BuilderManager.BuildMenuActivated)
+            BuilderManager.Instance.DeactivateBuildMenuMode();
+
         Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
 
         _characterAnimationHandler.InLocomotion = true;

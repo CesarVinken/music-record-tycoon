@@ -37,7 +37,7 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
         {
             case BuildAction.CreateRoomPlot:
                 _roomBuildPlot.Build();
-                BuildTabContainer.Instance.DestroyBuildingPlots();
+                BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
                 break;
             case BuildAction.DeleteRoom:
                 _deleteRoomTrigger.DeleteRoom();

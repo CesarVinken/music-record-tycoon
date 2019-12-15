@@ -4,6 +4,6 @@ public class DeleteRoomModeButton : MonoBehaviour
 {
     public void EnterDeleteRoomMode()
     {
-        BuilderManager.Instance.ActivateDeleteRoomMode();
+        //BuilderManager.Instance.ActivateDeleteRoomMode();
     }
 }

@@ -13,6 +13,6 @@ public class RoomButton : MonoBehaviour
     {
         //Room room = RoomPrefab.GetComponent<Room>();    //Temporary!
         RoomBlueprint blueprint = new RoomBlueprint();
-        GameManager.Instance.BuilderManager.SetSelectedRoom(blueprint);
+        //GameManager.Instance.BuilderManager.SetSelectedRoom(blueprint);
     }
 }

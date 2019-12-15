@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildTabContainer : MonoBehaviour
+public class BuildMenuWorldSpaceContainer : MonoBehaviour
 {
-    public static BuildTabContainer Instance;
+    public static BuildMenuWorldSpaceContainer Instance;
     public List<RoomBuildPlot> RoomBuildPlots = new List<RoomBuildPlot>();
 
     void Awake()

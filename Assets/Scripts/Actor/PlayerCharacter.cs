@@ -52,8 +52,8 @@ public class PlayerCharacter : MonoBehaviour
         newRoom.LowerWallPieces();
     }
 
-    public void LeaveRoom()
-    {
-        //CurrentRoom = null;
-    }
+//    public void LeaveRoom()
+//    {
+//        CurrentRoom = null;
+//    }
 }

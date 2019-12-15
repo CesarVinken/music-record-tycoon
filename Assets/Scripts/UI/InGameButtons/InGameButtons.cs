@@ -5,44 +5,49 @@ public class InGameButtons : MonoBehaviour
     public static InGameButtons Instance;
 
     // Button containers
-    public GameObject RightRow;
-    public GameObject BuildTabButtonsGO;
+    public GameObject LeftRow;
+    public GameObject BuildMenuGO;
 
     // Buttons
     public GameObject MainMenuButton;
-    public GameObject BuildTabButton;
+    public GameObject BuildMenuButton;
 
     // Prefabs
-    public GameObject BuildTabButtonPrefab;
+    public GameObject MainMenuButtonPrefab;
+    public GameObject BuildMenuButtonPrefab;
 
     public void Awake()
     {
         Instance = this;
 
-        Guard.CheckIsNull(RightRow, "RightRow");
-        Guard.CheckIsNull(BuildTabButtonsGO, "BuildTabButtonsGO");
+        Guard.CheckIsNull(LeftRow, "LeftRow");
+        Guard.CheckIsNull(BuildMenuGO, "BuildMenuBGO");
 
-        Guard.CheckIsNull(BuildTabButtonPrefab, "BuildTabButtonPrefab");
+        Guard.CheckIsNull(MainMenuButtonPrefab, "MainMenuButtonPrefab");
+        Guard.CheckIsNull(BuildMenuButtonPrefab, "BuildMenuButtonPrefab");
     }
 
-    public void CreateButtonsForBuildTabMode()
-    {
-        BuildTabButtons.Instance.CreateAllButtons();
-    }
+    //public void CreateButtonsForBuildMenuMode()
+    //{
+    //    BuildMenuContainer.Instance.CreateAllButtons();
+    //}
 
-    public void CreateButtonsForPlayMode()
-    {
-        BuildTabButton = Instantiate(BuildTabButtonPrefab, RightRow.transform);
-    }
+    //public void CreateButtonsForPlayMode()
+    //{
+    //    BuildMenuButton = Instantiate(BuildMenuButtonPrefab, LeftRow.transform);
+    //}
 
-    public void DeleteButtonsForBuildTabMode()
-    {
-        if (BuildTabButton != null)
-            Destroy(BuildTabButton);  
-    }
+    //public void DeleteButtonsForBuildMenuMode()
+    //{
+    //    if (MainMenuButton != null)
+    //        Destroy(MainMenuButton);
 
-    public void DeleteButtonsForPlayMode()
-    {
-        BuildTabButtons.Instance.DeleteAllButtons();
-    }
+    //    if (BuildMenuButton != null)
+    //        Destroy(BuildMenuButton);  
+    //}
+
+    //public void DeleteButtonsForPlayMode()
+    //{
+        //BuildMenuContainer.Instance.DeleteAllButtons();
+    //}
 }
