@@ -18,7 +18,10 @@ public class CameraController : MonoBehaviour
     private float _panBorderThickness;
     private float _touchesPreviousPositionDifference;
     private float _touchesCurrentPositionDifference;
+
     private float _zoomModifier;
+    private float _minZoomLevel = 35f;
+    private float _maxZoomLevel = 80f;
 
     private Vector2 _firstTouchPreviousPosition;
     private Vector2 _secondTouchPreviousPosition;
@@ -46,6 +49,9 @@ public class CameraController : MonoBehaviour
     {
         Vector2 position = new Vector2(transform.position.x, transform.position.y);
 
+        HandleMobileZooming();
+        HandleComputerZooming();
+
         position = HandleMobilePanning(position);
         position = HandleComputerPanning(position);
 
@@ -58,7 +64,18 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandleMobilePanning(Vector2 position)
     {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        {
+            Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
+            position.x += -touchDeltaPosition.x * PanSpeed * Time.deltaTime;
+            position.y += -touchDeltaPosition.y * PanSpeed * Time.deltaTime;
+        }
 
+        return position;
+    }
+
+    public void HandleMobileZooming()
+    {
         if (Input.touchCount == 2)
         {
             Touch firstTouch = Input.GetTouch(0);
@@ -81,16 +98,15 @@ public class CameraController : MonoBehaviour
                 _camera.orthographicSize -= _zoomModifier;
             }
 
-            _camera.orthographicSize = Mathf.Clamp(_camera.orthographicSize, 35f, 80f);
+            _camera.orthographicSize = Mathf.Clamp(_camera.orthographicSize, _minZoomLevel, _maxZoomLevel);
         }
-        else if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
-        {
-            Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
-            position.x += -touchDeltaPosition.x * PanSpeed * Time.deltaTime;
-            position.y += -touchDeltaPosition.y * PanSpeed * Time.deltaTime;
-        }
+    }
 
-        return position;
+    public void HandleComputerZooming()
+    {
+        float fieldOfView = _camera.orthographicSize;
+        fieldOfView += Input.GetAxis("Mouse ScrollWheel") * _zoomModifierSpeed;
+        _camera.orthographicSize = Mathf.Clamp(fieldOfView, _minZoomLevel, _maxZoomLevel);
     }
 
     public Vector2 HandleComputerPanning(Vector2 position)

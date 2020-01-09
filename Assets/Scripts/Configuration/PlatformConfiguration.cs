@@ -33,11 +33,10 @@ public class PCConfiguration : IPlatformConfiguration
     private float _panSpeed;
     private float _zoomModifierSpeed;
 
-
     public PCConfiguration()
     {
         PanSpeed = 10f;
-        ZoomModifierSpeed = 0.03f;
+        ZoomModifierSpeed = 14f;
     }
 
     public float PanSpeed { get { return _panSpeed; } set { _panSpeed = value; } }
