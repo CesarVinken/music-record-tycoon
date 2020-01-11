@@ -48,6 +48,11 @@ public class RoomBuildPlot : MonoBehaviour
         _startingPoint = startingPoint;
         _midpoint = _startingPoint + (point2 - _startingPoint) / 2;
 
+
+        /////
+        BuildTrigger.SetActive(false); // THIS TURNS OFF THE BUILD TRIGGER
+        /////
+
         BuildTrigger.transform.SetParent(InGameButtons.Instance.BuildTriggerContainer.transform);
         BuildTrigger.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
     }

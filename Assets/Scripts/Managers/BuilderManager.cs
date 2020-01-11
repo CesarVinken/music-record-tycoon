@@ -14,8 +14,8 @@ public class BuilderManager : MonoBehaviour
 {
     public static BuilderManager Instance;
 
-    public static bool BuildMenuActivated;
-    public static bool InRoomBuildMode;
+    //public static bool BuildMenuActivated;
+    public static bool InBuildMode;
     public static bool InDeleteRoomMode;
     public static bool HasRoomSelected;
 
@@ -35,8 +35,8 @@ public class BuilderManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        BuildMenuActivated = false;
-        InRoomBuildMode = false;
+        //BuildMenuActivated = false;
+        InBuildMode = false;
         InDeleteRoomMode = false;
         HasRoomSelected = false;
 
@@ -59,12 +59,7 @@ public class BuilderManager : MonoBehaviour
 
     void Update()
     {
-        //if (HasRoomSelected && !GameManager.MainMenuOpen)
-        //{
-        //    if (Input.GetMouseButtonDown(1)) {
-        //        UnsetSelectedRoom();
-        //    }
-        //}
+
     }
 
     public void SetupInitialBuildingTiles()
@@ -88,6 +83,11 @@ public class BuilderManager : MonoBehaviour
         BuildRoom(new Vector2(0, 0));
     }
 
+    public void SetSelectedRoom(RoomBlueprint selectedRoom)
+    {
+        SelectedRoom = selectedRoom;
+    }
+
     public void ActivateBuildMenuMode()
     {
         BuildMenuContainer.Instance.IsOpen = true;
@@ -102,9 +102,10 @@ public class BuilderManager : MonoBehaviour
 
     public void DeactivateBuildMenuMode()
     {
-        BuildMenuActivated = false;
+        InBuildMode = false;
         BuildMenuContainer.Instance.IsOpen = false;
         BuildMenuContainer.Instance.RemoveBuildMenuContent();
+        MainCanvas.Instance.UnsetPointerImage();
 
         BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
 
@@ -178,8 +179,9 @@ public class BuilderManager : MonoBehaviour
 
 
 
-    public void DrawAvailablePlots(RoomBlueprint selectedRoom)
+    public void DrawAvailablePlots()
     {
+        RoomBlueprint selectedRoom = SelectedRoom;
         BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
 
         for (int i = 0; i < RoomManager.Rooms.Count; i++)

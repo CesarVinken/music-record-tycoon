@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 // This is the script that drives the collection of buttons related to the build Tab. Such as the different rooms.
 public class BuildMenuContainer : MonoBehaviour
@@ -19,6 +20,8 @@ public class BuildMenuContainer : MonoBehaviour
 
     private Animator _animator;
     //private CanvasGroup _canvasGroup;
+
+    public bool PointerOnBuildMenu = false;
 
     public bool IsOpen
     {
@@ -46,6 +49,22 @@ public class BuildMenuContainer : MonoBehaviour
 
         Instance = this;
     }
+
+    //public void OnPointerEnter(PointerEventData eventData)
+    //{
+    //    //Debug.Log("Mouse Over: " + eventData.pointerCurrentRaycast.gameObject.name);
+    //    if (eventData.pointerCurrentRaycast.gameObject != null)
+    //    {
+    //        if (eventData.pointerCurrentRaycast.gameObject.name == "BuildText") return;
+
+    //        PointerOnBuildMenu = true;
+    //    }
+    //}
+
+    //public void OnPointerExit(PointerEventData eventData)
+    //{
+    //    PointerOnBuildMenu = false;
+    //}
 
     //public void Update()
     //{
@@ -85,6 +104,7 @@ public class BuildMenuContainer : MonoBehaviour
         GameObject item = Instantiate(BuildItemPrefab, BuildItemsContainer.transform);
         item.name = "Room1";
         BuildItemTile buildItemTile = item.GetComponent<BuildItemTile>();
+        
         buildItemTile.Setup("Room1", "This room is just for testing");
     }
 
@@ -98,7 +118,7 @@ public class BuildMenuContainer : MonoBehaviour
     public IEnumerator CompletePanelActivationRoutine()
     {
         yield return new WaitForSeconds(0.4f);
-        BuilderManager.BuildMenuActivated = true;
+        BuilderManager.InBuildMode = true;
 
     }
     public void RemoveBuildMenuContent()

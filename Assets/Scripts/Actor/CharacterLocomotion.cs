@@ -73,8 +73,9 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void SetLocomotionTarget(Vector3 newTarget)
     {
-        if (BuilderManager.BuildMenuActivated)
-            BuilderManager.Instance.DeactivateBuildMenuMode();
+        if (BuilderManager.InBuildMode) return;
+        //if (BuilderManager.BuildMenuActivated && MainCanvas.Instance.PointerImage.sprite == null)
+        //    BuilderManager.Instance.DeactivateBuildMenuMode();
 
         Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
 

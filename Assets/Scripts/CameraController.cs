@@ -99,14 +99,24 @@ public class CameraController : MonoBehaviour
             }
 
             _camera.orthographicSize = Mathf.Clamp(_camera.orthographicSize, _minZoomLevel, _maxZoomLevel);
+
+            if (MainCanvas.Instance.PointerImage.sprite != null)
+            {
+                MainCanvas.Instance.SetPointerImageSize(MainCanvas.Instance.PointerImage);
+            }
         }
     }
 
     public void HandleComputerZooming()
     {
         float fieldOfView = _camera.orthographicSize;
-        fieldOfView += Input.GetAxis("Mouse ScrollWheel") * _zoomModifierSpeed;
+        fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * _zoomModifierSpeed;
         _camera.orthographicSize = Mathf.Clamp(fieldOfView, _minZoomLevel, _maxZoomLevel);
+
+        if (MainCanvas.Instance.PointerImage.sprite != null && !BuildMenuContainer.Instance.IsOpen)
+        {
+            MainCanvas.Instance.SetPointerImageSize(MainCanvas.Instance.PointerImage);
+        }
     }
 
     public Vector2 HandleComputerPanning(Vector2 position)
