@@ -77,7 +77,7 @@ public class BuilderManager : MonoBehaviour
 
                         BuildRoom(BuildingPlot.AvailablePlotVectorPosition);
 
-                        BuilderManager.Instance.ActivateBuildMenuMode();
+                        ActivateBuildMenuMode();
 
                         //BuildMenuContainer.Instance.IsOpen = true;
                         //BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTab.Rooms);
@@ -96,7 +96,8 @@ public class BuilderManager : MonoBehaviour
                     if (Input.GetMouseButtonDown(0))
                     {
                         Logger.Warning("Cannot build here!");
-                        // failed build
+                        // TODO show failed build animation
+                        ActivateBuildMenuMode();
                     }
                 }
                 else
@@ -145,6 +146,7 @@ public class BuilderManager : MonoBehaviour
         }
 
         BuildMenuContainer.Instance.IsOpen = true;
+        BuildMenuContainer.Instance.IsBuilding = true;
         BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTab.Rooms);
         //BuildMenuActivated = true;
         BuildMenuContainer.Instance.CompletePanelActivation();
@@ -158,6 +160,8 @@ public class BuilderManager : MonoBehaviour
     {
         InBuildMode = false;
         BuildMenuContainer.Instance.IsOpen = false;
+        BuildMenuContainer.Instance.IsBuilding = false;
+
         BuildMenuContainer.Instance.RemoveBuildMenuContent();
         MainCanvas.Instance.UnsetPointerImage();
 

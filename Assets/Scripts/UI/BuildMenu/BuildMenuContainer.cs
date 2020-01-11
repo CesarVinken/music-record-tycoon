@@ -25,8 +25,26 @@ public class BuildMenuContainer : MonoBehaviour
 
     public bool IsOpen
     {
-        get { return _animator.GetBool("IsOpen"); }
-        set { _animator.SetBool("IsOpen", value); }
+        get
+        {
+            return _animator.GetBool("IsOpen");
+        }
+        set
+        {
+            _animator.SetBool("IsOpen", value);
+        }
+    }
+
+    public bool IsBuilding
+    {
+        get
+        {
+            return _animator.GetBool("IsBuilding");
+        }
+        set
+        {
+            _animator.SetBool("IsBuilding", value);
+        }
     }
 
     public void Awake()

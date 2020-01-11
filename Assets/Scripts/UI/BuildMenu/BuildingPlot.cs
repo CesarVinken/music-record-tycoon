@@ -7,8 +7,6 @@ public class BuildingPlot : MonoBehaviour
     public LineRenderer LineRenderer;
     public PolygonCollider2D Collider;
 
-    //public GameObject BuildTrigger;
-
     //private Vector2 _midpoint = new Vector2(0, 0);
     private Vector2 _startingPoint = new Vector2(0, 0);
 
@@ -25,8 +23,6 @@ public class BuildingPlot : MonoBehaviour
             Logger.Error(Logger.Initialisation, "Cannot find LineRenderer");
 
         //_confirmationModal = BuilderManager.Instance.ConfirmationModalGO;
-
-        //Guard.CheckIsNull(BuildTrigger, "BuildTrigger");
     }
     public void Setup(RoomBlueprint room, Vector2 startingPoint)
     {
@@ -49,7 +45,6 @@ public class BuildingPlot : MonoBehaviour
         SetColliderPath(startingPoint, (int)rightUpAxisLength, (int)leftUpAxisLength);
 
         _startingPoint = startingPoint;
-        //_midpoint = _startingPoint + (point2 - _startingPoint) / 2;
 
         double midpointRightUpAxisLength = rightUpAxisLength / 2;
         double midpointLeftUpAxisLength = leftUpAxisLength / 2;
@@ -69,13 +64,6 @@ public class BuildingPlot : MonoBehaviour
         );
 
         BuilderManager.Instance.BuildingPlotLocations.Add(midGridPoint, startingPoint);
-
-        ///////
-        //BuildTrigger.SetActive(false); // THIS TURNS OFF THE BUILD TRIGGER
-        ///////
-
-        //BuildTrigger.transform.SetParent(InGameButtons.Instance.BuildTriggerContainer.transform);
-        //BuildTrigger.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
     }
 
     public void Update()
@@ -134,7 +122,6 @@ public class BuildingPlot : MonoBehaviour
     public void MakePlotAvailable()
     {
         plotIsFree = true;
-        //BuildTrigger.SetActive(true);
 
         //if (_confirmationModal)
         //    _confirmationModal.SetActive(true);
@@ -153,7 +140,6 @@ public class BuildingPlot : MonoBehaviour
     {
         //if (_confirmationModal)
         //    Destroy(_confirmationModal);
-        //Destroy(BuildTrigger);
         Destroy(gameObject);
     }
 }
