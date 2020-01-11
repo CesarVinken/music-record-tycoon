@@ -9,11 +9,11 @@ public enum BuildAction
 public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in to a script for a specific confirmation modal that is attached to the confirmationModal GO.
 {
     public static ConfirmationModal CurrentConfirmationModal;
-    private RoomBuildPlot _roomBuildPlot;
+    private BuildingPlot _roomBuildPlot;
     private DeleteRoomTrigger _deleteRoomTrigger;
     private BuildAction _buildAction;
 
-    public void Setup(RoomBuildPlot roomBuildPlot)
+    public void Setup(BuildingPlot roomBuildPlot)
     {
         if (CurrentConfirmationModal) CurrentConfirmationModal.DestroyConfirmationModal();
 

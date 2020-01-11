@@ -10,7 +10,6 @@ public class Guard
 
     public static void CheckIsNull<T>(T gameObject, string name) where T : MonoBehaviour
     {
-        Debug.Log(gameObject);
         if (gameObject == null)
             Logger.Error("Cannot Find " + name);
     }

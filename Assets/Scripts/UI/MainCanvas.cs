@@ -6,21 +6,14 @@ public class MainCanvas : MonoBehaviour
 {
     public static MainCanvas Instance;
 
-    public GameObject ConfirmationModalPrefab;
     public GameObject PointerImageGO;
     public Image PointerImage;
     public bool IsDraggingIcon;
-    //public float IconFrameHeight = 800;
-    //public float IconFrameWidth = 800;
-
-    private float _imageHeight;
-    private float _imageWidth;
 
     public void Awake()
     {
         Instance = this;
 
-        Guard.CheckIsNull(ConfirmationModalPrefab, "ConfirmationModalPrefab");
         Guard.CheckIsNull(PointerImageGO, "PointerImageGO");
 
         PointerImage.sprite = null;
@@ -57,6 +50,18 @@ public class MainCanvas : MonoBehaviour
                 float snappedY = (xx + yy) * 0.5f * tileSizeInUnits.y;
 
                 PointerImageGO.transform.position = Camera.main.WorldToScreenPoint(new Vector2(snappedX - 8f, snappedY + .6f));
+
+                if (BuilderManager.Instance.BuildingPlotLocations.ContainsKey(new Vector2(snappedX, snappedY)))
+                {
+                    SetPointerImageOverlayColor(new Color(1, 1, 1, 1));
+                    BuilderManager.PointerIsOnAvailablePlot = true;
+                    BuildingPlot.AvailablePlotVectorPosition = BuilderManager.Instance.BuildingPlotLocations[new Vector2(snappedX, snappedY)];
+                }
+                else
+                {
+                    SetPointerImageOverlayColor(new Color(1, .2f, .2f, .7f));
+                    BuilderManager.PointerIsOnAvailablePlot = false;
+                }
             }
 
             if (Input.GetMouseButtonDown(1))
@@ -73,6 +78,8 @@ public class MainCanvas : MonoBehaviour
         PointerImage.sprite = sprite;
         PointerImage.enabled = true;
         PointerImage.preserveAspect = true;
+
+        IsDraggingIcon = true;
     }
 
     public void SetPointerImage(Sprite sprite, Vector2 pointerImageProportions)
@@ -82,12 +89,22 @@ public class MainCanvas : MonoBehaviour
         PointerImage.sprite = sprite;
         PointerImage.enabled = true;
         PointerImage.preserveAspect = true;
+
+        IsDraggingIcon = true;
     }
 
     public void UnsetPointerImage()
     {
         PointerImage.enabled = false;
         PointerImage.sprite = null;
+
+        IsDraggingIcon = false;
+    }
+
+    public void SetPointerImageOverlayColor(Color color)
+    {
+        // TODO currently colour change is requested every frame!
+        PointerImage.color = color;
     }
 
     public Vector2 GetPointerImageSize(Image pointerImage)

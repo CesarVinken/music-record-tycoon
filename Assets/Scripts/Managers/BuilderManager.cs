@@ -18,6 +18,7 @@ public class BuilderManager : MonoBehaviour
     public static bool InBuildMode;
     public static bool InDeleteRoomMode;
     public static bool HasRoomSelected;
+    public static bool PointerIsOnAvailablePlot;
 
     public GameObject Room1Prefab;
     public GameObject Room1BuildPlotPrefab;
@@ -26,19 +27,21 @@ public class BuilderManager : MonoBehaviour
 
     public RoomBlueprint SelectedRoom;
 
-    public GameObject ConfirmationModalGO;
+    //public GameObject ConfirmationModalGO;
     public GameObject RoomsContainer;
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();
+    public Dictionary<Vector2, BuildingPlot> BuildingPlots = new Dictionary<Vector2, BuildingPlot>();
     public HashSet<Vector2> BuildingTileLocations = new HashSet<Vector2>();
+    public Dictionary<Vector2, Vector2> BuildingPlotLocations = new Dictionary<Vector2, Vector2>();   // The middle position of the building plot, which is the location that triggers the build, AND the starting point location of the plot (bottom)
 
     void Awake()
     {
         Instance = this;
-        //BuildMenuActivated = false;
         InBuildMode = false;
         InDeleteRoomMode = false;
         HasRoomSelected = false;
+        PointerIsOnAvailablePlot = false;
 
         SelectedRoom = null;
 
@@ -46,6 +49,9 @@ public class BuilderManager : MonoBehaviour
         Guard.CheckIsNull(Room1BuildPlotPrefab, "Room1BuildPlotPrefab");
         Guard.CheckIsNull(RoomsContainer, "RoomsContainer");
         Guard.CheckIsNull(DeleteRoomTriggerPrefab, "DeleteRoomTriggerPrefab");
+
+        BuildingPlots.Clear();
+        BuildingPlotLocations.Clear();
 
         SelectedRoomPrefab = Room1Prefab;  // Should become generic later on.
 
@@ -59,7 +65,48 @@ public class BuilderManager : MonoBehaviour
 
     void Update()
     {
+        if (InBuildMode && MainCanvas.Instance.IsDraggingIcon)
+        {
+            if(PointerIsOnAvailablePlot)
+            {
+                if (GameManager.Instance.CurrentPlatform == Platform.PC)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        Logger.Warning("Let's build!");
 
+                        BuildRoom(BuildingPlot.AvailablePlotVectorPosition);
+
+                        BuilderManager.Instance.ActivateBuildMenuMode();
+
+                        //BuildMenuContainer.Instance.IsOpen = true;
+                        //BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTab.Rooms);
+                        //MainCanvas.Instance.UnsetPointerImage();
+                    }
+                }
+                else
+                {
+                    // TODO
+                }
+            }
+            else
+            {
+                if (GameManager.Instance.CurrentPlatform == Platform.PC)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        Logger.Warning("Cannot build here!");
+                        // failed build
+                    }
+                }
+                else
+                {
+                    // TODO
+                }
+
+
+            }
+        }
     }
 
     public void SetupInitialBuildingTiles()
@@ -90,6 +137,13 @@ public class BuilderManager : MonoBehaviour
 
     public void ActivateBuildMenuMode()
     {
+        MainCanvas.Instance.UnsetPointerImage();
+
+        if(BuildingPlots.Count > 0)
+        {
+            BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
+        }
+
         BuildMenuContainer.Instance.IsOpen = true;
         BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTab.Rooms);
         //BuildMenuActivated = true;
@@ -115,68 +169,6 @@ public class BuilderManager : MonoBehaviour
         //    if (InRoomBuildMode) DeactivateRoomBuildMode();
         //    if (InDeleteRoomMode) DeactivateDeleteRoomMode();
     }
-
-    //public void ActivateRoomBuildMode()
-    //{
-    //    if (InDeleteRoomMode) DeactivateDeleteRoomMode();
-
-    //    InRoomBuildMode = true;
-    //}
-
-    //public void DeactivateRoomBuildMode()
-    //{
-    //    InRoomBuildMode = false;
-    //    HasRoomSelected = false;
-    //    SelectedRoom = null;
-
-    //    BuildMenuContainer.Instance.DestroyBuildingPlots();
-
-    //    if (ConfirmationModal.CurrentConfirmationModal)
-    //        ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
-    //}
-
-    //public void ActivateDeleteRoomMode()
-    //{
-    //    if (InRoomBuildMode) DeactivateRoomBuildMode();
-
-    //    InDeleteRoomMode = true;
-
-    //    foreach (Room room in RoomManager.Rooms)
-    //    {
-
-    //        DeleteRoomTrigger deleteRoomTrigger = Instantiate(DeleteRoomTriggerPrefab, MainCanvas.Instance.transform).GetComponent<DeleteRoomTrigger>();
-    //        if (room.CharactersInRoom.Count > 0) deleteRoomTrigger.gameObject.SetActive(false);
-    //        deleteRoomTrigger.Setup(room);
-    //    }
-    //}
-
-    //public void DeactivateDeleteRoomMode()
-    //{
-    //    InDeleteRoomMode = false;
-
-    //    DeleteRoomTrigger.DeleteDeleteRoomTriggers();
-    //    if (ConfirmationModal.CurrentConfirmationModal)
-    //        ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
-    //}
-
-    //public void SetSelectedRoom(RoomBlueprint blueprint)
-    //{
-    //    if (!InRoomBuildMode) ActivateRoomBuildMode();
-
-    //    // Should maybe become Room type? For example: SelectedRoom = room.Prefab
-    //    SelectedRoom = blueprint;
-
-    //    HasRoomSelected = true;
-    //    DrawAvailablePlots(blueprint);
-    //}
-
-    //public void UnsetSelectedRoom()
-    //{
-    //    SelectedRoom = null;
-    //    HasRoomSelected = false;
-    //    Logger.Log(Logger.Building, "no room selected.");
-    //}
-
 
 
     public void DrawAvailablePlots()
@@ -505,4 +497,68 @@ public class BuilderManager : MonoBehaviour
             }      
         }
     }
+
+
+    //public void ActivateRoomBuildMode()
+    //{
+    //    if (InDeleteRoomMode) DeactivateDeleteRoomMode();
+
+    //    InRoomBuildMode = true;
+    //}
+
+    //public void DeactivateRoomBuildMode()
+    //{
+    //    InRoomBuildMode = false;
+    //    HasRoomSelected = false;
+    //    SelectedRoom = null;
+
+    //    BuildMenuContainer.Instance.DestroyBuildingPlots();
+
+    //    if (ConfirmationModal.CurrentConfirmationModal)
+    //        ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
+    //}
+
+    //public void ActivateDeleteRoomMode()
+    //{
+    //    if (InRoomBuildMode) DeactivateRoomBuildMode();
+
+    //    InDeleteRoomMode = true;
+
+    //    foreach (Room room in RoomManager.Rooms)
+    //    {
+
+    //        DeleteRoomTrigger deleteRoomTrigger = Instantiate(DeleteRoomTriggerPrefab, MainCanvas.Instance.transform).GetComponent<DeleteRoomTrigger>();
+    //        if (room.CharactersInRoom.Count > 0) deleteRoomTrigger.gameObject.SetActive(false);
+    //        deleteRoomTrigger.Setup(room);
+    //    }
+    //}
+
+    //public void DeactivateDeleteRoomMode()
+    //{
+    //    InDeleteRoomMode = false;
+
+    //    DeleteRoomTrigger.DeleteDeleteRoomTriggers();
+    //    if (ConfirmationModal.CurrentConfirmationModal)
+    //        ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
+    //}
+
+    //public void SetSelectedRoom(RoomBlueprint blueprint)
+    //{
+    //    if (!InRoomBuildMode) ActivateRoomBuildMode();
+
+    //    // Should maybe become Room type? For example: SelectedRoom = room.Prefab
+    //    SelectedRoom = blueprint;
+
+    //    HasRoomSelected = true;
+    //    DrawAvailablePlots(blueprint);
+    //}
+
+    //public void UnsetSelectedRoom()
+    //{
+    //    SelectedRoom = null;
+    //    HasRoomSelected = false;
+    //    Logger.Log(Logger.Building, "no room selected.");
+    //}
+
+
 }

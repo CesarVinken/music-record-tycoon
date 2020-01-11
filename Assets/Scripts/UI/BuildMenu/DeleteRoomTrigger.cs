@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DeleteRoomTrigger : MonoBehaviour
 {
-    private GameObject _confirmationModal;
+    //private GameObject _confirmationModal;
     private Vector2 _midpoint = new Vector2(0, 0);
     private Room _room;
 
@@ -11,7 +11,7 @@ public class DeleteRoomTrigger : MonoBehaviour
 
     public void Awake()
     {
-        _confirmationModal = BuilderManager.Instance.ConfirmationModalGO;
+        //_confirmationModal = BuilderManager.Instance.ConfirmationModalGO;
         DeleteRoomTriggers.Add(this);
     }
 
@@ -26,25 +26,25 @@ public class DeleteRoomTrigger : MonoBehaviour
     public void Update()
     {
         transform.position = Camera.main.WorldToScreenPoint(_midpoint);
-        if (_confirmationModal)
-        {
-            _confirmationModal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
-        }
+        //if (_confirmationModal)
+        //{
+        //    _confirmationModal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
+        //}
     }
 
-    public void CreateDeleteRoomConfirmation()
-    {
-        if (_confirmationModal)
-            return;
+    //public void CreateDeleteRoomConfirmation()
+    //{
+        //if (_confirmationModal)
+        //    return;
 
-        GameObject modal = Instantiate(MainCanvas.Instance.ConfirmationModalPrefab);
-        modal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
-        modal.transform.SetParent(MainCanvas.Instance.transform);
+        //GameObject modal = Instantiate(MainCanvas.Instance.ConfirmationModalPrefab);
+        //modal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
+        //modal.transform.SetParent(MainCanvas.Instance.transform);
 
 
-        _confirmationModal = modal;
-        _confirmationModal.GetComponent<ConfirmationModal>().Setup(this);
-    }
+        //_confirmationModal = modal;
+        //_confirmationModal.GetComponent<ConfirmationModal>().Setup(this);
+    //}
 
     public void DeleteRoom()
     {
@@ -79,21 +79,21 @@ public class DeleteRoomTrigger : MonoBehaviour
         Destroy(deleteRoomTrigger.gameObject);
     }
 
-    public void HideDeleteRoomTrigger()
-    {
-        gameObject.SetActive(false);
-        if (_confirmationModal)
-        {
-            _confirmationModal.SetActive(false);
-        }
-    }
+    //public void HideDeleteRoomTrigger()
+    //{
+    //    gameObject.SetActive(false);
+    //    if (_confirmationModal)
+    //    {
+    //        _confirmationModal.SetActive(false);
+    //    }
+    //}
 
-    public void ShowDeleteRoomTrigger()
-    {
-        gameObject.SetActive(true);
-        if (_confirmationModal)
-        { 
-            _confirmationModal.SetActive(true);
-        }
-    }
+    //public void ShowDeleteRoomTrigger()
+    //{
+    //    gameObject.SetActive(true);
+    //    if (_confirmationModal)
+    //    { 
+    //        _confirmationModal.SetActive(true);
+    //    }
+    //}
 }

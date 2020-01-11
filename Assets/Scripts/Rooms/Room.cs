@@ -36,10 +36,10 @@ public class Room : MonoBehaviour
             Logger.Log(Logger.Locomotion, "{0} entered room {1}", character.Id, Id);
             character.EnterRoom(this);
             CharactersInRoom.Add(character);
-            if(_deleteRoomTrigger)
-            {
-                _deleteRoomTrigger.HideDeleteRoomTrigger();
-            }
+            //if(_deleteRoomTrigger)
+            //{
+            //    _deleteRoomTrigger.HideDeleteRoomTrigger();
+            //}
         }
     }
 
@@ -61,10 +61,10 @@ public class Room : MonoBehaviour
                     Logger.Log(Logger.Locomotion, "Remove character {0}", CharactersInRoom.Count);
                     CharactersInRoom.Remove(c);
                     Logger.Log(Logger.Locomotion, "Removed character {0}", CharactersInRoom.Count);
-                    if (CharactersInRoom.Count == 0 && _deleteRoomTrigger)
-                    {
-                        _deleteRoomTrigger.ShowDeleteRoomTrigger();
-                    }
+                    //if (CharactersInRoom.Count == 0 && _deleteRoomTrigger)
+                    //{
+                    //    _deleteRoomTrigger.ShowDeleteRoomTrigger();
+                    //}
                     return;
                 }
             }

@@ -4,29 +4,30 @@ using UnityEngine;
 public class BuildMenuWorldSpaceContainer : MonoBehaviour
 {
     public static BuildMenuWorldSpaceContainer Instance;
-    public List<RoomBuildPlot> RoomBuildPlots = new List<RoomBuildPlot>();
 
     void Awake()
     {
         Instance = this;
-        RoomBuildPlots = new List<RoomBuildPlot>();
     }
 
     public void CreateBuildingPlot(GameObject buildingPlot, RoomBlueprint room, Vector2 startingPoint)
     {
-        RoomBuildPlot plot = Instantiate(buildingPlot, transform).GetComponent<RoomBuildPlot>();
-        RoomBuildPlots.Add(plot);
+        if (BuilderManager.Instance.BuildingPlots.ContainsKey(startingPoint)) return;
+
+        BuildingPlot plot = Instantiate(buildingPlot, transform).GetComponent<BuildingPlot>();
+        BuilderManager.Instance.BuildingPlots.Add(startingPoint, plot);
 
         plot.Setup(room, startingPoint);
     }
 
     public void DestroyBuildingPlots()
     {
-        foreach (RoomBuildPlot plot in RoomBuildPlots)
+        foreach (KeyValuePair<Vector2, BuildingPlot> plot in BuilderManager.Instance.BuildingPlots)
         {
-            plot.DestroySelf();
+            plot.Value.DestroySelf();
         }
-        RoomBuildPlots.Clear();
+        BuilderManager.Instance.BuildingPlots.Clear();
+        BuilderManager.Instance.BuildingPlotLocations.Clear();
     }
 
 }

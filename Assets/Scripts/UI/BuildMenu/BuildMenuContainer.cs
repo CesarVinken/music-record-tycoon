@@ -50,22 +50,6 @@ public class BuildMenuContainer : MonoBehaviour
         Instance = this;
     }
 
-    //public void OnPointerEnter(PointerEventData eventData)
-    //{
-    //    //Debug.Log("Mouse Over: " + eventData.pointerCurrentRaycast.gameObject.name);
-    //    if (eventData.pointerCurrentRaycast.gameObject != null)
-    //    {
-    //        if (eventData.pointerCurrentRaycast.gameObject.name == "BuildText") return;
-
-    //        PointerOnBuildMenu = true;
-    //    }
-    //}
-
-    //public void OnPointerExit(PointerEventData eventData)
-    //{
-    //    PointerOnBuildMenu = false;
-    //}
-
     //public void Update()
     //{
     //    if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Open"))
