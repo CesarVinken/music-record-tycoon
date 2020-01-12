@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-// TODO: move to own file
-public enum BuildMenuTab
-{
-    Rooms,
-    RoomObjects
-}
 
 public class BuilderManager : MonoBehaviour
 {
@@ -147,13 +141,14 @@ public class BuilderManager : MonoBehaviour
 
         BuildMenuContainer.Instance.IsOpen = true;
         BuildMenuContainer.Instance.IsBuilding = true;
-        BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTab.Rooms);
-        //BuildMenuActivated = true;
+        BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTabType.Rooms);
+
+        BuildMenuTabContainer.Instance.ActivateBuildMenuTabs();
+
         BuildMenuContainer.Instance.CompletePanelActivation();
         //    InGameButtons.Instance.CreateButtonsForBuildMenuMode();
         //    InGameButtons.Instance.DeleteButtonsForBuildMenuMode();
 
-        //    ActivateRoomBuildMode();
     }
 
     public void DeactivateBuildMenuMode()
@@ -162,10 +157,12 @@ public class BuilderManager : MonoBehaviour
         BuildMenuContainer.Instance.IsOpen = false;
         BuildMenuContainer.Instance.IsBuilding = false;
 
-        BuildMenuContainer.Instance.RemoveBuildMenuContent();
+        BuildMenuContainer.Instance.RemoveBuildMenuContent(0.5f);
         MainCanvas.Instance.UnsetPointerImage();
 
         BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
+        BuildMenuTabContainer.Instance.ResetCurrentBuildMenuTab();
+
 
         //    InGameButtons.Instance.CreateButtonsForPlayMode();
         //    InGameButtons.Instance.DeleteButtonsForPlayMode();

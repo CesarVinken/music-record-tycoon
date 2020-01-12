@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 // This is the script that drives the collection of buttons related to the build Tab. Such as the different rooms.
 public class BuildMenuContainer : MonoBehaviour
@@ -16,10 +15,8 @@ public class BuildMenuContainer : MonoBehaviour
     //public GameObject RoomButtonPrefab;
     //public GameObject DeleteRoomButtonPrefab;
     public GameObject BuildItemPrefab;
-    //public GameObject BuildTabPrefab;
 
     private Animator _animator;
-    //private CanvasGroup _canvasGroup;
 
     public bool PointerOnBuildMenu = false;
 
@@ -50,7 +47,6 @@ public class BuildMenuContainer : MonoBehaviour
     public void Awake()
     {
         _animator = GetComponent<Animator>();
-        //_canvasGroup = GetComponent<CanvasGroup>();
 
         if (!_animator)
             Logger.Error(Logger.Initialisation, "Cannot find animator");
@@ -98,16 +94,20 @@ public class BuildMenuContainer : MonoBehaviour
     //        Destroy(DeleteRoomButton);
     //}
 
-    public void LoadBuildMenuContent(BuildMenuTab buildMenuTab)
+    public void LoadBuildMenuContent(BuildMenuTabType buildMenuTabType)
     {
         // TODO: add GOs for all items for the current build menu tab
+        // TODO: Should also present an updated version of which items the player can actually build (based on level/money/tech)
 
         // Currently just load test Room1 and Hallway
-        GameObject item = Instantiate(BuildItemPrefab, BuildItemsContainer.transform);
-        item.name = "Room1";
-        BuildItemTile buildItemTile = item.GetComponent<BuildItemTile>();
-        
-        buildItemTile.Setup("Room1", "This room is just for testing");
+        if(buildMenuTabType == BuildMenuTabType.Rooms)
+        {
+            GameObject item = Instantiate(BuildItemPrefab, BuildItemsContainer.transform);
+            item.name = "Room1";
+            BuildItemTile buildItemTile = item.GetComponent<BuildItemTile>();
+
+            buildItemTile.Setup("Room1", "This room is just for testing");
+        }
     }
 
     public void CompletePanelActivation()
@@ -121,20 +121,31 @@ public class BuildMenuContainer : MonoBehaviour
     {
         yield return new WaitForSeconds(0.4f);
         BuilderManager.InBuildMode = true;
-
-    }
-    public void RemoveBuildMenuContent()
-    {
-        IEnumerator updateGrid = RemoveBuildMenuContentRoutine();
-        StartCoroutine(updateGrid);
     }
 
-    public IEnumerator RemoveBuildMenuContentRoutine()
+    public void RemoveBuildMenuContent(float delay)
     {
-        yield return new WaitForSeconds(0.5f);
+        if(delay == 0)  // when changing tabs and refreshing the content
+        {
+            foreach (Transform child in BuildItemsContainer.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+        else // when closing the menu
+        {
+            IEnumerator removeBuildMenuContent = RemoveBuildMenuContentRoutine(delay);
+            StartCoroutine(removeBuildMenuContent);
+        }
+    }
+
+    public IEnumerator RemoveBuildMenuContentRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         foreach (Transform child in BuildItemsContainer.transform)
         {
             Destroy(child.gameObject);
         }
+        BuildMenuTabContainer.Instance.DeactivateBuildMenuTabs();
     }
 }

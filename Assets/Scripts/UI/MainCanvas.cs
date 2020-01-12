@@ -40,7 +40,7 @@ public class MainCanvas : MonoBehaviour
                 {
                     Logger.Log(Logger.UI, "Close build menu");
                     BuildMenuContainer.Instance.IsOpen = false;
-                    BuildMenuContainer.Instance.RemoveBuildMenuContent();
+                    BuildMenuContainer.Instance.RemoveBuildMenuContent(0.5f);
                 }
                 Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
                 Vector2 tileSizeInUnits = new Vector2(30f, 15f);
