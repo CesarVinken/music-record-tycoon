@@ -10,11 +10,14 @@ public class MainCanvas : MonoBehaviour
     public Image PointerImage;
     public bool IsDraggingIcon;
 
+    public GameObject NotificationPrefab;
+
     public void Awake()
     {
         Instance = this;
 
         Guard.CheckIsNull(PointerImageGO, "PointerImageGO");
+        Guard.CheckIsNull(NotificationPrefab, "NotificationPrefab");
 
         PointerImage.sprite = null;
         PointerImage.enabled = false;

@@ -96,7 +96,9 @@ public class BuilderManager : MonoBehaviour
                     if (Input.GetMouseButtonDown(0))
                     {
                         Logger.Warning("Cannot build here!");
-                        // TODO show failed build animation
+                        GameObject notificationGO = Instantiate(MainCanvas.Instance.NotificationPrefab, MainCanvas.Instance.transform);
+                        Notification notification = notificationGO.transform.GetComponent<Notification>();
+                        notification.Setup(NotificationType.FromPointer, "Cannot build in location");
                         ActivateBuildMenuMode();
                     }
                 }
@@ -104,8 +106,6 @@ public class BuilderManager : MonoBehaviour
                 {
                     // TODO
                 }
-
-
             }
         }
     }
