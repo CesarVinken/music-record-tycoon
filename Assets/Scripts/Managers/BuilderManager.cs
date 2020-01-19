@@ -8,8 +8,7 @@ public class BuilderManager : MonoBehaviour
 {
     public static BuilderManager Instance;
 
-    //public static bool BuildMenuActivated;
-    public static bool InBuildMode;
+    public static bool InBuildMode; // Build mode = either build panel is open or the player is dragging the building icon around
     public static bool InDeleteRoomMode;
     public static bool HasRoomSelected;
     public static bool PointerIsOnAvailablePlot;
@@ -59,7 +58,7 @@ public class BuilderManager : MonoBehaviour
 
     void Update()
     {
-        if (InBuildMode && MainCanvas.Instance.IsDraggingIcon)
+        if (InBuildMode && MainCanvas.Instance.IsDraggingIcon && !BuildMenuContainer.Instance.IsOpen)
         {
             if(PointerIsOnAvailablePlot)
             {
@@ -71,16 +70,16 @@ public class BuilderManager : MonoBehaviour
 
                         BuildRoom(BuildingPlot.AvailablePlotVectorPosition);
 
-                        ActivateBuildMenuMode();
-
-                        //BuildMenuContainer.Instance.IsOpen = true;
-                        //BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTab.Rooms);
-                        //MainCanvas.Instance.UnsetPointerImage();
+                        if (BuildMenuContainer.Instance.PanelAnimationPlaying)
+                        {
+                            ReopenBuildMenu();
+                        }
+                        else
+                        {
+                            BuildMenuContainer.Instance.ActivateAnimationFreeze();
+                            ActivateBuildMenuMode();
+                        }
                     }
-                }
-                else
-                {
-                    // TODO
                 }
             }
             else
@@ -93,12 +92,56 @@ public class BuilderManager : MonoBehaviour
                         GameObject notificationGO = Instantiate(MainCanvas.Instance.NotificationPrefab, MainCanvas.Instance.transform);
                         Notification notification = notificationGO.transform.GetComponent<Notification>();
                         notification.Setup(NotificationType.FromPointer, "Cannot build in location");
+
+                        if (BuildMenuContainer.Instance.PanelAnimationPlaying)
+                        {
+                            ReopenBuildMenu();
+                        }
+                        else
+                        {
+                            BuildMenuContainer.Instance.ActivateAnimationFreeze();
+                            ActivateBuildMenuMode();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (Input.touchCount == 1)
+        {
+            if (Input.touches[0].phase == TouchPhase.Ended)
+            {
+                if (MainCanvas.Instance.PointerImage.sprite != null && !BuildMenuContainer.Instance.IsOpen)
+                {
+                    if (PointerIsOnAvailablePlot)
+                    {
+                        Logger.Warning("Let's build!");
+
+                        BuildRoom(BuildingPlot.AvailablePlotVectorPosition);
+                    }
+                    else
+                    {
+                        if (MainCanvas.Instance.IsDraggingIcon && !BuildMenuContainer.Instance.IsOpen)
+                        {
+                            GameObject notificationGO = Instantiate(MainCanvas.Instance.NotificationPrefab, MainCanvas.Instance.transform);
+                            Notification notification = notificationGO.transform.GetComponent<Notification>();
+                            notification.Setup(NotificationType.FromPointer, "Cannot build in location");
+                        }
+                    }
+
+                    if (BuildMenuContainer.Instance.PanelAnimationPlaying)
+                    {
+                        ReopenBuildMenu();
+                    }
+                    else
+                    {
+                        BuildMenuContainer.Instance.ActivateAnimationFreeze();
                         ActivateBuildMenuMode();
                     }
                 }
                 else
                 {
-                    // TODO
+                    MainCanvas.Instance.UnsetPointerImage();
                 }
             }
         }
@@ -141,14 +184,27 @@ public class BuilderManager : MonoBehaviour
 
         BuildMenuContainer.Instance.IsOpen = true;
         BuildMenuContainer.Instance.IsBuilding = true;
+        //BuildMenuContainer.Instance.ActivateAnimationFreeze();
         BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTabType.Rooms);
 
         BuildMenuTabContainer.Instance.ActivateBuildMenuTabs();
 
         BuildMenuContainer.Instance.CompletePanelActivation();
-        //    InGameButtons.Instance.CreateButtonsForBuildMenuMode();
-        //    InGameButtons.Instance.DeleteButtonsForBuildMenuMode();
+    }
 
+    // Only happens when the playing does a building action while the panel is still closing
+    public void ReopenBuildMenu()
+    {
+        MainCanvas.Instance.UnsetPointerImage();
+
+        if (BuildingPlots.Count > 0)
+        {
+            BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
+        }
+
+        // wait for closing to complete
+        IEnumerator waitAndReopenPanelRoutine = BuildMenuContainer.Instance.WaitAndReopenPanelRoutine();
+        StartCoroutine(waitAndReopenPanelRoutine);
     }
 
     public void DeactivateBuildMenuMode()
@@ -162,13 +218,6 @@ public class BuilderManager : MonoBehaviour
 
         BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
         BuildMenuTabContainer.Instance.ResetCurrentBuildMenuTab();
-
-
-        //    InGameButtons.Instance.CreateButtonsForPlayMode();
-        //    InGameButtons.Instance.DeleteButtonsForPlayMode();
-
-        //    if (InRoomBuildMode) DeactivateRoomBuildMode();
-        //    if (InDeleteRoomMode) DeactivateDeleteRoomMode();
     }
 
 
@@ -461,7 +510,6 @@ public class BuilderManager : MonoBehaviour
             CameraController.PanLimits[Direction.Down] = newRoomCorners[Direction.Down].y - panPadding;
         if (currentMinX >= newRoomCorners[Direction.Left].x - panPadding)
             CameraController.PanLimits[Direction.Left] = newRoomCorners[Direction.Left].x - panPadding;
-
     }
 
     public void DrawBuildingTilesGizmos()

@@ -30,7 +30,8 @@ public class MainCanvas : MonoBehaviour
         if (PointerImage.sprite != null)
         {
             Vector2 mousePosition = Input.mousePosition;
-            if (EventSystem.current.IsPointerOverGameObject() && BuildMenuContainer.Instance.IsOpen)
+            bool isPointerOverGameObject = PointerHelper.IsPointerOverGameObject();
+            if (isPointerOverGameObject && BuildMenuContainer.Instance.IsOpen)
             {
                 PointerImageGO.transform.position = new Vector2(mousePosition.x, mousePosition.y);
             }
@@ -39,6 +40,8 @@ public class MainCanvas : MonoBehaviour
                 if(BuildMenuContainer.Instance.IsOpen)
                 {
                     Logger.Log(Logger.UI, "Close build menu");
+                    BuildMenuContainer.Instance.ActivateAnimationFreeze();
+
                     BuildMenuContainer.Instance.IsOpen = false;
                     BuildMenuContainer.Instance.RemoveBuildMenuContent(0.5f);
                 }
@@ -67,12 +70,25 @@ public class MainCanvas : MonoBehaviour
                 }
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if(GameManager.Instance.CurrentPlatform == Platform.PC)
             {
-                UnsetPointerImage();
+                if (BuildMenuContainer.Instance.PanelAnimationPlaying) return;
+
+                if (Input.GetMouseButtonDown(1))
+                {
+                    UnsetPointerImage();
+                    if(!BuildMenuContainer.Instance.IsOpen)
+                    {
+                        BuildMenuContainer.Instance.ActivateAnimationFreeze();
+                        BuilderManager.Instance.ActivateBuildMenuMode();
+                    }
+
+                }
             }
         }
     }
+
+
 
     public void SetPointerImage(Sprite sprite)
     {

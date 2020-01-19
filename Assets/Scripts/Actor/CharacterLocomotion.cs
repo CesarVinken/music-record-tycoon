@@ -27,7 +27,7 @@ public class CharacterLocomotion : MonoBehaviour
         if (GameManager.MainMenuOpen)
             return;
 
-        CheckMouseInput();
+        CheckPointerInput();
         if(PlayerCharacter.Instance.CharacterActionState == CharacterActionState.Moving)
         {
             HandleMovement();
@@ -35,9 +35,12 @@ public class CharacterLocomotion : MonoBehaviour
     }
 
 
-    private void CheckMouseInput()
+    private void CheckPointerInput()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
+        if (PointerHelper.IsPointerOverGameObject())
+            return;
+
+        if (BuilderManager.InBuildMode)
             return;
 
         if (GameManager.Instance.CurrentPlatform == Platform.PC)
@@ -73,7 +76,6 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void SetLocomotionTarget(Vector3 newTarget)
     {
-        if (BuilderManager.InBuildMode) return;
         //if (BuilderManager.BuildMenuActivated && MainCanvas.Instance.PointerImage.sprite == null)
         //    BuilderManager.Instance.DeactivateBuildMenuMode();
 

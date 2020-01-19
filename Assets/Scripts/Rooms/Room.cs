@@ -58,9 +58,9 @@ public class Room : MonoBehaviour
             {
                 if (c.Id == character.Id)
                 {
-                    Logger.Log(Logger.Locomotion, "Remove character {0}", CharactersInRoom.Count);
+                    Logger.Log(Logger.Locomotion, "Remove character {0} from room ${1}", CharactersInRoom.Count, Id);
                     CharactersInRoom.Remove(c);
-                    Logger.Log(Logger.Locomotion, "Removed character {0}", CharactersInRoom.Count);
+                    Logger.Log(Logger.Locomotion, "Removed character {0} from room ${1}", CharactersInRoom.Count, Id);
                     //if (CharactersInRoom.Count == 0 && _deleteRoomTrigger)
                     //{
                     //    _deleteRoomTrigger.ShowDeleteRoomTrigger();

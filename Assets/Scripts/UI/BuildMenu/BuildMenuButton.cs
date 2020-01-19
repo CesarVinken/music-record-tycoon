@@ -12,6 +12,7 @@ public class BuildMenuButton : MonoBehaviour
     public void OpenBuildMenu()
     {
         Logger.Log(Logger.UI, "Open and activate build menu");
+        BuildMenuContainer.Instance.ActivateAnimationFreeze();
         BuilderManager.Instance.ActivateBuildMenuMode();
     }
 

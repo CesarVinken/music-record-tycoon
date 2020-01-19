@@ -64,6 +64,8 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandleMobilePanning(Vector2 position)
     {
+        if (BuilderManager.InBuildMode) return position;
+
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {
             Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;

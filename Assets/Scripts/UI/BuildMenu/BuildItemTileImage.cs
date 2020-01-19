@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler
+public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
     public BuildItemTile BuildItemTile;
 
@@ -12,12 +12,33 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        BuilderManager.Instance.SetSelectedRoom(new RoomBlueprint());     // TODO Will later NOT always be the same room
+        if (GameManager.Instance.CurrentPlatform == Platform.PC)
+        {
+            BuilderManager.Instance.SetSelectedRoom(new RoomBlueprint());     // TODO Will later NOT always be the same room
 
-        Sprite roomIcon = Resources.Load<Sprite>("Icons/Room1");
-        RectTransform rectTransform = (RectTransform)transform;
-        MainCanvas.Instance.SetPointerImage(roomIcon, new Vector2(rectTransform.rect.width, rectTransform.rect.height));
+            Sprite roomIcon = Resources.Load<Sprite>("Icons/Room1");
+            RectTransform rectTransform = (RectTransform)transform;
+            MainCanvas.Instance.SetPointerImage(roomIcon, new Vector2(rectTransform.rect.width, rectTransform.rect.height));
 
-        BuilderManager.Instance.DrawAvailablePlots();
+            BuilderManager.Instance.DrawAvailablePlots();
+        }
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (GameManager.Instance.CurrentPlatform == Platform.Android)
+        {
+            if (Input.touchCount == 1 && Input.touches[0].phase == TouchPhase.Began)
+            {
+                BuilderManager.Instance.SetSelectedRoom(new RoomBlueprint());
+
+                Sprite roomIcon = Resources.Load<Sprite>("Icons/Room1");
+                RectTransform rectTransform = (RectTransform)transform;
+                MainCanvas.Instance.SetPointerImage(roomIcon, new Vector2(rectTransform.rect.width, rectTransform.rect.height));
+
+                BuilderManager.Instance.DrawAvailablePlots();
+            }
+        }
     }
 }
+

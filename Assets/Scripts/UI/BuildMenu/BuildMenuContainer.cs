@@ -19,6 +19,7 @@ public class BuildMenuContainer : MonoBehaviour
     private Animator _animator;
 
     public bool PointerOnBuildMenu = false;
+    public bool PanelAnimationPlaying = false; // the player should not perform build actions while the menu is still openeing or closing
 
     public bool IsOpen
     {
@@ -32,7 +33,7 @@ public class BuildMenuContainer : MonoBehaviour
         }
     }
 
-    public bool IsBuilding
+    public bool IsBuilding // the state in which the player is dragging an item to build. The building menu can come back up once finishing the action
     {
         get
         {
@@ -51,31 +52,12 @@ public class BuildMenuContainer : MonoBehaviour
         if (!_animator)
             Logger.Error(Logger.Initialisation, "Cannot find animator");
 
-        //if (!_canvasGroup)
-        //    Logger.Error(Logger.Initialisation, "Cannot find canvasGroup");
-
-        //Guard.CheckIsNull(ExitBuildMenuButtonPrefab, "ExitBuildMenuButtonPrefab");
-        //Guard.CheckIsNull(RoomButtonPrefab, "RoomButtonPrefab");
-        //Guard.CheckIsNull(DeleteRoomButtonPrefab, "DeleeRoomButtonPrefab");
         Guard.CheckIsNull(BuildItemsContainer, "BuildItemsContainer");
         Guard.CheckIsNull(BuildTabContainer, "BuildTabContainer");
         Guard.CheckIsNull(BuildItemPrefab, "BuildItemPrefab");
 
         Instance = this;
     }
-
-    //public void Update()
-    //{
-    //    if (!_animator.GetCurrentAnimatorStateInfo(0).IsName("Open"))
-    //    {
-    //        _canvasGroup.blocksRaycasts = _canvasGroup.interactable = false;
-    //    }
-    //    else
-    //    {
-    //        // if not in "open" state, make the menu not interactable
-    //        _canvasGroup.blocksRaycasts = _canvasGroup.interactable = true;
-    //    }
-    //}
 
     //public void CreateAllButtons()
     //{
@@ -132,11 +114,17 @@ public class BuildMenuContainer : MonoBehaviour
                 Destroy(child.gameObject);
             }
         }
-        else // when closing the menu
+        else // when closing the menu, wait until the menu is closed before removing content
         {
             IEnumerator removeBuildMenuContent = RemoveBuildMenuContentRoutine(delay);
             StartCoroutine(removeBuildMenuContent);
         }
+    }
+
+    public void ActivateAnimationFreeze() // prevent the player from doing buildingactions while the panel is opening or closing
+    {
+        IEnumerator activateAnimationFreezeRoutine = ActivateAnimationFreezeRoutine();
+        StartCoroutine(activateAnimationFreezeRoutine);
     }
 
     public IEnumerator RemoveBuildMenuContentRoutine(float delay)
@@ -147,5 +135,26 @@ public class BuildMenuContainer : MonoBehaviour
             Destroy(child.gameObject);
         }
         BuildMenuTabContainer.Instance.DeactivateBuildMenuTabs();
+    }
+
+    public IEnumerator ActivateAnimationFreezeRoutine()
+    {
+        PanelAnimationPlaying = true;
+        yield return new WaitForSeconds(0.5f); // length of panel opening/closing animation
+        PanelAnimationPlaying = false;
+    }
+
+    public IEnumerator WaitAndReopenPanelRoutine()
+    {
+        yield return new WaitForSeconds(0.5f); // length of panel opening/closing animation
+
+        BuildMenuContainer.Instance.IsOpen = true;
+        BuildMenuContainer.Instance.IsBuilding = true;
+        BuildMenuContainer.Instance.ActivateAnimationFreeze();
+        BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTabType.Rooms);
+
+        BuildMenuTabContainer.Instance.ActivateBuildMenuTabs();
+
+        BuildMenuContainer.Instance.CompletePanelActivation();
     }
 }
