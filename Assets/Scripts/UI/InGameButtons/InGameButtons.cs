@@ -31,6 +31,16 @@ public class InGameButtons : MonoBehaviour
         Guard.CheckIsNull(BuildMenuButtonPrefab, "BuildMenuButtonPrefab");
     }
 
+    public void ShowMainMenuButton(bool show)
+    {
+        MainMenuButton.SetActive(show);
+    }
+
+    public void ShowBuildMenuButton(bool show)
+    {
+        BuildMenuButton.SetActive(show);
+    }
+
     //public void CreateButtonsForBuildMenuMode()
     //{
     //    BuildMenuContainer.Instance.CreateAllButtons();
@@ -52,6 +62,6 @@ public class InGameButtons : MonoBehaviour
 
     //public void DeleteButtonsForPlayMode()
     //{
-        //BuildMenuContainer.Instance.DeleteAllButtons();
+    //BuildMenuContainer.Instance.DeleteAllButtons();
     //}
 }

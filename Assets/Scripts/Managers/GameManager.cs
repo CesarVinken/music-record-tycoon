@@ -22,18 +22,16 @@ public class GameManager : MonoBehaviour
 
         MainMenuOpen = false;
 
-        //if (Application.isMobilePlatform)
-        //{
-        //    CurrentPlatform = Platform.Android;
-        //    Configuration = new AndroidConfiguration();
-        //} else
-        //{
-        //    CurrentPlatform = Platform.PC;
-        //    Configuration = new PCConfiguration();
-        //}
-        CurrentPlatform = Platform.Android;
-        Configuration = new AndroidConfiguration();
-
+        if (Application.isMobilePlatform)
+        {
+            CurrentPlatform = Platform.Android;
+            Configuration = new AndroidConfiguration();
+        }
+        else
+        {
+            CurrentPlatform = Platform.PC;
+            Configuration = new PCConfiguration();
+        }
 
         Guard.CheckIsNull(BuilderManager, "BuilderManager");
         Guard.CheckIsNull(BuilderManager, "RoomManager");

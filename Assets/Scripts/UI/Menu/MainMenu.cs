@@ -9,7 +9,6 @@ public class MainMenu : MenuScreen
 
     public GameObject NewGameBtn;
     public GameObject ToSavePanel;
-    public GameObject ResumeGameBtn;
     public GameObject QuitGameBtn;
 
     public void Awake()
@@ -20,7 +19,6 @@ public class MainMenu : MenuScreen
 
         Guard.CheckIsNull(NewGameBtn, "NewGameBtn");
         Guard.CheckIsNull(ToSavePanel, "ToSavePanel");
-        Guard.CheckIsNull(ResumeGameBtn, "ResumeGameBtn");
         Guard.CheckIsNull(QuitGameBtn, "QuitGameBtn");
     }
 
@@ -30,7 +28,6 @@ public class MainMenu : MenuScreen
         if(GameManager.Instance == null)
         {
             ToSavePanel.SetActive(false);
-            ResumeGameBtn.SetActive(false);
         }
         else
         {
@@ -64,13 +61,13 @@ public class MainMenu : MenuScreen
         InstantiatePanel(OptionsPanelPrefab);
     }
 
-    public void ResumeGame()
-    {
-        if (MainMenuCanvas.Instance == null)
-            Logger.Error(Logger.UI, "Cannot find MainMenuCanvas");
+    //public void CloseMenu()
+    //{
+    //    if (MainMenuCanvas.Instance == null)
+    //        Logger.Error(Logger.UI, "Cannot find MainMenuCanvas");
 
-        MainMenuCanvas.Instance.CloseMainMenu();
-    }
+    //    MainMenuCanvas.Instance.CloseMainMenu();
+    //}
 
     public void QuitGame()
     {

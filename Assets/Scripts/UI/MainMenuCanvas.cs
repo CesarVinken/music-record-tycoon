@@ -42,6 +42,9 @@ public class MainMenuCanvas : MonoBehaviour
         Time.timeScale = 0;
         GameManager.MainMenuOpen = true;
         CurrentMainMenuPanel = Instantiate(MainMenuPrefab, transform);
+
+        InGameButtons.Instance.ShowMainMenuButton(false);
+        InGameButtons.Instance.ShowBuildMenuButton(false);
     }
 
     public void CloseMainMenu()
@@ -50,6 +53,9 @@ public class MainMenuCanvas : MonoBehaviour
         GameManager.MainMenuOpen = false;
         Destroy(CurrentMainMenuPanel);
         Time.timeScale = 1;
+
+        InGameButtons.Instance.ShowMainMenuButton(true);
+        InGameButtons.Instance.ShowBuildMenuButton(true);
     }
 
     public void SetCurrentMenuPanel(GameObject panel)
