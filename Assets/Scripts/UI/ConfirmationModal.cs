@@ -41,7 +41,7 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
                 break;
             case BuildAction.DeleteRoom:
                 _deleteRoomTrigger.DeleteRoom();
-                DeleteRoomTrigger.DeleteDeleteRoomTriggers();
+                DeleteRoomTrigger.DeleteAllDeleteRoomTriggers();
                 break;
             default:
                 Logger.Error(Logger.UI, "The buildAction {0} is not yet implemented", _buildAction);

@@ -6,13 +6,17 @@ public class BuildMenuTabContainer : MonoBehaviour
     public static BuildMenuTabContainer Instance;
 
     public BuildMenuTab CurrentBuildMenuTab = null;
+    public DeleteObjectMode DeleteObjectModeButton;
     public List<BuildMenuTab> BuildMenuTabs;
 
     public void Awake()
     {
         Instance = this;
 
-        if(BuildMenuTabs.Count == 0)
+        if (DeleteObjectModeButton == null) 
+            Logger.Error(Logger.Initialisation, "Could not find DeleteObjectModeButton");
+
+        if (BuildMenuTabs.Count == 0)
         {
             Logger.Error(Logger.Initialisation, "Could not find build menu tabs");
         }
@@ -20,6 +24,8 @@ public class BuildMenuTabContainer : MonoBehaviour
 
     public void ActivateBuildMenuTabs()
     {
+        DeleteObjectModeButton.gameObject.SetActive(true);
+
         for (int i = 0; i < BuildMenuTabs.Count; i++)
         {
             BuildMenuTabs[i].gameObject.SetActive(true);
@@ -28,6 +34,8 @@ public class BuildMenuTabContainer : MonoBehaviour
 
     public void DeactivateBuildMenuTabs()
     {
+        DeleteObjectModeButton.gameObject.SetActive(false);
+
         for (int i = 0; i < BuildMenuTabs.Count; i++)
         {
             BuildMenuTabs[i].gameObject.SetActive(false);
@@ -41,6 +49,9 @@ public class BuildMenuTabContainer : MonoBehaviour
         CurrentBuildMenuTab = buildMenuTab;
         BuildMenuContainer.Instance.RemoveBuildMenuContent(0);
         BuildMenuContainer.Instance.LoadBuildMenuContent(buildMenuTab.TabType);
+
+        if(BuilderManager.InDeleteObjectMode)
+            BuilderManager.Instance.DeactivateDeleteRoomMode();
     }
 
     public void ResetCurrentBuildMenuTab()

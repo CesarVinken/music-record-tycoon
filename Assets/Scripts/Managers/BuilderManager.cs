@@ -9,8 +9,8 @@ public class BuilderManager : MonoBehaviour
     public static BuilderManager Instance;
 
     public static bool InBuildMode; // Build mode = either build panel is open or the player is dragging the building icon around
-    public static bool InDeleteRoomMode;
-    public static bool HasRoomSelected;
+    public static bool InDeleteObjectMode;
+    //public static bool HasRoomSelected;
     public static bool PointerIsOnAvailablePlot;
 
     public GameObject Room1Prefab;
@@ -32,8 +32,8 @@ public class BuilderManager : MonoBehaviour
     {
         Instance = this;
         InBuildMode = false;
-        InDeleteRoomMode = false;
-        HasRoomSelected = false;
+        InDeleteObjectMode = false;
+        //HasRoomSelected = false;
         PointerIsOnAvailablePlot = false;
 
         SelectedRoom = null;
@@ -184,7 +184,6 @@ public class BuilderManager : MonoBehaviour
 
         BuildMenuContainer.Instance.IsOpen = true;
         BuildMenuContainer.Instance.IsBuilding = true;
-        //BuildMenuContainer.Instance.ActivateAnimationFreeze();
         BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTabType.Rooms);
 
         BuildMenuTabContainer.Instance.ActivateBuildMenuTabs();
@@ -218,11 +217,17 @@ public class BuilderManager : MonoBehaviour
 
         BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
         BuildMenuTabContainer.Instance.ResetCurrentBuildMenuTab();
+
+        if (InDeleteObjectMode)
+            Instance.DeactivateDeleteRoomMode();
     }
 
 
     public void DrawAvailablePlots()
     {
+        if (InDeleteObjectMode)
+            DeactivateDeleteRoomMode();
+
         RoomBlueprint selectedRoom = SelectedRoom;
         BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
 
@@ -567,29 +572,31 @@ public class BuilderManager : MonoBehaviour
     //        ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
     //}
 
-    //public void ActivateDeleteRoomMode()
-    //{
-    //    if (InRoomBuildMode) DeactivateRoomBuildMode();
+    public void ActivateDeleteRoomMode()
+    {
+        if (MainCanvas.Instance.IsDraggingIcon)
+        {
+            MainCanvas.Instance.UnsetPointerImage();
+        }
 
-    //    InDeleteRoomMode = true;
+        InDeleteObjectMode = true;
 
-    //    foreach (Room room in RoomManager.Rooms)
-    //    {
+        foreach (Room room in RoomManager.Rooms)
+        {
+            DeleteRoomTrigger deleteRoomTrigger = Instantiate(DeleteRoomTriggerPrefab, MainCanvas.Instance.transform).GetComponent<DeleteRoomTrigger>();
+            if (room.CharactersInRoom.Count > 0) deleteRoomTrigger.gameObject.SetActive(false);
+            deleteRoomTrigger.Setup(room);
+        }
+    }
 
-    //        DeleteRoomTrigger deleteRoomTrigger = Instantiate(DeleteRoomTriggerPrefab, MainCanvas.Instance.transform).GetComponent<DeleteRoomTrigger>();
-    //        if (room.CharactersInRoom.Count > 0) deleteRoomTrigger.gameObject.SetActive(false);
-    //        deleteRoomTrigger.Setup(room);
-    //    }
-    //}
+    public void DeactivateDeleteRoomMode()
+    {
+        InDeleteObjectMode = false;
 
-    //public void DeactivateDeleteRoomMode()
-    //{
-    //    InDeleteRoomMode = false;
-
-    //    DeleteRoomTrigger.DeleteDeleteRoomTriggers();
-    //    if (ConfirmationModal.CurrentConfirmationModal)
-    //        ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
-    //}
+        DeleteRoomTrigger.DeleteAllDeleteRoomTriggers();
+        if (ConfirmationModal.CurrentConfirmationModal)
+            ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
+    }
 
     //public void SetSelectedRoom(RoomBlueprint blueprint)
     //{

@@ -43,7 +43,7 @@ public class MainMenuCanvas : MonoBehaviour
         GameManager.MainMenuOpen = true;
         CurrentMainMenuPanel = Instantiate(MainMenuPrefab, transform);
 
-        InGameButtons.Instance.ShowMainMenuButton(false);
+        InGameButtons.Instance.ShowMainMenuButton(false);   
         InGameButtons.Instance.ShowBuildMenuButton(false);
     }
 

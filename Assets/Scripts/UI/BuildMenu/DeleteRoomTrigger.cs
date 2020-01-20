@@ -63,7 +63,7 @@ public class DeleteRoomTrigger : MonoBehaviour
         }
     }
 
-    public static void DeleteDeleteRoomTriggers()
+    public static void DeleteAllDeleteRoomTriggers()
     {
         for (int i = 0; i < DeleteRoomTriggers.Count; i++)
         {

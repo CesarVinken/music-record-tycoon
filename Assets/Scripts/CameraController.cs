@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
 
     private float _zoomModifier;
     private float _minZoomLevel = 35f;
-    private float _maxZoomLevel = 80f;
+    private float _maxZoomLevel = 90f;
 
     private Vector2 _firstTouchPreviousPosition;
     private Vector2 _secondTouchPreviousPosition;
