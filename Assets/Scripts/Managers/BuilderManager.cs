@@ -20,7 +20,7 @@ public class BuilderManager : MonoBehaviour
 
     public RoomBlueprint SelectedRoom;
 
-    //public GameObject ConfirmationModalGO;
+    public GameObject ConfirmationModalGO;
     public GameObject RoomsContainer;
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();
@@ -142,6 +142,19 @@ public class BuilderManager : MonoBehaviour
                 else
                 {
                     MainCanvas.Instance.UnsetPointerImage();
+                }
+            }
+        }
+
+        if (ConfirmationModal.CurrentConfirmationModal != null)
+        {
+            if (Input.GetMouseButtonDown(0) || (Input.touchCount == 1 && Input.touches[0].phase == TouchPhase.Began))
+            {
+                bool isPointerOverGameObject = PointerHelper.IsPointerOverGameObject();
+                if(!isPointerOverGameObject)
+                {
+                    ConfirmationModal.CurrentConfirmationModal.ResetDeleteTrigger();
+                    ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
                 }
             }
         }
@@ -583,7 +596,7 @@ public class BuilderManager : MonoBehaviour
 
         foreach (Room room in RoomManager.Rooms)
         {
-            DeleteRoomTrigger deleteRoomTrigger = Instantiate(DeleteRoomTriggerPrefab, MainCanvas.Instance.transform).GetComponent<DeleteRoomTrigger>();
+            DeleteRoomTrigger deleteRoomTrigger = Instantiate(DeleteRoomTriggerPrefab, MainCanvas.Instance.TriggersContainer.transform).GetComponent<DeleteRoomTrigger>();
             if (room.CharactersInRoom.Count > 0) deleteRoomTrigger.gameObject.SetActive(false);
             deleteRoomTrigger.Setup(room);
         }

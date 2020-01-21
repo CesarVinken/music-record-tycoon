@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MainCanvas : MonoBehaviour
@@ -7,17 +6,22 @@ public class MainCanvas : MonoBehaviour
     public static MainCanvas Instance;
 
     public GameObject PointerImageGO;
+    public GameObject TriggersContainer;
     public Image PointerImage;
     public bool IsDraggingIcon;
 
     public GameObject NotificationPrefab;
+    public GameObject ConfirmationModalPrefab;
 
     public void Awake()
     {
         Instance = this;
 
         Guard.CheckIsNull(PointerImageGO, "PointerImageGO");
+        Guard.CheckIsNull(TriggersContainer, "TriggersContainer");
+
         Guard.CheckIsNull(NotificationPrefab, "NotificationPrefab");
+        Guard.CheckIsNull(ConfirmationModalPrefab, "ConfirmationModalPrefab");
 
         PointerImage.sprite = null;
         PointerImage.enabled = false;
