@@ -10,12 +10,14 @@ public class NavActor : MonoBehaviour
     public float TurnSpeed = 3;
     public float TurnDst = 5;
     public bool FollowingPath;
+    public bool IsReevaluating;
 
     public NavPath Path;
 
     public void Start()
     {
         FollowingPath = false;
+        IsReevaluating = false;
         StartCoroutine(UpdatePath());
     }
 
@@ -26,6 +28,11 @@ public class NavActor : MonoBehaviour
             Path = new NavPath(waypoints, transform.position, TurnDst);
             StopCoroutine("FollowPath");
             StartCoroutine("FollowPath");
+        }
+        else
+        {
+            StopCoroutine("FollowPath");
+            FollowingPath = false;
         }
     }
 
@@ -43,10 +50,11 @@ public class NavActor : MonoBehaviour
         {
             yield return new WaitForSeconds(MIN_PATH_UPDATE_TIME);
 
-            if ((Target - targetPosOld).sqrMagnitude > sqrMoveThreshold)
+            if ((Target - targetPosOld).sqrMagnitude > sqrMoveThreshold || IsReevaluating)
             {
                 PathRequestManager.RequestPath(transform.position, Target, OnPathFound);
                 targetPosOld = Target;
+                IsReevaluating = false;
             }
         }
     }

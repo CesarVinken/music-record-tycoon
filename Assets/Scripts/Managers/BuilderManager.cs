@@ -549,6 +549,13 @@ public class BuilderManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.01f);
         GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
+        //PlayerCharacter.Instance.PlayerLocomotion.StopLocomotion();
+        PlayerCharacter.Instance.PlayerNav.IsReevaluating = true;
+        yield return new WaitForSeconds(0.08f);
+
+        // TODO: update routes for all moving characters on the map
+
+        PlayerCharacter.Instance.PlayerLocomotion.RetryReachLocomotionTarget();
     }
 
     public void DrawDoorLocationGizmos()

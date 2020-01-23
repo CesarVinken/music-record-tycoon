@@ -76,15 +76,20 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void SetLocomotionTarget(Vector3 newTarget)
     {
-        //if (BuilderManager.BuildMenuActivated && MainCanvas.Instance.PointerImage.sprite == null)
-        //    BuilderManager.Instance.DeactivateBuildMenuMode();
-
         Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
 
         _characterAnimationHandler.InLocomotion = true;
         PlayerCharacter.Instance.SetCharacterActionState(CharacterActionState.Moving);
 
         PlayerCharacter.Instance.PlayerNav.Target = new Vector3(newTarget.x, newTarget.y, PlayerCharacter.Instance.transform.position.z);
+    }
+
+    public void RetryReachLocomotionTarget()
+    {
+        Logger.Log("Retry locomotion target");
+
+        Vector3 target = new Vector3(PlayerCharacter.Instance.PlayerNav.Target.x, PlayerCharacter.Instance.PlayerNav.Target.y, PlayerCharacter.Instance.transform.position.z);
+        PlayerCharacter.Instance.PlayerNav.Target = target;
     }
 
     private void HandleMovement()
