@@ -10,8 +10,9 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
 {
     public static ConfirmationModal CurrentConfirmationModal;
     //private BuildingPlot _roomBuildPlot;
-    private DeleteRoomTrigger _deleteRoomTrigger;
+    public DeleteRoomTrigger DeleteRoomTrigger;
     private BuildAction _buildAction;
+    private Vector2 _midpoint = new Vector2(0, 0);
 
     //public void Setup(BuildingPlot roomBuildPlot)
     //{
@@ -22,7 +23,12 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
     //    _roomBuildPlot = roomBuildPlot;
     //}
 
-    public void Setup(DeleteRoomTrigger deleteRoomTrigger)
+    public void Update()
+    {
+        transform.position = Camera.main.WorldToScreenPoint(_midpoint);
+    }
+
+    public void Setup(DeleteRoomTrigger deleteRoomTrigger, Vector2 midpoint)
     {
         if (CurrentConfirmationModal)
         {
@@ -31,7 +37,8 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
         }
         CurrentConfirmationModal = this;
         _buildAction = BuildAction.DeleteRoom;
-        _deleteRoomTrigger = deleteRoomTrigger;
+        DeleteRoomTrigger = deleteRoomTrigger;
+        _midpoint = midpoint;
     }
 
     public void Confirm()
@@ -43,7 +50,7 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
             //    BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
             //    break;
             case BuildAction.DeleteRoom:
-                _deleteRoomTrigger.DeleteRoom();
+                DeleteRoomTrigger.DeleteRoom();
                 DeleteRoomTrigger.DeleteAllDeleteRoomTriggers();
                 break;
             default:
@@ -68,6 +75,16 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
 
     public void ResetDeleteTrigger()
     {
-        _deleteRoomTrigger.gameObject.SetActive(true);
+        DeleteRoomTrigger.gameObject.SetActive(true);
+    }
+
+    public void HideConfirmationModal()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void ShowConfirmationModal()
+    {
+        gameObject.SetActive(true);
     }
 }

@@ -36,10 +36,10 @@ public class Room : MonoBehaviour
             Logger.Log(Logger.Locomotion, "{0} entered room {1}", character.Id, Id);
             character.EnterRoom(this);
             CharactersInRoom.Add(character);
-            //if(_deleteRoomTrigger)
-            //{
-            //    _deleteRoomTrigger.HideDeleteRoomTrigger();
-            //}
+            if (_deleteRoomTrigger)
+            {
+                _deleteRoomTrigger.HideDeleteRoomTrigger();
+            }
         }
     }
 
@@ -50,10 +50,10 @@ public class Room : MonoBehaviour
         if (character)
         {
             Logger.Log(Logger.Locomotion, "{0} left room {1}", character.Id, Id);
-            //if (character.CurrentRoom == this)
-            //{
-            //    character.LeaveRoom();
-            //}
+            if (character.CurrentRoom == this)
+            {
+                character.LeaveRoom();
+            }
             foreach (PlayerCharacter c in CharactersInRoom)
             {
                 if (c.Id == character.Id)
@@ -61,10 +61,10 @@ public class Room : MonoBehaviour
                     Logger.Log(Logger.Locomotion, "Remove character {0} from room {1}", CharactersInRoom.Count, Id);
                     CharactersInRoom.Remove(c);
                     Logger.Log(Logger.Locomotion, "Removed character {0} from room {1}", CharactersInRoom.Count, Id);
-                    //if (CharactersInRoom.Count == 0 && _deleteRoomTrigger)
-                    //{
-                    //    _deleteRoomTrigger.ShowDeleteRoomTrigger();
-                    //}
+                    if (CharactersInRoom.Count == 0 && _deleteRoomTrigger)
+                    {
+                        _deleteRoomTrigger.ShowDeleteRoomTrigger();
+                    }
                     return;
                 }
             }

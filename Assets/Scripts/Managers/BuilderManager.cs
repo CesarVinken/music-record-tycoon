@@ -20,7 +20,7 @@ public class BuilderManager : MonoBehaviour
 
     public RoomBlueprint SelectedRoom;
 
-    public GameObject ConfirmationModalGO;
+    //public GameObject ConfirmationModalGO;
     public GameObject RoomsContainer;
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();

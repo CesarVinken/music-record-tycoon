@@ -42,18 +42,18 @@ public class PlayerCharacter : MonoBehaviour
 
         if(previousRoom != null && previousRoom != newRoom)
         {
-            //Logger.Log("Raise the walls");
+            Logger.Log("Raise the walls");
             previousRoom.RaiseWallPieces(newRoom);
         }
 
         CurrentRoom = newRoom;
-        //Logger.Log("Lower the walls");
+        Logger.Log("Lower the walls");
 
         newRoom.LowerWallPieces();
     }
 
-//    public void LeaveRoom()
-//    {
-//        CurrentRoom = null;
-//    }
+    public void LeaveRoom()
+    {
+        CurrentRoom = null;
+    }
 }
