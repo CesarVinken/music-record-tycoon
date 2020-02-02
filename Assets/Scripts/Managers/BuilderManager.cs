@@ -10,7 +10,6 @@ public class BuilderManager : MonoBehaviour
 
     public static bool InBuildMode; // Build mode = either build panel is open or the player is dragging the building icon around
     public static bool InDeleteObjectMode;
-    //public static bool HasRoomSelected;
     public static bool PointerIsOnAvailablePlot;
 
     public GameObject Room1Prefab;
@@ -20,7 +19,6 @@ public class BuilderManager : MonoBehaviour
 
     public RoomBlueprint SelectedRoom;
 
-    //public GameObject ConfirmationModalGO;
     public GameObject RoomsContainer;
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();
@@ -573,25 +571,6 @@ public class BuilderManager : MonoBehaviour
     }
 
 
-    //public void ActivateRoomBuildMode()
-    //{
-    //    if (InDeleteRoomMode) DeactivateDeleteRoomMode();
-
-    //    InRoomBuildMode = true;
-    //}
-
-    //public void DeactivateRoomBuildMode()
-    //{
-    //    InRoomBuildMode = false;
-    //    HasRoomSelected = false;
-    //    SelectedRoom = null;
-
-    //    BuildMenuContainer.Instance.DestroyBuildingPlots();
-
-    //    if (ConfirmationModal.CurrentConfirmationModal)
-    //        ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
-    //}
-
     public void ActivateDeleteRoomMode()
     {
         if (MainCanvas.Instance.IsDraggingIcon)
@@ -617,24 +596,4 @@ public class BuilderManager : MonoBehaviour
         if (ConfirmationModal.CurrentConfirmationModal)
             ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
     }
-
-    //public void SetSelectedRoom(RoomBlueprint blueprint)
-    //{
-    //    if (!InRoomBuildMode) ActivateRoomBuildMode();
-
-    //    // Should maybe become Room type? For example: SelectedRoom = room.Prefab
-    //    SelectedRoom = blueprint;
-
-    //    HasRoomSelected = true;
-    //    DrawAvailablePlots(blueprint);
-    //}
-
-    //public void UnsetSelectedRoom()
-    //{
-    //    SelectedRoom = null;
-    //    HasRoomSelected = false;
-    //    Logger.Log(Logger.Building, "no room selected.");
-    //}
-
-
 }

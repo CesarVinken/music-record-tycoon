@@ -2,26 +2,17 @@
 
 public enum BuildAction
 {
-    CreateRoomPlot,
     DeleteRoom
 }
 
 public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in to a script for a specific confirmation modal that is attached to the confirmationModal GO.
 {
     public static ConfirmationModal CurrentConfirmationModal;
-    //private BuildingPlot _roomBuildPlot;
+
     public DeleteRoomTrigger DeleteRoomTrigger;
+
     private BuildAction _buildAction;
     private Vector2 _midpoint = new Vector2(0, 0);
-
-    //public void Setup(BuildingPlot roomBuildPlot)
-    //{
-    //    if (CurrentConfirmationModal) CurrentConfirmationModal.DestroyConfirmationModal();
-
-    //    CurrentConfirmationModal = this;
-    //    _buildAction = BuildAction.CreateRoomPlot;
-    //    _roomBuildPlot = roomBuildPlot;
-    //}
 
     public void Update()
     {
@@ -45,10 +36,6 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
     {
         switch (_buildAction)
         {
-            //case BuildAction.CreateRoomPlot:
-            //    _roomBuildPlot.Build();
-            //    BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
-            //    break;
             case BuildAction.DeleteRoom:
                 DeleteRoomTrigger.DeleteRoom();
                 DeleteRoomTrigger.DeleteAllDeleteRoomTriggers();
@@ -60,11 +47,6 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
 
         DestroyConfirmationModal();
     }
-
-    //public void Cancel()
-    //{
-    //    DestroyConfirmationModal();
-    //}
 
     public void DestroyConfirmationModal()
     {

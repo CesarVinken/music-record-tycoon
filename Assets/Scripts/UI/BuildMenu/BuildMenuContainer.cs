@@ -6,14 +6,8 @@ public class BuildMenuContainer : MonoBehaviour
 {
     public static BuildMenuContainer Instance;
 
-    //public GameObject ExitBuildMenuButton;
-    //public GameObject RoomButton; // later replace with dynamic array
-    //public GameObject DeleteRoomButton; // later replace with dynamic array
     public GameObject BuildItemsContainer;
     public GameObject BuildTabContainer;
-    //public GameObject ExitBuildMenuButtonPrefab;
-    //public GameObject RoomButtonPrefab;
-    //public GameObject DeleteRoomButtonPrefab;
     public GameObject BuildItemPrefab;
 
     private Animator _animator;
@@ -58,23 +52,6 @@ public class BuildMenuContainer : MonoBehaviour
 
         Instance = this;
     }
-
-    //public void CreateAllButtons()
-    //{
-    //    ExitBuildMenuButton = Instantiate(ExitBuildMenuButtonPrefab, transform);
-    //    RoomButton = Instantiate(RoomButtonPrefab, transform);
-    //    DeleteRoomButton = Instantiate(DeleteRoomButtonPrefab, transform);
-    //}
-
-    //public void DeleteAllButtons()
-    //{
-    //    if (ExitBuildMenuButton != null)
-    //        Destroy(ExitBuildMenuButton);
-    //    if (RoomButton != null)
-    //        Destroy(RoomButton); 
-    //    if (DeleteRoomButton != null)
-    //        Destroy(DeleteRoomButton);
-    //}
 
     public void LoadBuildMenuContent(BuildMenuTabType buildMenuTabType)
     {
@@ -148,13 +125,13 @@ public class BuildMenuContainer : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f); // length of panel opening/closing animation
 
-        BuildMenuContainer.Instance.IsOpen = true;
-        BuildMenuContainer.Instance.IsBuilding = true;
-        BuildMenuContainer.Instance.ActivateAnimationFreeze();
-        BuildMenuContainer.Instance.LoadBuildMenuContent(BuildMenuTabType.Rooms);
+        IsOpen = true;
+        IsBuilding = true;
+        ActivateAnimationFreeze();
+        LoadBuildMenuContent(BuildMenuTabType.Rooms);
 
         BuildMenuTabContainer.Instance.ActivateBuildMenuTabs();
 
-        BuildMenuContainer.Instance.CompletePanelActivation();
+        CompletePanelActivation();
     }
 }
