@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-public class RoomBlueprint
+public class RoomBlueprint : BuildItemBlueprint
 {
-    // CONTAINS STATIC VALUES OF A ROOM. INCLUDING PROPORTIONS AND DOOR LOCATIONS. ROOM BLUEPRINT SHOULD LATER BE PARENT CLASS FOR SPECIFIC DOORS, OR TAKE INFO FROM DATABASE
+    // CONTAINS STATIC VALUES OF A ROOM. INCLUDING PROPORTIONS AND DOOR LOCATIONS. ROOM BLUEPRINT SHOULD LATER BE PARENT CLASS FOR SPECIFIC ROOMS, OR TAKE INFO FROM DATABASE
     public static int RightUpAxisLength = 9;
     public static int LeftUpAxisLength = 6;
 
@@ -15,6 +15,10 @@ public class RoomBlueprint
         new GridLocation(9, 5),
         new GridLocation(0, 2),
     };
+
+    public RoomBlueprint(string name, string description) : base (name, description)
+    {
+    }
 
 }
 

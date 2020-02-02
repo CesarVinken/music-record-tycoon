@@ -31,7 +31,6 @@ public class BuilderManager : MonoBehaviour
         Instance = this;
         InBuildMode = false;
         InDeleteObjectMode = false;
-        //HasRoomSelected = false;
         PointerIsOnAvailablePlot = false;
 
         SelectedRoom = null;

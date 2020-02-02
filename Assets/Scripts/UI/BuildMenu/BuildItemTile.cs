@@ -5,22 +5,20 @@ using UnityEngine.UI;
 
 public class BuildItemTile : MonoBehaviour
 {
-    public string Name = "";
-    public string Description = "";
+    public BuildItemBlueprint BuildItemBlueprint;
     public string Image = "";
 
     public Text NameTextComponent;
     public Text DescriptionTextComponent;
 
-    public void Setup(string name, string description)
+    public void Setup(BuildItemBlueprint buildItemBlueprint)
     {
-        Name = name;
-        Description = description;
+        BuildItemBlueprint = buildItemBlueprint;
 
         Guard.CheckIsNull(NameTextComponent, "NameTextComponent");
         Guard.CheckIsNull(DescriptionTextComponent, "DescriptionTextComponent");
 
-        NameTextComponent.text = Name;
-        DescriptionTextComponent.text = Description;
+        NameTextComponent.text = BuildItemBlueprint.Name;
+        DescriptionTextComponent.text = BuildItemBlueprint.Description;
     }
 }

@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Room : MonoBehaviour
+public class Room : BuildItem
 {
-    public string Id = "";
-
     private List<BuildingTile> _roomEdgeTiles = new List<BuildingTile>();
 
     public Dictionary<Direction, Vector2> RoomCorners;
@@ -20,9 +18,9 @@ public class Room : MonoBehaviour
     public List<WallPiece> WallPieces;  // possible optimisation: already divide pieces into correct wall side: upleft, downleft etc.
     private DeleteRoomTrigger _deleteRoomTrigger;
 
-    public void Awake()
+    new public void Awake()
     {
-        Id = Guid.NewGuid().ToString();
+        base.Awake();
         AdjacentRooms.Clear();
         CharactersInRoom.Clear();
     }

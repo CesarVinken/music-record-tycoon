@@ -14,9 +14,14 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler, IPointerD
     {
         if (GameManager.Instance.CurrentPlatform == Platform.PC)
         {
-            BuilderManager.Instance.SetSelectedRoom(new RoomBlueprint());     // TODO Will later NOT always be the same room
+            RoomBlueprint blueprint = BuildItemTile.BuildItemBlueprint as RoomBlueprint;
+            BuilderManager.Instance.SetSelectedRoom(blueprint);
 
-            Sprite roomIcon = Resources.Load<Sprite>("Icons/Room1");
+            Sprite roomIcon = Resources.Load<Sprite>("Icons/" + blueprint.Name);
+            if(roomIcon == null)
+            {
+                Logger.Error(Logger.Building, "Could not find or load icon for {0}", blueprint.Name);
+            }
             RectTransform rectTransform = (RectTransform)transform;
             MainCanvas.Instance.SetPointerImage(roomIcon, new Vector2(rectTransform.rect.width, rectTransform.rect.height));
 
@@ -30,9 +35,14 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler, IPointerD
         {
             if (Input.touchCount == 1 && Input.touches[0].phase == TouchPhase.Began)
             {
-                BuilderManager.Instance.SetSelectedRoom(new RoomBlueprint());
+                RoomBlueprint blueprint = BuildItemTile.BuildItemBlueprint as RoomBlueprint;
+                BuilderManager.Instance.SetSelectedRoom(blueprint);
 
-                Sprite roomIcon = Resources.Load<Sprite>("Icons/Room1");
+                Sprite roomIcon = Resources.Load<Sprite>("Icons/" + blueprint.Name);
+                if (roomIcon == null)
+                {
+                    Logger.Error(Logger.Building, "Could not find or load icon for {0}", blueprint.Name);
+                }
                 RectTransform rectTransform = (RectTransform)transform;
                 MainCanvas.Instance.SetPointerImage(roomIcon, new Vector2(rectTransform.rect.width, rectTransform.rect.height));
 

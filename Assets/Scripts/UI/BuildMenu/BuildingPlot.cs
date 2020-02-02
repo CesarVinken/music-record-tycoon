@@ -16,6 +16,8 @@ public class BuildingPlot : MonoBehaviour
     {
         if (LineRenderer == null)
             Logger.Error(Logger.Initialisation, "Cannot find LineRenderer");
+
+        // TODO set up generic building plot GO
     }
     public void Setup(RoomBlueprint room, Vector2 startingPoint)
     {

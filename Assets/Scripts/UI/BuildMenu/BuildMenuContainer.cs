@@ -61,12 +61,22 @@ public class BuildMenuContainer : MonoBehaviour
         // Currently just load test Room1 and Hallway
         if(buildMenuTabType == BuildMenuTabType.Rooms)
         {
-            GameObject item = Instantiate(BuildItemPrefab, BuildItemsContainer.transform);
-            item.name = "Room1";
-            BuildItemTile buildItemTile = item.GetComponent<BuildItemTile>();
+            RoomBlueprint room1 = new RoomBlueprint("Room1", "This room is just for testing");
+            LoadBuildMenuItem(room1);
 
-            buildItemTile.Setup("Room1", "This room is just for testing");
+            RoomBlueprint hallway = new RoomBlueprint("Hallway", "A nice hallway");
+            LoadBuildMenuItem(hallway);
         }
+    }
+
+    private void LoadBuildMenuItem(BuildItemBlueprint buildItemBlueprint)
+    {
+        GameObject item = Instantiate(BuildItemPrefab, BuildItemsContainer.transform);
+        item.name = name;
+        BuildItemTile buildItemTile = item.GetComponent<BuildItemTile>();
+
+        buildItemTile.Setup(buildItemBlueprint);
+
     }
 
     public void CompletePanelActivation()
