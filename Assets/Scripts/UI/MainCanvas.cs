@@ -93,7 +93,6 @@ public class MainCanvas : MonoBehaviour
     }
 
 
-
     public void SetPointerImage(Sprite sprite)
     {
         SetPointerImageSize(PointerImage);
@@ -130,18 +129,18 @@ public class MainCanvas : MonoBehaviour
         PointerImage.color = color;
     }
 
-    public Vector2 GetPointerImageSize(Image pointerImage)
+    public Vector2 GetPointerImageSize(RoomBlueprint blueprint, Image pointerImage)
     {
         float TileUnitWidth = 5f;   // the x width of one side (such as right up)
         float unitPixelWidth = (Camera.main.WorldToScreenPoint(new Vector2(TileUnitWidth * 0.66f, 0)) - Camera.main.WorldToScreenPoint(new Vector2(0, 0))).x;
-        float fullIconWidth = unitPixelWidth * (RoomBlueprint.LeftUpAxisLength + RoomBlueprint.RightUpAxisLength); // the width on the screen of the blue print. The hover image should have this width as well. 
+        float fullIconWidth = unitPixelWidth * (blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength); // the width on the screen of the blue print. The hover image should have this width as well. 
                                                                                                                    // BuilderManager.Instance.SelectedRoom.RightUpAxisLength // <-- To get length of room should later on generic like this!
         return new Vector2(fullIconWidth, fullIconWidth);
     }
 
     public void SetPointerImageSize(Image pointerImage)
     {
-        pointerImage.rectTransform.sizeDelta = GetPointerImageSize(pointerImage);
+        pointerImage.rectTransform.sizeDelta = GetPointerImageSize(BuilderManager.Instance.SelectedRoom, pointerImage);
     }
 
     private void SetPointerImageSize(Image pointerImage, Vector2 pointerImageProportions)

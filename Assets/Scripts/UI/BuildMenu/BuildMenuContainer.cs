@@ -61,10 +61,10 @@ public class BuildMenuContainer : MonoBehaviour
         // Currently just load test Room1 and Hallway
         if(buildMenuTabType == BuildMenuTabType.Rooms)
         {
-            RoomBlueprint room1 = new RoomBlueprint("Room1", "This room is just for testing");
+            RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
             LoadBuildMenuItem(room1);
 
-            RoomBlueprint hallway = new RoomBlueprint("Hallway", "A nice hallway");
+            RoomBlueprint hallway = RoomBlueprint.CreateBlueprint(RoomName.Hallway);
             LoadBuildMenuItem(hallway);
         }
     }

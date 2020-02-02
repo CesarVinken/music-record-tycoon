@@ -10,14 +10,14 @@ public class BuildMenuWorldSpaceContainer : MonoBehaviour
         Instance = this;
     }
 
-    public void CreateBuildingPlot(GameObject buildingPlot, RoomBlueprint room, Vector2 startingPoint)
+    public void CreateBuildingPlot(GameObject buildingPlot, RoomBlueprint roomBlueprint, Vector2 startingPoint)
     {
         if (BuilderManager.Instance.BuildingPlots.ContainsKey(startingPoint)) return;
 
         BuildingPlot plot = Instantiate(buildingPlot, transform).GetComponent<BuildingPlot>();
         BuilderManager.Instance.BuildingPlots.Add(startingPoint, plot);
 
-        plot.Setup(room, startingPoint);
+        plot.Setup(roomBlueprint, startingPoint);
     }
 
     public void DestroyBuildingPlots()

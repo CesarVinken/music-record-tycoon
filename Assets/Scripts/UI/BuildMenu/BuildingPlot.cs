@@ -19,12 +19,13 @@ public class BuildingPlot : MonoBehaviour
 
         // TODO set up generic building plot GO
     }
+
     public void Setup(RoomBlueprint room, Vector2 startingPoint)
     {
         if (BuilderManager.Instance.BuildingPlotLocations.ContainsValue(startingPoint)) return;
 
-        double rightUpAxisLength = RoomBlueprint.RightUpAxisLength;  // later not hardcoded but taken from Room database specifics
-        double leftUpAxisLength = RoomBlueprint.LeftUpAxisLength;
+        double rightUpAxisLength = room.RightUpAxisLength;  // later not hardcoded but taken from Room database specifics
+        double leftUpAxisLength = room.LeftUpAxisLength;
 
         Vector2 point1 = BuilderManager.CalculateLocationOnGrid(startingPoint, (int)rightUpAxisLength, 0);
         Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, (int)-leftUpAxisLength);
@@ -90,7 +91,7 @@ public class BuildingPlot : MonoBehaviour
 
     public void Build()
     {
-        BuilderManager.Instance.BuildRoom(_startingPoint);
+        BuilderManager.Instance.BuildRoom(BuilderManager.Instance.SelectedRoom, _startingPoint);
     }
 
     public void MakePlotAvailable()
