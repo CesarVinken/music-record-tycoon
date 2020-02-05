@@ -245,28 +245,33 @@ public class BuilderManager : MonoBehaviour
 
         for (int i = 0; i < RoomManager.Rooms.Count; i++)
         {
-            Room room = RoomManager.Rooms[i];
+            Room existingRoom = RoomManager.Rooms[i];
+            Logger.Log("*********************");
+            Logger.Log("");
+            Logger.Log("Start looking at next room at {0}, {1}", existingRoom.RoomCorners[Direction.Down].x, existingRoom.RoomCorners[Direction.Down].y);
+            Logger.Log("");
+            Logger.Log("*********************");
             // for each door, check if it aligns with the doors of the selected room
-            for (int j = 0; j < room.Doors.Count; j++)
+            for (int j = 0; j < existingRoom.Doors.Count; j++)
             {
-                Door door = room.Doors[j];
-                if (door.DoorConnection != null) continue; // if the door is already activated, no need to check for new connections
+                Door existingDoor = existingRoom.Doors[j];
+                if (existingDoor.DoorConnection != null) continue; // if the door is already activated, no need to check for new connections
 
                 // the doors that are already on the map
-                GridLocation doorPosition = CalculateGridLocationFromVector2(door.transform.position);
+                GridLocation doorPositionOnExistingRoom = CalculateGridLocationFromVector2(existingDoor.transform.position);
 
                 for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
                 {
                     // for each door location, check if a building plot is available starting at the roomDoorPosition - bluePrintDoorPosition
-                    GridLocation blueprintDoorPosition = selectedRoomBlueprint.DoorLocations[k];
+                    GridLocation doorPositionOnBlueprint = selectedRoomBlueprint.DoorLocations[k];
 
-                    if ((doorPosition.UpRight == blueprintDoorPosition.UpRight) && (doorPosition.UpLeft == blueprintDoorPosition.UpLeft)) continue;
+                    if ((doorPositionOnExistingRoom.UpRight == doorPositionOnBlueprint.UpRight) && (doorPositionOnExistingRoom.UpLeft == doorPositionOnBlueprint.UpLeft)) continue;
 
-                    GridLocation blueprintRoomStartPosition = new GridLocation(doorPosition.UpRight - blueprintDoorPosition.UpRight, (doorPosition.UpLeft - blueprintDoorPosition.UpLeft));
+                    GridLocation blueprintRoomStartPosition = new GridLocation(doorPositionOnExistingRoom.UpRight - doorPositionOnBlueprint.UpRight, (doorPositionOnExistingRoom.UpLeft - doorPositionOnBlueprint.UpLeft));
 
                     if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
                     {
-                        Logger.Log(Logger.Building, "This room would not start on a tile location. Skip. ");
+                        Logger.Log(Logger.Building, "This room cannot be built because it would not start on a (large) tile location. Skip. ");
                         continue;
                     }
 
@@ -369,7 +374,6 @@ public class BuilderManager : MonoBehaviour
     // check all tiles where the plot would be drawn if the building tile is available. Only draw a plot when all tiles are available
     public bool GetPlotIsAvailable(RoomBlueprint roomBlueprint, Vector2 roomStartingPoint)
     {
-        bool isAvailable = true;
         Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(roomStartingPoint, 0, 0);
         Vector2 point1 = CalculateLocationOnGrid(plotLocationStartingPoint, roomBlueprint.RightUpAxisLength, 0);
         Vector2 point2 = CalculateLocationOnGrid(point1, 0, -roomBlueprint.LeftUpAxisLength);
@@ -382,23 +386,34 @@ public class BuilderManager : MonoBehaviour
             tile.StartingPoint.y >= plotLocationStartingPoint.y
         );
 
+        BuildingTile startingTile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == plotLocationStartingPoint);
+        BuildingTile tileRightUpFromStartingTile = GetBuildingTileForAvailability(3, 0, plotLocationStartingPoint, roomSquareTiles);
+        BuildingTile tileLeftUpFromStartingTile = GetBuildingTileForAvailability(0, 3, plotLocationStartingPoint, roomSquareTiles);
+
+        // prevent a plot popping up at a starting location which is in the middle of an existing room, by making sure that there are unavailable plots to the upper right and left.
+        if (!startingTile.IsAvailable &&
+            !tileRightUpFromStartingTile.IsAvailable &&
+            !tileLeftUpFromStartingTile.IsAvailable) 
+            return false;
+
+        bool isAvailable = true;
+
         for (int i = 3; i <= roomBlueprint.RightUpAxisLength; i += 3)
         {
             for (int j = roomBlueprint.LeftUpAxisLength; j >= 0; j -= 3)
             {
-                Vector2 location = CalculateLocationOnGrid(plotLocationStartingPoint, i, -j);
-
-                BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+                BuildingTile tile = GetBuildingTileForAvailability(i, j, plotLocationStartingPoint, roomSquareTiles);
 
                 if (i == 0 || i == roomBlueprint.RightUpAxisLength || j == 0 || j == roomBlueprint.LeftUpAxisLength)
                 {
                     // skip tiles that are at the edge because they may overlap with the walls of adjacent rooms
+                    Logger.Log("Skip {0} {1}", i, j);
                     continue;
                 }
 
                 if (tile == null)
                 {
-                    Logger.Error(Logger.Building, "Could not find tile at {0]", location);
+                    Logger.Error(Logger.Building, "Could not find tile at {0}", CalculateLocationOnGrid(plotLocationStartingPoint, i, -j));
                 }
 
                 if (!tile.IsAvailable)
@@ -412,8 +427,18 @@ public class BuilderManager : MonoBehaviour
         return isAvailable;
     }
 
+    private BuildingTile GetBuildingTileForAvailability(int rightUpAxisFromStartingPoint, int leftUpAxisFromStartingPoint, Vector2 plotLocationStartingPoint, List<BuildingTile> roomSquareTiles)
+    {
+        Vector2 location = CalculateLocationOnGrid(plotLocationStartingPoint, rightUpAxisFromStartingPoint, -leftUpAxisFromStartingPoint);
+
+        BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+
+        return tile;
+    }
+
     public static GridLocation CalculateGridLocationFromVector2(Vector2 vectorPosition)
     {
+        // Make sure that door positions are exactly on the correct worldVector locations, otherwise the vectorPosition may be interpreted as being part of the wrong grid coordinate.
         Vector3Int gridCoordinates = GameManager.Instance.WorldGrid.WorldToCell(vectorPosition);
         return new GridLocation(gridCoordinates.x, gridCoordinates.y);
     }

@@ -16,6 +16,7 @@ public class BuildMenuWorldSpaceContainer : MonoBehaviour
 
         BuildingPlot plot = Instantiate(buildingPlot, transform).GetComponent<BuildingPlot>();
         BuilderManager.Instance.BuildingPlots.Add(startingPoint, plot);
+        //Logger.Log("The starting points for this plot should be {0}", startingPoint);
 
         plot.Setup(roomBlueprint, startingPoint);
     }

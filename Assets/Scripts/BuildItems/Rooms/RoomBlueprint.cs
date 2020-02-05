@@ -2,7 +2,9 @@
 {
     public int RightUpAxisLength;
     public int LeftUpAxisLength;
+
     public GridLocation[] DoorLocations;
+
     protected RoomBlueprint(RoomName roomName, string name, string description) : base(roomName, name, description)
     {
     }
@@ -47,10 +49,10 @@
         blueprint.LeftUpAxisLength = 3;
         blueprint.DoorLocations = new GridLocation[]
         {
-            new GridLocation(1, 0),
             new GridLocation(0, 2),
-            new GridLocation(3, 2),
             new GridLocation(1, 3),
+            new GridLocation(3, 2),
+            new GridLocation(1, 0),
         };
 
         return blueprint;

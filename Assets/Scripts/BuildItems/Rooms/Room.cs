@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -16,6 +15,7 @@ public class Room : BuildItem
     public List<BuildingTile> RoomEdgeTiles = new List<BuildingTile>(); // possible optimisation: already divide pieces into correct side: upleft, downleft etc.
     public List<PlayerCharacter> CharactersInRoom = new List<PlayerCharacter>();
     public List<WallPiece> WallPieces;  // possible optimisation: already divide pieces into correct wall side: upleft, downleft etc.
+
     private DeleteRoomTrigger _deleteRoomTrigger;
 
     new public void Awake()
@@ -23,6 +23,8 @@ public class Room : BuildItem
         base.Awake();
         AdjacentRooms.Clear();
         CharactersInRoom.Clear();
+
+        if (WallPieces.Count == 0) Logger.Warning("There are no wall pieces found for this room. Maybe they were not yet set up.");
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
