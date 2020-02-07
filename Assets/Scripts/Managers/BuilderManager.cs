@@ -160,18 +160,18 @@ public class BuilderManager : MonoBehaviour
 
     public void SetupInitialBuildingTiles()
     {
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 0, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 3, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 6, true));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 6, true));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 0, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 0, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 0, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 0, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 3, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 3, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 3, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 3, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 6, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 6, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 6, Availability.Available));
+        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 6, Availability.Available));
     }
 
     public void SetupInitialRoom()
@@ -325,7 +325,7 @@ public class BuilderManager : MonoBehaviour
                     Logger.Error(Logger.Building, "Could not find tile at {0}", location);
                 }
 
-                if (!tile.IsAvailable)
+                if (tile.IsAvailable != Availability.Available)
                 {
                     isAvailable = false;
                     break;
@@ -387,14 +387,7 @@ public class BuilderManager : MonoBehaviour
         );
 
         BuildingTile startingTile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == plotLocationStartingPoint);
-        BuildingTile tileRightUpFromStartingTile = GetBuildingTileForAvailability(3, 0, plotLocationStartingPoint, roomSquareTiles);
-        BuildingTile tileLeftUpFromStartingTile = GetBuildingTileForAvailability(0, 3, plotLocationStartingPoint, roomSquareTiles);
-
-        // prevent a plot popping up at a starting location which is in the middle of an existing room, by making sure that there are unavailable plots to the upper right and left.
-        if (!startingTile.IsAvailable &&
-            !tileRightUpFromStartingTile.IsAvailable &&
-            !tileLeftUpFromStartingTile.IsAvailable) 
-            return false;
+        if (startingTile.IsAvailable == Availability.Unavailable) return false;
 
         bool isAvailable = true;
 
@@ -407,7 +400,7 @@ public class BuilderManager : MonoBehaviour
                 if (i == 0 || i == roomBlueprint.RightUpAxisLength || j == 0 || j == roomBlueprint.LeftUpAxisLength)
                 {
                     // skip tiles that are at the edge because they may overlap with the walls of adjacent rooms
-                    Logger.Log("Skip {0} {1}", i, j);
+                    //Logger.Log("Skip {0} {1}", i, j);
                     continue;
                 }
 
@@ -416,7 +409,7 @@ public class BuilderManager : MonoBehaviour
                     Logger.Error(Logger.Building, "Could not find tile at {0}", CalculateLocationOnGrid(plotLocationStartingPoint, i, -j));
                 }
 
-                if (!tile.IsAvailable)
+                if (tile.IsAvailable != Availability.Available)
                 {
                     isAvailable = false;
                     break;
@@ -522,7 +515,7 @@ public class BuilderManager : MonoBehaviour
         Vector2 neighbourLocation = CalculateLocationOnGrid(startingPoint, rightUpAxisLength, leftUpAxisLength);
         if (!BuildingTileLocations.Contains(neighbourLocation))
         {
-            BuildingTile tile = BuildingTile.CreateBuildingTile(neighbourLocation, true);
+            BuildingTile tile = BuildingTile.CreateBuildingTile(neighbourLocation, Availability.Available);
             BuildingTiles.Add(tile);
 
             return tile;
@@ -531,7 +524,7 @@ public class BuilderManager : MonoBehaviour
         BuildingTile existingTile = surroundingSquareTiles.Find(surroundingSquareTile => surroundingSquareTile.StartingPoint == neighbourLocation);
             
         //Some tiles at the direct edge may already exist, but the tile one row further still needs to be created. Therefore, also add this tile to the list.
-        if(existingTile != null && existingTile.IsAvailable) {
+        if(existingTile != null && existingTile.IsAvailable == Availability.Available) {
             return existingTile;
         }
         return null;
@@ -561,8 +554,10 @@ public class BuilderManager : MonoBehaviour
         for (int i = 0; i < BuildingTiles.Count; i++)
         {
             Vector2 startingPoint = BuildingTiles[i].StartingPoint;
-            if(BuildingTiles[i].IsAvailable)
+            if(BuildingTiles[i].IsAvailable == Availability.Available)
                 Gizmos.color = Color.green;
+            else if (BuildingTiles[i].IsAvailable == Availability.UpperEdge)
+                Gizmos.color = Color.yellow;
             else
                 Gizmos.color = Color.red;
 

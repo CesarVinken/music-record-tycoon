@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
         {
             BuilderManager.Instance.DrawBuildingTilesGizmos();
 
-            BuilderManager.Instance.DrawDoorLocationGizmos();
+            //BuilderManager.Instance.DrawDoorLocationGizmos();
         }
     }
 

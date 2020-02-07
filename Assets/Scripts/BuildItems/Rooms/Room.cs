@@ -202,10 +202,22 @@ public class Room : BuildItem
             {
                 Vector2 location = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j);
                 BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
-                tile.IsAvailable = false;
                 tile.BuildingTileRooms.Add(this);
-                if (i == 0 || i == RoomBlueprint.RightUpAxisLength || j == 0 || j == RoomBlueprint.LeftUpAxisLength)
+                if ((i == 0 && j < RoomBlueprint.LeftUpAxisLength) || (j == 0 && i < RoomBlueprint.RightUpAxisLength))
+                {
                     _roomEdgeTiles.Add(tile);
+                    tile.IsAvailable = Availability.Unavailable;
+                }
+                else if (i == RoomBlueprint.RightUpAxisLength || j == RoomBlueprint.LeftUpAxisLength)
+                {
+                    _roomEdgeTiles.Add(tile);
+                    if(tile.IsAvailable == Availability.Available)
+                        tile.IsAvailable = Availability.UpperEdge;
+                }
+                else
+                {
+                    tile.IsAvailable = Availability.Unavailable;
+                }
             }
         }
 
@@ -224,7 +236,7 @@ public class Room : BuildItem
 
         for (int i = 0; i <= RoomBlueprint.RightUpAxisLength; i += 3)
         {
-            List<BuildingTile> tilesThatIncludeDeletedRoom = new List<BuildingTile>();
+            List<BuildingTile> tilesThatIncludeDeletedRoom = new List<BuildingTile>(); // all tiles that the deleted room was built on
             for (int j = RoomBlueprint.LeftUpAxisLength; j >= 0; j -= 3)
             {
                 Vector2 location = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j);
@@ -234,18 +246,86 @@ public class Room : BuildItem
                 {
                     if (tile.BuildingTileRooms[0].Id == Id)
                     {
-                        tile.IsAvailable = true;
+                        tile.IsAvailable = Availability.Available;
                         tilesThatIncludeDeletedRoom.Add(tile);
                         continue;
                     }
                 }
-                if (tile.BuildingTileRooms.Count > 1)
+                else if (tile.BuildingTileRooms.Count > 1)
                 {
                     for (int p = 0; p < tile.BuildingTileRooms.Count; p++)
                     {
                         if (tile.BuildingTileRooms[p].Id == Id)
                         {
                             tilesThatIncludeDeletedRoom.Add(tile);
+
+                            // complicated if statements to make sure the edges of remaining rooms get the correct availability status
+                            if (tile.BuildingTileRooms.Count == 2 &&
+                                (i == 0 || j == 0))
+                            {
+                                if (i == RoomBlueprint.RightUpAxisLength)
+                                {
+                                    Vector2 location1 = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j - 3);
+                                    BuildingTile tile1 = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+                                    Vector2 location2 = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j + 3);
+                                    BuildingTile tile2 = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+
+                                    if (tile1.IsAvailable != Availability.Unavailable && tile2.IsAvailable != Availability.Unavailable)
+                                        tile.IsAvailable = Availability.UpperEdge;
+                                }
+                                else if (j == RoomBlueprint.LeftUpAxisLength)
+                                {
+                                    Vector2 location1 = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i - 3, -j);
+                                    BuildingTile tile1 = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+                                    Vector2 location2 = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i + 3, -j);
+                                    BuildingTile tile2 = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+
+                                    if (tile1.IsAvailable != Availability.Unavailable && tile2.IsAvailable != Availability.Unavailable)
+                                        tile.IsAvailable = Availability.UpperEdge;
+                                }
+                                else
+                                {
+                                    tile.IsAvailable = Availability.UpperEdge;
+                                }
+                            }
+                            else if (tile.BuildingTileRooms.Count == 3 &&
+                            (i == 0 || j == 0))
+                            {
+                                if (i > 0)
+                                {
+                                    Vector2 location1 = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j - 3);
+                                    BuildingTile tile1 = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+                                    Vector2 location2 = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j + 3);
+                                    BuildingTile tile2 = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+
+                                    if (tile1.IsAvailable != Availability.Unavailable && tile2.IsAvailable != Availability.Unavailable)
+                                        tile.IsAvailable = Availability.UpperEdge;
+                                }
+                                else if (j > 0)
+                                {
+                                    Vector2 location1 = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i - 3, -j);
+                                    BuildingTile tile1 = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+                                    Vector2 location2 = BuilderManager.CalculateLocationOnGrid(RoomCorners[Direction.Down], i + 3, -j);
+                                    BuildingTile tile2 = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+
+                                    if (tile1.IsAvailable != Availability.Unavailable && tile2.IsAvailable != Availability.Unavailable)
+                                        tile.IsAvailable = Availability.UpperEdge;
+                                }
+
+                                else
+                                {
+                                    tile.IsAvailable = Availability.UpperEdge;
+                                }
+                            }
+                            else if (tile.BuildingTileRooms.Count == 4)
+                            {
+                                if (location == new Vector2(RoomCorners[Direction.Down].x, RoomCorners[Direction.Down].y) &&
+                                    RoomBlueprint.LeftUpAxisLength == 3 &&
+                                    RoomBlueprint.RightUpAxisLength == 3)
+                                {
+                                    tile.IsAvailable = Availability.UpperEdge;
+                                }
+                            }
                             continue;
                         }
                     }
