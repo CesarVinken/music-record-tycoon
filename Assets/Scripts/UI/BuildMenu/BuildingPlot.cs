@@ -25,9 +25,9 @@ public class BuildingPlot : MonoBehaviour
         double rightUpAxisLength = room.RightUpAxisLength;  // later not hardcoded but taken from Room database specifics
         double leftUpAxisLength = room.LeftUpAxisLength;
 
-        Vector2 point1 = BuilderManager.CalculateLocationOnGrid(startingPoint, (int)rightUpAxisLength, 0);
-        Vector2 point2 = BuilderManager.CalculateLocationOnGrid(point1, 0, (int)-leftUpAxisLength);
-        Vector2 point3 = BuilderManager.CalculateLocationOnGrid(point2, (int)-rightUpAxisLength, 0);
+        Vector2 point1 = GridHelper.CalculateLocationOnGrid(startingPoint, (int)rightUpAxisLength, 0);
+        Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, (int)-leftUpAxisLength);
+        Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, (int)-rightUpAxisLength, 0);
 
         LineRenderer.positionCount = 5;
         LineRenderer.SetPosition(0, startingPoint);
@@ -51,7 +51,7 @@ public class BuildingPlot : MonoBehaviour
             midpointLeftUpAxisLength -= 1.5f;   //DOUBLE CHECK IF IT SHOULD BE - OR +
         }
 
-        Vector2 midGridPoint = BuilderManager.CalculateLocationOnGrid(
+        Vector2 midGridPoint = GridHelper.CalculateLocationOnGrid(
             startingPoint,
             (int)midpointRightUpAxisLength,
             -(int)midpointLeftUpAxisLength
@@ -79,9 +79,9 @@ public class BuildingPlot : MonoBehaviour
 
     public void SetColliderPath(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)
     {
-        Vector2 colliderPoint1 = BuilderManager.CalculateColliderLocationOnGrid(startingPoint, rightUpAxisLength, 0);
-        Vector2 colliderPoint2 = BuilderManager.CalculateColliderLocationOnGrid(colliderPoint1, 0, -leftUpAxisLength);
-        Vector2 colliderPoint3 = BuilderManager.CalculateColliderLocationOnGrid(colliderPoint2, -rightUpAxisLength, 0);
+        Vector2 colliderPoint1 = GridHelper.CalculateColliderLocationOnGrid(startingPoint, rightUpAxisLength, 0);
+        Vector2 colliderPoint2 = GridHelper.CalculateColliderLocationOnGrid(colliderPoint1, 0, -leftUpAxisLength);
+        Vector2 colliderPoint3 = GridHelper.CalculateColliderLocationOnGrid(colliderPoint2, -rightUpAxisLength, 0);
 
         Vector2[] positions = new Vector2[] { startingPoint, colliderPoint1, colliderPoint2, colliderPoint3, startingPoint };
         Collider.SetPath(0, positions);

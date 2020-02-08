@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+
 using UnityEngine;
 
 
@@ -26,6 +25,10 @@ public class BuilderManager : MonoBehaviour
     public HashSet<Vector2> BuildingTileLocations = new HashSet<Vector2>();
     public Dictionary<Vector2, Vector2> BuildingPlotLocations = new Dictionary<Vector2, Vector2>();   // The middle position of the building plot, which is the location that triggers the build, AND the starting point location of the plot (bottom)
 
+    private BuildingPlotBuilder _buildingPlotBuilder;
+    private BuildingTileBuilder _buildingTileBuilder;
+    private RoomBuilder _roomBuilder;
+
     void Awake()
     {
         Instance = this;
@@ -46,7 +49,11 @@ public class BuilderManager : MonoBehaviour
         RoomPrefabs.Add(RoomName.Hallway, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Hallway", typeof(GameObject)));
         RoomPrefabs.Add(RoomName.Room1, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1", typeof(GameObject)));
 
-        SetupInitialBuildingTiles();    // Temporary, should only happen for empty map!
+        _buildingPlotBuilder = new BuildingPlotBuilder();
+        _buildingTileBuilder = new BuildingTileBuilder();
+        _roomBuilder = new RoomBuilder();
+
+        _buildingTileBuilder.SetupInitialBuildingTiles();    // Temporary, should only happen for empty map!
     }
 
     public void Start()
@@ -158,20 +165,15 @@ public class BuilderManager : MonoBehaviour
         }
     }
 
-    public void SetupInitialBuildingTiles()
+    public void DrawAvailablePlots()
     {
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 0, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 0, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 0, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 0, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 3, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 3, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 3, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 3, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(0, 6, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(3, 6, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(6, 6, Availability.Available));
-        BuildingTiles.Add(BuildingTile.CreateBuildingTile(9, 6, Availability.Available));
+        _buildingPlotBuilder.DrawAvailablePlots();
+    }
+
+    public void UpdatePathfindingGrid()
+    {
+        IEnumerator updateGrid = _buildingTileBuilder.WaitAndUpdatePathfindingGrid();
+        StartCoroutine(updateGrid);
     }
 
     public void SetupInitialRoom()
@@ -183,6 +185,11 @@ public class BuilderManager : MonoBehaviour
     public void SetSelectedRoom(RoomBlueprint selectedRoom)
     {
         SelectedRoom = selectedRoom;
+    }
+
+    public void BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint)
+    {
+        _roomBuilder.BuildRoom(roomBlueprint, startingPoint, _buildingTileBuilder);
     }
 
     public void ActivateBuildMenuMode()
@@ -235,301 +242,6 @@ public class BuilderManager : MonoBehaviour
     }
 
 
-    public void DrawAvailablePlots()
-    {
-        if (InDeleteObjectMode)
-            DeactivateDeleteRoomMode();
-
-        RoomBlueprint selectedRoomBlueprint = SelectedRoom;
-        BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
-
-        for (int i = 0; i < RoomManager.Rooms.Count; i++)
-        {
-            Room existingRoom = RoomManager.Rooms[i];
-            Logger.Log("*********************");
-            Logger.Log("");
-            Logger.Log("Start looking at next room at {0}, {1}", existingRoom.RoomCorners[Direction.Down].x, existingRoom.RoomCorners[Direction.Down].y);
-            Logger.Log("");
-            Logger.Log("*********************");
-            // for each door, check if it aligns with the doors of the selected room
-            for (int j = 0; j < existingRoom.Doors.Count; j++)
-            {
-                Door existingDoor = existingRoom.Doors[j];
-                if (existingDoor.DoorConnection != null) continue; // if the door is already activated, no need to check for new connections
-
-                // the doors that are already on the map
-                GridLocation doorPositionOnExistingRoom = CalculateGridLocationFromVector2(existingDoor.transform.position);
-
-                for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
-                {
-                    // for each door location, check if a building plot is available starting at the roomDoorPosition - bluePrintDoorPosition
-                    GridLocation doorPositionOnBlueprint = selectedRoomBlueprint.DoorLocations[k];
-
-                    if ((doorPositionOnExistingRoom.UpRight == doorPositionOnBlueprint.UpRight) && (doorPositionOnExistingRoom.UpLeft == doorPositionOnBlueprint.UpLeft)) continue;
-
-                    GridLocation blueprintRoomStartPosition = new GridLocation(doorPositionOnExistingRoom.UpRight - doorPositionOnBlueprint.UpRight, (doorPositionOnExistingRoom.UpLeft - doorPositionOnBlueprint.UpLeft));
-
-                    if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
-                    {
-                        Logger.Log(Logger.Building, "This room cannot be built because it would not start on a (large) tile location. Skip. ");
-                        continue;
-                    }
-
-                    Vector2 blueprintRoomStartPositionVector = CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
-                    if (GetPlotIsAvailable(selectedRoomBlueprint, blueprintRoomStartPositionVector))
-                    {
-                        BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(BuildPlotPrefab, selectedRoomBlueprint, blueprintRoomStartPositionVector);
-                    }
-                }
-            }
-        }
-
-        //Initial room space to avoid an empty map.
-        if (RoomManager.Rooms.Count == 0)
-        {
-            BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(BuildPlotPrefab, selectedRoomBlueprint, new Vector2(0, 0));
-        }
-    }
-
-    public bool GetPlotIsAvailable(RoomBlueprint roomBlueprint, Vector2 existingRoomStartingPoint, int rightUpAxisLocationFromCurrentRoom, int leftUpAxisLocationFromCurrentRoom)
-    {
-        bool isAvailable = true;
-        Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(existingRoomStartingPoint, rightUpAxisLocationFromCurrentRoom, leftUpAxisLocationFromCurrentRoom);
-        Vector2 point1 = CalculateLocationOnGrid(plotLocationStartingPoint, roomBlueprint.RightUpAxisLength, 0);
-        Vector2 point2 = CalculateLocationOnGrid(point1, 0, -roomBlueprint.LeftUpAxisLength);
-        Vector2 point3 = CalculateLocationOnGrid(point2, -roomBlueprint.RightUpAxisLength, 0);
-
-        List<BuildingTile> roomSquareTiles = BuildingTiles.FindAll(tile =>
-            tile.StartingPoint.x >= point3.x &&
-            tile.StartingPoint.x <= point1.x &&
-            tile.StartingPoint.y <= point2.y &&
-            tile.StartingPoint.y >= plotLocationStartingPoint.y
-        );
-
-        for (int i = 3; i <= roomBlueprint.RightUpAxisLength; i += 3)
-        {
-            for (int j = roomBlueprint.LeftUpAxisLength; j >= 0; j -= 3)
-            {
-                Vector2 location = CalculateLocationOnGrid(plotLocationStartingPoint, i, -j);
-
-                BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
-
-                if (i == 0 || i == roomBlueprint.RightUpAxisLength || j == 0 || j == roomBlueprint.LeftUpAxisLength)
-                {
-                    // skip tiles that are at the edge because they may overlap with the walls of adjacent rooms
-                    continue;
-                }
-
-                if (tile == null)
-                {
-                    Logger.Error(Logger.Building, "Could not find tile at {0}", location);
-                }
-
-                if (tile.IsAvailable != Availability.Available)
-                {
-                    isAvailable = false;
-                    break;
-                }
-            }
-        }
-
-        return isAvailable;
-    }
-
-    public void BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint)
-    {
-        GameObject roomGO = Instantiate(RoomPrefabs[roomBlueprint.RoomName], Instance.RoomsContainer.transform);
-        roomGO.transform.position = startingPoint;
-
-        Room room = roomGO.GetComponent<Room>();
-        RoomManager.Instance.AddRoom(room);
-
-        Vector2 point1 = CalculateLocationOnGrid(startingPoint, roomBlueprint.RightUpAxisLength, 0);
-        Vector2 point2 = CalculateLocationOnGrid(point1, 0, -roomBlueprint.LeftUpAxisLength);
-        Vector2 point3 = CalculateLocationOnGrid(point2, -roomBlueprint.RightUpAxisLength, 0);
-
-        Dictionary<Direction, Vector2> roomCorners = new Dictionary<Direction, Vector2>()
-        {
-            { Direction.Down, startingPoint },
-            { Direction.Right, point1 },
-            { Direction.Up, point2 },
-            { Direction.Left, point3 },
-        };
-        room.RoomBlueprint = roomBlueprint;
-        room.SetupCorners(roomCorners);
-        room.SetupCollider(roomBlueprint);
-
-        UpdateBuildingTiles(room);
-
-        // When building a room that is next to the room where the currently selected character is, then the bordering wall graphicals should be switched to the 'low' wall versions
-        for (int i = 0; i < room.AdjacentRooms.Count; i++)
-        {
-            if(room.AdjacentRooms[i].Id == PlayerCharacter.Instance.CurrentRoom.Id)
-            {
-                PlayerCharacter.Instance.CurrentRoom.LowerWallPieces();
-            }
-        }
-    }
-
-    // check all tiles where the plot would be drawn if the building tile is available. Only draw a plot when all tiles are available
-    public bool GetPlotIsAvailable(RoomBlueprint roomBlueprint, Vector2 roomStartingPoint)
-    {
-        Vector2 plotLocationStartingPoint = CalculateLocationOnGrid(roomStartingPoint, 0, 0);
-        Vector2 point1 = CalculateLocationOnGrid(plotLocationStartingPoint, roomBlueprint.RightUpAxisLength, 0);
-        Vector2 point2 = CalculateLocationOnGrid(point1, 0, -roomBlueprint.LeftUpAxisLength);
-        Vector2 point3 = CalculateLocationOnGrid(point2, -roomBlueprint.RightUpAxisLength, 0);
-
-        List<BuildingTile> roomSquareTiles = BuildingTiles.FindAll(tile =>
-            tile.StartingPoint.x >= point3.x &&
-            tile.StartingPoint.x <= point1.x &&
-            tile.StartingPoint.y <= point2.y &&
-            tile.StartingPoint.y >= plotLocationStartingPoint.y
-        );
-
-        BuildingTile startingTile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == plotLocationStartingPoint);
-        if (startingTile.IsAvailable == Availability.Unavailable) return false;
-
-        bool isAvailable = true;
-
-        for (int i = 3; i <= roomBlueprint.RightUpAxisLength; i += 3)
-        {
-            for (int j = roomBlueprint.LeftUpAxisLength; j >= 0; j -= 3)
-            {
-                BuildingTile tile = GetBuildingTileForAvailability(i, j, plotLocationStartingPoint, roomSquareTiles);
-
-                if (i == 0 || i == roomBlueprint.RightUpAxisLength || j == 0 || j == roomBlueprint.LeftUpAxisLength)
-                {
-                    // skip tiles that are at the edge because they may overlap with the walls of adjacent rooms
-                    //Logger.Log("Skip {0} {1}", i, j);
-                    continue;
-                }
-
-                if (tile == null)
-                {
-                    Logger.Error(Logger.Building, "Could not find tile at {0}", CalculateLocationOnGrid(plotLocationStartingPoint, i, -j));
-                }
-
-                if (tile.IsAvailable != Availability.Available)
-                {
-                    isAvailable = false;
-                    break;
-                }
-            }
-        }
-
-        return isAvailable;
-    }
-
-    private BuildingTile GetBuildingTileForAvailability(int rightUpAxisFromStartingPoint, int leftUpAxisFromStartingPoint, Vector2 plotLocationStartingPoint, List<BuildingTile> roomSquareTiles)
-    {
-        Vector2 location = CalculateLocationOnGrid(plotLocationStartingPoint, rightUpAxisFromStartingPoint, -leftUpAxisFromStartingPoint);
-
-        BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
-
-        return tile;
-    }
-
-    public static GridLocation CalculateGridLocationFromVector2(Vector2 vectorPosition)
-    {
-        // Make sure that door positions are exactly on the correct worldVector locations, otherwise the vectorPosition may be interpreted as being part of the wrong grid coordinate.
-        Vector3Int gridCoordinates = GameManager.Instance.WorldGrid.WorldToCell(vectorPosition);
-        return new GridLocation(gridCoordinates.x, gridCoordinates.y);
-    }
-
-    public static Vector2 CalculateLocationOnGrid(int rightUpAxisPosition, int leftUpAxisPosition)
-    {
-        return new Vector2((rightUpAxisPosition - leftUpAxisPosition) * 5f, (rightUpAxisPosition + leftUpAxisPosition) * 2.5f);
-    }
-
-    public static Vector2 CalculateLocationOnGrid(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)
-    {
-        return new Vector2(startingPoint.x + (rightUpAxisLength + leftUpAxisLength) * 5f, startingPoint.y + (rightUpAxisLength - leftUpAxisLength) * 2.5f);
-    }
-
-    public static Vector2 CalculateColliderLocationOnGrid(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)
-    {
-        return new Vector2(startingPoint.x + (rightUpAxisLength + leftUpAxisLength) * 6f, startingPoint.y + (rightUpAxisLength - leftUpAxisLength) * 3f);
-    }
-
-    public void UpdateBuildingTiles(Room room)
-    {
-        // Get all building tiles in the location of the room and make them UNAVAILABLE
-        List<BuildingTile> roomEdgeTiles = room.GetRoomEdgeTiles();
-
-        room.setAdjacentRooms();
-
-        room.EnableDoors();
-
-        // All tiles in the square of the room + the distance up to the fourth rank of tilse
-        List<BuildingTile> surroundingSquareTiles = BuildingTiles.FindAll(tile =>
-            tile.StartingPoint.x >= room.RoomCorners[Direction.Left].x - 3 * 15 &&
-            tile.StartingPoint.x <= room.RoomCorners[Direction.Right].x + 3 * 15 &&
-            tile.StartingPoint.y <= room.RoomCorners[Direction.Up].y + 3 * 15 &&
-            tile.StartingPoint.y >= room.RoomCorners[Direction.Down].y - 3 * 15
-        );
-
-        // Create new AVAILABLE tiles rings around the room
-        List<BuildingTile> firstRankNewTiles = CreateTileRing(roomEdgeTiles, surroundingSquareTiles);
-        List<BuildingTile> secondRankNewTiles = CreateTileRing(firstRankNewTiles, surroundingSquareTiles);
-        List<BuildingTile> thirdRankNewTiles = CreateTileRing(secondRankNewTiles, surroundingSquareTiles);
-        List<BuildingTile> fourthRankNewTiles = CreateTileRing(thirdRankNewTiles, surroundingSquareTiles);
-
-        SetMapPanMaximum(room.RoomCorners);
-
-        UpdatePathfindingGrid();
-    }
-
-    public void UpdatePathfindingGrid()
-    {
-        IEnumerator updateGrid = WaitAndUpdatePathfindingGrid();
-        StartCoroutine(updateGrid);
-    }
-
-    public List<BuildingTile> CreateTileRing(List<BuildingTile> tileRing, List<BuildingTile> surroundingSquareTiles)
-    {
-        List<BuildingTile> newTiles = new List<BuildingTile>();
-        for (int k = 0; k < tileRing.Count; k++)
-        {
-            Logger.Log(Logger.Building, "tilering tile {0}", tileRing[k].StartingPoint);
-            BuildingTile upRight = CreateNeighbourTile(tileRing[k].StartingPoint, 3, 3, surroundingSquareTiles);
-            if (upRight != null)
-                newTiles.Add(upRight);
-
-            BuildingTile upLeft = CreateNeighbourTile(tileRing[k].StartingPoint, -3, 3, surroundingSquareTiles);
-            if (upLeft != null)
-                newTiles.Add(upLeft);
-
-            BuildingTile downRight = CreateNeighbourTile(tileRing[k].StartingPoint, 3, -3, surroundingSquareTiles);
-            if (downRight != null)
-                newTiles.Add(downRight);
-
-            BuildingTile downLeft = CreateNeighbourTile(tileRing[k].StartingPoint, -3, -3, surroundingSquareTiles);
-            if (downLeft != null)
-                newTiles.Add(downLeft);
-        }
-        return newTiles;
-    }
-
-    public BuildingTile CreateNeighbourTile(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength, List<BuildingTile> surroundingSquareTiles)
-    {
-        Vector2 neighbourLocation = CalculateLocationOnGrid(startingPoint, rightUpAxisLength, leftUpAxisLength);
-        if (!BuildingTileLocations.Contains(neighbourLocation))
-        {
-            BuildingTile tile = BuildingTile.CreateBuildingTile(neighbourLocation, Availability.Available);
-            BuildingTiles.Add(tile);
-
-            return tile;
-        }
-
-        BuildingTile existingTile = surroundingSquareTiles.Find(surroundingSquareTile => surroundingSquareTile.StartingPoint == neighbourLocation);
-            
-        //Some tiles at the direct edge may already exist, but the tile one row further still needs to be created. Therefore, also add this tile to the list.
-        if(existingTile != null && existingTile.IsAvailable == Availability.Available) {
-            return existingTile;
-        }
-        return null;
-    }
-
     public void SetMapPanMaximum(Dictionary<Direction, Vector2> newRoomCorners)
     {
         float currentMaxY = CameraController.PanLimits[Direction.Up];
@@ -548,36 +260,6 @@ public class BuilderManager : MonoBehaviour
             CameraController.PanLimits[Direction.Left] = newRoomCorners[Direction.Left].x - panPadding;
     }
 
-    public void DrawBuildingTilesGizmos()
-    {
-        // Draw available/unavailable building tiles
-        for (int i = 0; i < BuildingTiles.Count; i++)
-        {
-            Vector2 startingPoint = BuildingTiles[i].StartingPoint;
-            if(BuildingTiles[i].IsAvailable == Availability.Available)
-                Gizmos.color = Color.green;
-            else if (BuildingTiles[i].IsAvailable == Availability.UpperEdge)
-                Gizmos.color = Color.yellow;
-            else
-                Gizmos.color = Color.red;
-
-            Gizmos.DrawCube(startingPoint, new Vector3(1, 1));
-        }
-    }
-
-    public IEnumerator WaitAndUpdatePathfindingGrid()
-    {
-        yield return new WaitForSeconds(0.01f);
-        GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
-        //PlayerCharacter.Instance.PlayerLocomotion.StopLocomotion();
-        PlayerCharacter.Instance.PlayerNav.IsReevaluating = true;
-        yield return new WaitForSeconds(0.08f);
-
-        // TODO: update routes for all moving characters on the map
-
-        PlayerCharacter.Instance.PlayerLocomotion.RetryReachLocomotionTarget();
-    }
-
     public void DrawDoorLocationGizmos()
     {
         for (int i = 0; i < RoomManager.Rooms.Count; i++)
@@ -590,6 +272,11 @@ public class BuilderManager : MonoBehaviour
                 Gizmos.DrawCube(room.Doors[j].transform.position, new Vector3(1.5f, 1.5f));
             }      
         }
+    }
+
+    public void DrawBuildingTilesGizmos()
+    {
+        _buildingTileBuilder.DrawBuildingTilesGizmos();
     }
 
 
@@ -618,4 +305,5 @@ public class BuilderManager : MonoBehaviour
         if (ConfirmationModal.CurrentConfirmationModal)
             ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
     }
+
 }
