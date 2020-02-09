@@ -81,7 +81,8 @@ public class MainCanvas : MonoBehaviour
                 if (Input.GetMouseButtonDown(1))
                 {
                     UnsetPointerImage();
-                    if(!BuildMenuContainer.Instance.IsOpen)
+
+                    if (!BuildMenuContainer.Instance.IsOpen)
                     {
                         BuildMenuContainer.Instance.ActivateAnimationFreeze();
                         BuilderManager.Instance.ActivateBuildMenuMode();

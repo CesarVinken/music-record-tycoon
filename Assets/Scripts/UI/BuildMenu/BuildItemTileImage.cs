@@ -14,6 +14,8 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler, IPointerD
     {
         if (GameManager.Instance.CurrentPlatform == Platform.PC)
         {
+            BuilderManager.Instance.DeleteAllTriggers();
+
             RoomBlueprint blueprint = BuildItemTile.BuildItemBlueprint as RoomBlueprint;
             BuilderManager.Instance.SetSelectedRoom(blueprint);
 
@@ -35,6 +37,8 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler, IPointerD
         {
             if (Input.touchCount == 1 && Input.touches[0].phase == TouchPhase.Began)
             {
+                BuilderManager.Instance.DeleteAllTriggers();
+
                 RoomBlueprint blueprint = BuildItemTile.BuildItemBlueprint as RoomBlueprint;
                 BuilderManager.Instance.SetSelectedRoom(blueprint);
 

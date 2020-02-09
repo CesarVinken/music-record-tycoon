@@ -46,6 +46,8 @@ public class BuildMenuTabContainer : MonoBehaviour
     {
         if (CurrentBuildMenuTab != null && buildMenuTab.TabType == CurrentBuildMenuTab.TabType) return;
 
+        BuilderManager.Instance.DeleteAllTriggers();
+
         CurrentBuildMenuTab = buildMenuTab;
         BuildMenuContainer.Instance.RemoveBuildMenuContent(0);
         BuildMenuContainer.Instance.LoadBuildMenuContent(buildMenuTab.TabType);

@@ -13,6 +13,7 @@ public class BuilderManager : MonoBehaviour
     public static bool PointerIsOnAvailablePlot;
 
     public GameObject BuildPlotPrefab;
+    public GameObject BuildHallwayTriggerPrefab;
     public GameObject DeleteRoomTriggerPrefab;
 
     public RoomBlueprint SelectedRoom;
@@ -41,6 +42,7 @@ public class BuilderManager : MonoBehaviour
         //Guard.CheckIsNull(Room1Prefab, "Room1Prefab");
         Guard.CheckIsNull(BuildPlotPrefab, "BuildPlotPrefab");
         Guard.CheckIsNull(RoomsContainer, "RoomsContainer");
+        Guard.CheckIsNull(BuildHallwayTriggerPrefab, "BuildHallwayTriggerPrefab");
         Guard.CheckIsNull(DeleteRoomTriggerPrefab, "DeleteRoomTriggerPrefab");
 
         BuildingPlots.Clear();
@@ -189,7 +191,7 @@ public class BuilderManager : MonoBehaviour
 
     public void BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint)
     {
-        _roomBuilder.BuildRoom(roomBlueprint, startingPoint, _buildingTileBuilder);
+        _roomBuilder.BuildRoom(roomBlueprint, startingPoint, _buildingTileBuilder, _buildingPlotBuilder);
     }
 
     public void ActivateBuildMenuMode()
@@ -233,6 +235,7 @@ public class BuilderManager : MonoBehaviour
 
         BuildMenuContainer.Instance.RemoveBuildMenuContent(0.5f);
         MainCanvas.Instance.UnsetPointerImage();
+        DeleteAllTriggers();
 
         BuildMenuWorldSpaceContainer.Instance.DestroyBuildingPlots();
         BuildMenuTabContainer.Instance.ResetCurrentBuildMenuTab();
@@ -240,7 +243,6 @@ public class BuilderManager : MonoBehaviour
         if (InDeleteObjectMode)
             Instance.DeactivateDeleteRoomMode();
     }
-
 
     public void SetMapPanMaximum(Dictionary<Direction, Vector2> newRoomCorners)
     {
@@ -287,6 +289,8 @@ public class BuilderManager : MonoBehaviour
             MainCanvas.Instance.UnsetPointerImage();
         }
 
+        DeleteAllTriggers();
+
         InDeleteObjectMode = true;
 
         foreach (Room room in RoomManager.Rooms)
@@ -306,4 +310,8 @@ public class BuilderManager : MonoBehaviour
             ConfirmationModal.CurrentConfirmationModal.DestroyConfirmationModal();
     }
 
+    public void DeleteAllTriggers()
+    {
+        BuildHallwayTrigger.DeleteAllHallwayTriggers();
+    }
 }
