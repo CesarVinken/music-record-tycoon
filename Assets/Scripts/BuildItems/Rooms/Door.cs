@@ -5,10 +5,10 @@ public class Door : MonoBehaviour
 {
     public string Id = "";
     public Room Room;
-    public GameObject[] DisabledDoorWallPieces; // Wall to show when room is disabled
-    public GameObject[] EnabledDoorWallPieces; // Wall to show when room is enabled
+    public GameObject[] ClosedDoorWallPieces; // Wall to show when room is disabled
+    public GameObject[] OpenDoorWallPieces; // Wall to show when room is enabled
     public bool IsAccessible;
-    public PolygonCollider2D DisabledDoorCollider;
+    public PolygonCollider2D ClosedDoorCollider;
     public Door DoorConnection = null;
 
     void Awake()
@@ -17,48 +17,52 @@ public class Door : MonoBehaviour
         {
             Logger.Error(Logger.Initialisation, "Could not find parent room for door");
         }
-        if (DisabledDoorWallPieces == null || DisabledDoorWallPieces.Length == 0)
+        if (ClosedDoorWallPieces == null || ClosedDoorWallPieces.Length == 0)
         {
-            Logger.Error(Logger.Initialisation, "Could not find DisabledDoorWallPieces for door");
+            Logger.Error(Logger.Initialisation, "Could not find ClosedDoorWallPieces for door");
         }
-        if (EnabledDoorWallPieces == null || EnabledDoorWallPieces.Length == 0)
+        if (OpenDoorWallPieces == null || OpenDoorWallPieces.Length == 0)
         {
-            Logger.Error(Logger.Initialisation, "Could not find EnabledDoorWallPieces for door");
+            Logger.Error(Logger.Initialisation, "Could not find OpenDoorWallPieces for door");
         }
-        if (DisabledDoorCollider == null)
+        if (ClosedDoorCollider == null)
         {
-            Logger.Error(Logger.Initialisation, "Could not find DisabledDoorCollider for door");
+            Logger.Error(Logger.Initialisation, "Could not find ClosedDoorCollider for door");
         }
         IsAccessible = false;
         Room.AddDoorToRoom(this);
         Id = Guid.NewGuid().ToString();
     }
 
-    public void EnableDoor()
+    public void OpenDoor()
     {
-        for (int i = 0; i < EnabledDoorWallPieces.Length; i++)
+        Logger.Log("open door");
+        Logger.Log("OpenDoorWallPieces length is {0}", OpenDoorWallPieces.Length);
+        for (int i = 0; i < OpenDoorWallPieces.Length; i++)
         {
-            EnabledDoorWallPieces[i].SetActive(true);
+            OpenDoorWallPieces[i].SetActive(true);
         }
-        for (int j = 0; j < DisabledDoorWallPieces.Length; j++)
+        for (int j = 0; j < ClosedDoorWallPieces.Length; j++)
         {
-            DisabledDoorWallPieces[j].SetActive(false);
+            ClosedDoorWallPieces[j].SetActive(false);
         }
-        DisabledDoorCollider.enabled = false;
+        ClosedDoorCollider.enabled = false;    
+
         IsAccessible = true;
     }
 
-    public void DisableDoor()
+    public void CloseDoor()
     {
-        for (int i = 0; i < EnabledDoorWallPieces.Length; i++)
+        for (int i = 0; i < OpenDoorWallPieces.Length; i++)
         {
-            EnabledDoorWallPieces[i].SetActive(false);
+            OpenDoorWallPieces[i].SetActive(false);
         }
-        for (int j = 0; j < DisabledDoorWallPieces.Length; j++)
+        for (int j = 0; j < ClosedDoorWallPieces.Length; j++)
         {
-            DisabledDoorWallPieces[j].SetActive(true);
+            ClosedDoorWallPieces[j].SetActive(true);
         }
-        DisabledDoorCollider.enabled = true;
+        ClosedDoorCollider.enabled = true;
+
         IsAccessible = false;
     }
 }

@@ -6,11 +6,12 @@ public class BuildingPlot : MonoBehaviour
     public LineRenderer LineRenderer;
     public PolygonCollider2D Collider;
 
-    private Vector2 _startingPoint = new Vector2(0, 0);
+    public Vector2 StartingPoint = new Vector2(0, 0);
 
     public static Vector2 AvailablePlotVectorPosition = new Vector2(0, 0);
 
     private bool plotIsFree = true;
+    public RoomRotation PlotRotation;
 
     public void Awake()
     {
@@ -18,12 +19,14 @@ public class BuildingPlot : MonoBehaviour
             Logger.Error(Logger.Initialisation, "Cannot find LineRenderer");
     }
 
-    public void Setup(RoomBlueprint room, Vector2 startingPoint)
+    public void Setup(RoomBlueprint room, Vector2 startingPoint, RoomRotation roomRotation)
     {
         if (BuilderManager.Instance.BuildingPlotLocations.ContainsValue(startingPoint)) return;
 
-        double rightUpAxisLength = room.RightUpAxisLength;  // later not hardcoded but taken from Room database specifics
-        double leftUpAxisLength = room.LeftUpAxisLength;
+        PlotRotation = roomRotation;
+
+        double rightUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.RightUpAxisLength : room.LeftUpAxisLength;
+        double leftUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.LeftUpAxisLength : room.RightUpAxisLength;
 
         Vector2 point1 = GridHelper.CalculateLocationOnGrid(startingPoint, (int)rightUpAxisLength, 0);
         Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, (int)-leftUpAxisLength);
@@ -38,7 +41,7 @@ public class BuildingPlot : MonoBehaviour
 
         SetColliderPath(startingPoint, (int)rightUpAxisLength, (int)leftUpAxisLength);
 
-        _startingPoint = startingPoint;
+        StartingPoint = startingPoint;
 
         double midpointRightUpAxisLength = rightUpAxisLength / 2;
         double midpointLeftUpAxisLength = leftUpAxisLength / 2;
@@ -58,6 +61,12 @@ public class BuildingPlot : MonoBehaviour
         );
 
         BuilderManager.Instance.BuildingPlotLocations.Add(midGridPoint, startingPoint);
+    }
+
+    public static BuildingPlot FindBuildingPlot(Vector2 startingPoint)
+    {
+        BuildingPlot buildingPlot = BuilderManager.Instance.BuildingPlots[startingPoint];
+        return buildingPlot;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -85,11 +94,6 @@ public class BuildingPlot : MonoBehaviour
 
         Vector2[] positions = new Vector2[] { startingPoint, colliderPoint1, colliderPoint2, colliderPoint3, startingPoint };
         Collider.SetPath(0, positions);
-    }
-
-    public void Build()
-    {
-        BuilderManager.Instance.BuildRoom(BuilderManager.Instance.SelectedRoom, _startingPoint);
     }
 
     public void MakePlotAvailable()

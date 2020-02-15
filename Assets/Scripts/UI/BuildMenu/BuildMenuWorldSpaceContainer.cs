@@ -10,7 +10,7 @@ public class BuildMenuWorldSpaceContainer : MonoBehaviour
         Instance = this;
     }
 
-    public void CreateBuildingPlot(GameObject buildingPlot, RoomBlueprint roomBlueprint, Vector2 startingPoint)
+    public void CreateBuildingPlot(GameObject buildingPlot, RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
     {
         if (BuilderManager.Instance.BuildingPlots.ContainsKey(startingPoint)) return;
 
@@ -18,7 +18,7 @@ public class BuildMenuWorldSpaceContainer : MonoBehaviour
         BuilderManager.Instance.BuildingPlots.Add(startingPoint, plot);
         //Logger.Log("The starting points for this plot should be {0}", startingPoint);
 
-        plot.Setup(roomBlueprint, startingPoint);
+        plot.Setup(roomBlueprint, startingPoint, roomRotation);
     }
 
     public void DestroyBuildingPlots()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public class BuilderManager : MonoBehaviour
 {
     public static BuilderManager Instance;
@@ -22,7 +23,7 @@ public class BuilderManager : MonoBehaviour
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();
     public Dictionary<Vector2, BuildingPlot> BuildingPlots = new Dictionary<Vector2, BuildingPlot>();
-    public Dictionary<RoomName, GameObject> RoomPrefabs = new Dictionary<RoomName, GameObject>();
+    public Dictionary<RoomName, Dictionary<RoomRotation, GameObject>> RoomPrefabs = new Dictionary<RoomName, Dictionary<RoomRotation, GameObject>>();
     public HashSet<Vector2> BuildingTileLocations = new HashSet<Vector2>();
     public Dictionary<Vector2, Vector2> BuildingPlotLocations = new Dictionary<Vector2, Vector2>();   // The middle position of the building plot, which is the location that triggers the build, AND the starting point location of the plot (bottom)
 
@@ -48,8 +49,17 @@ public class BuilderManager : MonoBehaviour
         BuildingPlots.Clear();
         BuildingPlotLocations.Clear();
 
-        RoomPrefabs.Add(RoomName.Hallway, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Hallway", typeof(GameObject)));
-        RoomPrefabs.Add(RoomName.Room1, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1", typeof(GameObject)));
+        Dictionary<RoomRotation, GameObject> Room1Prefabs = new Dictionary<RoomRotation, GameObject>();
+        Room1Prefabs.Add(RoomRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation0", typeof(GameObject)));
+        Room1Prefabs.Add(RoomRotation.Rotation90, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation90", typeof(GameObject)));
+        Room1Prefabs.Add(RoomRotation.Rotation180, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation180", typeof(GameObject)));
+        Room1Prefabs.Add(RoomRotation.Rotation270, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation270", typeof(GameObject)));
+        RoomPrefabs.Add(RoomName.Room1, Room1Prefabs);
+
+        Dictionary<RoomRotation, GameObject> HallwayPrefabs = new Dictionary<RoomRotation, GameObject>();
+        HallwayPrefabs.Add(RoomRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Hallway", typeof(GameObject)));
+
+        RoomPrefabs.Add(RoomName.Hallway, HallwayPrefabs);
 
         _buildingPlotBuilder = new BuildingPlotBuilder();
         _buildingTileBuilder = new BuildingTileBuilder();
@@ -74,8 +84,8 @@ public class BuilderManager : MonoBehaviour
                     if (Input.GetMouseButtonDown(0))
                     {
                         Logger.Warning("Let's build!");
-
-                        BuildRoom(SelectedRoom, BuildingPlot.AvailablePlotVectorPosition);
+                        BuildingPlot buildingPlot = BuildingPlot.FindBuildingPlot(BuildingPlot.AvailablePlotVectorPosition);
+                        BuildRoom(SelectedRoom, buildingPlot);
 
                         if (BuildMenuContainer.Instance.PanelAnimationPlaying)
                         {
@@ -123,8 +133,8 @@ public class BuilderManager : MonoBehaviour
                     if (PointerIsOnAvailablePlot)
                     {
                         Logger.Warning("Let's build!");
-
-                        BuildRoom(SelectedRoom, BuildingPlot.AvailablePlotVectorPosition);
+                        BuildingPlot buildingPlot = BuildingPlot.FindBuildingPlot(BuildingPlot.AvailablePlotVectorPosition);
+                        BuildRoom(SelectedRoom, buildingPlot);
                     }
                     else
                     {
@@ -174,14 +184,14 @@ public class BuilderManager : MonoBehaviour
 
     public void UpdatePathfindingGrid()
     {
-        IEnumerator updateGrid = _buildingTileBuilder.WaitAndUpdatePathfindingGrid();
+        IEnumerator updateGrid = WaitAndUpdatePathfindingGrid();
         StartCoroutine(updateGrid);
     }
 
     public void SetupInitialRoom()
     {
         RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
-        BuildRoom(room1, new Vector2(0, 0));
+        BuildRoom(room1, new Vector2(0, 0), RoomRotation.Rotation0);
     }
 
     public void SetSelectedRoom(RoomBlueprint selectedRoom)
@@ -189,9 +199,14 @@ public class BuilderManager : MonoBehaviour
         SelectedRoom = selectedRoom;
     }
 
-    public void BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint)
+    public void BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
     {
-        _roomBuilder.BuildRoom(roomBlueprint, startingPoint, _buildingTileBuilder, _buildingPlotBuilder);
+        _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, startingPoint, roomRotation);
+    }
+
+    public void BuildRoom(RoomBlueprint roomBlueprint, BuildingPlot buildingPlot)
+    {
+        _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, buildingPlot);
     }
 
     public void ActivateBuildMenuMode()
@@ -313,5 +328,18 @@ public class BuilderManager : MonoBehaviour
     public void DeleteAllTriggers()
     {
         BuildHallwayTrigger.DeleteAllHallwayTriggers();
+    }
+
+    public IEnumerator WaitAndUpdatePathfindingGrid()
+    {
+        yield return new WaitForSeconds(0.01f);
+        GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
+        //PlayerCharacter.Instance.PlayerLocomotion.StopLocomotion();
+        PlayerCharacter.Instance.PlayerNav.IsReevaluating = true;
+        yield return new WaitForSeconds(0.08f);
+
+        // TODO: update routes for all moving characters on the map
+
+        PlayerCharacter.Instance.PlayerLocomotion.RetryReachLocomotionTarget();
     }
 }

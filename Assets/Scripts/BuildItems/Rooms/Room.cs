@@ -2,11 +2,19 @@
 using System.Linq;
 using UnityEngine;
 
+public enum RoomRotation
+{
+    Rotation0,
+    Rotation90,
+    Rotation180,
+    Rotation270
+}
 public class Room : BuildItem
 {
     private List<BuildingTile> _roomEdgeTiles = new List<BuildingTile>();
 
     public Dictionary<Direction, Vector2> RoomCorners;
+    public RoomRotation RoomRotation;
     public PolygonCollider2D Collider;
     public RoomBlueprint RoomBlueprint;
 
@@ -45,7 +53,6 @@ public class Room : BuildItem
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-
         PlayerCharacter character = collision.gameObject.GetComponent<PlayerCharacter>();
         if (character)
         {
@@ -82,7 +89,10 @@ public class Room : BuildItem
         {
             Logger.Error(Logger.Initialisation, "There should be 4 roomCorners for this room");
         }
-
+        //Logger.Log("Left corner");
+        //Logger.Log(roomCorners[Direction.Left]);
+        //Logger.Log("Down corner");
+        //Logger.Log(roomCorners[Direction.Down]);
         RoomCorners = roomCorners;
     }
 
@@ -100,8 +110,9 @@ public class Room : BuildItem
         Collider.SetPath(0, positions);
     }
 
-    public void setAdjacentRooms()
+    public void SetAdjacentRooms()
     {
+        Logger.Log("Set adjacent romos");
         for (int i = 0; i < _roomEdgeTiles.Count; i++)
         {
             if (_roomEdgeTiles[i].BuildingTileRooms.Count < 2) continue;
@@ -110,9 +121,11 @@ public class Room : BuildItem
                 Room otherRoom = _roomEdgeTiles[i].BuildingTileRooms[j];
                 if (otherRoom != this && !this.AdjacentRooms.Contains(otherRoom))
                 {
+                    Logger.Log("Add {0} as adjacent room for {1}", RoomRotation, otherRoom.RoomRotation);
                     AddAdjacentRoom(otherRoom);
                     if (!otherRoom.AdjacentRooms.Contains(this))
                     {
+                        Logger.Log("Add {1} as adjacent room for {0}", RoomRotation, otherRoom.RoomRotation);
                         otherRoom.AddAdjacentRoom(this);
                     }
                 }
@@ -163,9 +176,9 @@ public class Room : BuildItem
                     {
                         Doors[i].DoorConnection = otherDoor;
                         otherDoor.DoorConnection = Doors[i];
-
-                        Doors[i].EnableDoor();
-                        otherDoor.EnableDoor(); //TODO: There should not be double wall pieces in the same location.
+                        Logger.Log(Logger.Building, "Found a door to enable between {0} and {1}", Id, otherDoor.Room.Id);
+                        Doors[i].OpenDoor();
+                        otherDoor.OpenDoor(); //TODO: There should not be double wall pieces in the same location.
                     }
                 }
             }
@@ -179,7 +192,7 @@ public class Room : BuildItem
             Doors[i].IsAccessible = false;
 
             if (Doors[i].DoorConnection == null) continue;
-            Doors[i].DoorConnection.DisableDoor();
+            Doors[i].DoorConnection.CloseDoor();
             Doors[i].DoorConnection.IsAccessible = false;
             Doors[i].DoorConnection.DoorConnection = null;
             Doors[i].DoorConnection = null;

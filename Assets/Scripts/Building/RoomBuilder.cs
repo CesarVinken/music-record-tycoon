@@ -3,9 +3,13 @@ using UnityEngine;
 
 public class RoomBuilder : MonoBehaviour
 {
-    public void BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder)
+    public void BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, BuildingPlot buildingPlot)
     {
-        GameObject roomGO = Instantiate(BuilderManager.Instance.RoomPrefabs[roomBlueprint.RoomName], BuilderManager.Instance.RoomsContainer.transform);
+        BuildRoom(roomBlueprint, buildingTileBuilder, buildingPlotBuilder, buildingPlot.StartingPoint, buildingPlot.PlotRotation);
+    }
+    public void BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, Vector2 startingPoint, RoomRotation roomRotation)
+    {
+        GameObject roomGO = Instantiate(BuilderManager.Instance.RoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform);
         roomGO.transform.position = startingPoint;
 
         Room room = roomGO.GetComponent<Room>();
@@ -22,6 +26,7 @@ public class RoomBuilder : MonoBehaviour
             { Direction.Up, point2 },
             { Direction.Left, point3 },
         };
+        room.RoomRotation = roomRotation;
         room.RoomBlueprint = roomBlueprint;
         room.SetupCorners(roomCorners);
         room.SetupCollider(roomBlueprint);
@@ -51,16 +56,16 @@ public class RoomBuilder : MonoBehaviour
                 Vector2 pointRightDown = GridHelper.CalculateLocationOnGrid(roomCorners[Direction.Down], 0, 3);
                 Vector2 pointRightUp = roomCorners[Direction.Right];
 
-                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointLeftUp))
+                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointLeftUp, RoomRotation.Rotation0))
                     CreateBuildHallwayTrigger(pointLeftUp, ObjectDirection.LeftUp);
 
-                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointLeftDown))
+                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointLeftDown, RoomRotation.Rotation0))
                     CreateBuildHallwayTrigger(pointLeftDown, ObjectDirection.LeftDown);
 
-                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointRightDown))
+                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointRightDown, RoomRotation.Rotation0))
                     CreateBuildHallwayTrigger(pointRightDown, ObjectDirection.RightDown);
 
-                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointRightUp))
+                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointRightUp, RoomRotation.Rotation0))
                     CreateBuildHallwayTrigger(pointRightUp, ObjectDirection.RightUp);
                 break;
             default:

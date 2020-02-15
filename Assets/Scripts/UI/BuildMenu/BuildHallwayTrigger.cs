@@ -33,7 +33,6 @@ public class BuildHallwayTrigger : MonoBehaviour
                 Logger.Error("Not implemented direction {0}", direction);
                 break;
         }
-
     }
 
     public void Update()
@@ -52,7 +51,7 @@ public class BuildHallwayTrigger : MonoBehaviour
     public void BuildHallway()
     {
         DeleteAllHallwayTriggers();
-        BuilderManager.Instance.BuildRoom(BuilderManager.Instance.SelectedRoom, _startingPoint);
+        BuilderManager.Instance.BuildRoom(BuilderManager.Instance.SelectedRoom, _startingPoint, RoomRotation.Rotation0);
     }
 
     public static void DeleteAllHallwayTriggers()

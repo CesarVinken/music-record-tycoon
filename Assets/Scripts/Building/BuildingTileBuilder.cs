@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingTileBuilder : MonoBehaviour
+public class BuildingTileBuilder
 { 
     private BuilderManager _builderManager;
 
@@ -31,7 +31,7 @@ public class BuildingTileBuilder : MonoBehaviour
         // Get all building tiles in the location of the room and make them UNAVAILABLE
         List<BuildingTile> roomEdgeTiles = room.GetRoomEdgeTiles();
 
-        room.setAdjacentRooms();
+        room.SetAdjacentRooms();
 
         room.EnableDoors();
 
@@ -80,7 +80,7 @@ public class BuildingTileBuilder : MonoBehaviour
         List<BuildingTile> newTiles = new List<BuildingTile>();
         for (int k = 0; k < tileRing.Count; k++)
         {
-            Logger.Log(Logger.Building, "tilering tile {0}", tileRing[k].StartingPoint);
+            //Logger.Log(Logger.Building, "tile ring tile {0}", tileRing[k].StartingPoint);
             BuildingTile upRight = CreateNeighbourTile(tileRing[k].StartingPoint, 3, 3, surroundingSquareTiles);
             if (upRight != null)
                 newTiles.Add(upRight);
@@ -98,19 +98,6 @@ public class BuildingTileBuilder : MonoBehaviour
                 newTiles.Add(downLeft);
         }
         return newTiles;
-    }
-
-    public IEnumerator WaitAndUpdatePathfindingGrid()
-    {
-        yield return new WaitForSeconds(0.01f);
-        GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
-        //PlayerCharacter.Instance.PlayerLocomotion.StopLocomotion();
-        PlayerCharacter.Instance.PlayerNav.IsReevaluating = true;
-        yield return new WaitForSeconds(0.08f);
-
-        // TODO: update routes for all moving characters on the map
-
-        PlayerCharacter.Instance.PlayerLocomotion.RetryReachLocomotionTarget();
     }
 
     public void DrawBuildingTilesGizmos()

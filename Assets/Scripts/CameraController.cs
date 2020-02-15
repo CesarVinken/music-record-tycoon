@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
     private float _touchesCurrentPositionDifference;
 
     private float _zoomModifier;
-    private float _minZoomLevel = 35f;
+    private float _minZoomLevel = 30f;
     private float _maxZoomLevel = 90f;
 
     private Vector2 _firstTouchPreviousPosition;
@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour
 
     public Vector2 HandleMobilePanning(Vector2 position)
     {
-        if (BuilderManager.InBuildMode) return position;
+        if (BuilderManager.InBuildMode && MainCanvas.Instance.IsDraggingIcon) return position;
 
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
         {

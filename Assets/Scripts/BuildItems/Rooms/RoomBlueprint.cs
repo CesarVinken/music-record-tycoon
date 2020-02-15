@@ -17,15 +17,33 @@
                 return CreateHallwayBlueprint();
             case RoomName.Room1:
                 return CreateRoom1Blueprint();
+            case RoomName.Room2:
+                return CreateRoom2Blueprint();
             default:
                 Logger.Error("Cannot find a creation function for blueprint {0}", roomName);
                 return null;
         }
     }
 
+    // test room with one door
     private static RoomBlueprint CreateRoom1Blueprint()
     {
-        RoomBlueprint blueprint = new RoomBlueprint(RoomName.Room1, "Room1", "This room is just for testing");
+        RoomBlueprint blueprint = new RoomBlueprint(RoomName.Room1, "Room1", "This room has only 1 door");
+
+        blueprint.RightUpAxisLength = 9;
+        blueprint.LeftUpAxisLength = 6;
+        blueprint.DoorLocations = new GridLocation[]
+        {
+            new GridLocation(4, 0)
+        };
+
+        return blueprint;
+    }
+
+    // test room with multiple doors
+    private static RoomBlueprint CreateRoom2Blueprint()
+    {
+        RoomBlueprint blueprint = new RoomBlueprint(RoomName.Room2, "Room2", "This room is just for testing");
 
         blueprint.RightUpAxisLength = 9;
         blueprint.LeftUpAxisLength = 6;
