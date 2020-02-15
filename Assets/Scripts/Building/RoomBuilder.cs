@@ -1,22 +1,23 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomBuilder : MonoBehaviour
+public class RoomBuilder
 {
     public void BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, BuildingPlot buildingPlot)
     {
         BuildRoom(roomBlueprint, buildingTileBuilder, buildingPlotBuilder, buildingPlot.StartingPoint, buildingPlot.PlotRotation);
     }
+
     public void BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, Vector2 startingPoint, RoomRotation roomRotation)
     {
-        GameObject roomGO = Instantiate(BuilderManager.Instance.RoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform);
+        GameObject roomGO = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.RoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform);
         roomGO.transform.position = startingPoint;
 
         Room room = roomGO.GetComponent<Room>();
         RoomManager.Instance.AddRoom(room);
 
         int rightUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
-    roomBlueprint.RightUpAxisLength : roomBlueprint.LeftUpAxisLength;
+            roomBlueprint.RightUpAxisLength : roomBlueprint.LeftUpAxisLength;
         int leftUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
             roomBlueprint.LeftUpAxisLength : roomBlueprint.RightUpAxisLength;
 
@@ -82,8 +83,7 @@ public class RoomBuilder : MonoBehaviour
 
     public void CreateBuildHallwayTrigger(Vector2 startingPoint, ObjectDirection direction)
     {
-
-        BuildHallwayTrigger buildHallwayTrigger = Instantiate(BuilderManager.Instance.BuildHallwayTriggerPrefab, MainCanvas.Instance.TriggersContainer.transform).GetComponent<BuildHallwayTrigger>();
+        BuildHallwayTrigger buildHallwayTrigger = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.BuildHallwayTriggerPrefab, MainCanvas.Instance.TriggersContainer.transform).GetComponent<BuildHallwayTrigger>();
         buildHallwayTrigger.Setup(startingPoint, direction);
     }
 }

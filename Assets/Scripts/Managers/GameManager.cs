@@ -70,4 +70,9 @@ public class GameManager : MonoBehaviour
         Logger.Pathfinding.enableLogs = false;
         Logger.Initialisation.enableLogs = true;
     }
+
+    public GameObject InstantiatePrefab(GameObject prefab, Transform parent)
+    {
+        return Instantiate(prefab, parent);
+    }
 }

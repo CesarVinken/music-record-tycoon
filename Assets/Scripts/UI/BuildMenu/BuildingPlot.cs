@@ -5,6 +5,7 @@ public class BuildingPlot : MonoBehaviour
 {
     public LineRenderer LineRenderer;
     public PolygonCollider2D Collider;
+    public RoomBlueprint RoomBlueprint;
 
     public Vector2 StartingPoint = new Vector2(0, 0);
 
@@ -24,6 +25,7 @@ public class BuildingPlot : MonoBehaviour
         if (BuilderManager.Instance.BuildingPlotLocations.ContainsValue(startingPoint)) return;
 
         PlotRotation = roomRotation;
+        RoomBlueprint = room;
 
         double rightUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.RightUpAxisLength : room.LeftUpAxisLength;
         double leftUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.LeftUpAxisLength : room.RightUpAxisLength;

@@ -104,7 +104,6 @@ public class Room : BuildItem
 
     public void SetAdjacentRooms()
     {
-        Logger.Log("Set adjacent romos");
         for (int i = 0; i < _roomEdgeTiles.Count; i++)
         {
             if (_roomEdgeTiles[i].BuildingTileRooms.Count < 2) continue;

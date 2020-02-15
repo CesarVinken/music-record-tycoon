@@ -36,8 +36,6 @@ public class Door : MonoBehaviour
 
     public void OpenDoor()
     {
-        Logger.Log("open door");
-        Logger.Log("OpenDoorWallPieces length is {0}", OpenDoorWallPieces.Length);
         for (int i = 0; i < OpenDoorWallPieces.Length; i++)
         {
             OpenDoorWallPieces[i].SetActive(true);

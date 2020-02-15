@@ -63,9 +63,18 @@ public class MainCanvas : MonoBehaviour
 
                 if (BuilderManager.Instance.BuildingPlotLocations.ContainsKey(new Vector2(snappedX, snappedY)))
                 {
+                    Vector2 availablePlotVectorPosition = BuilderManager.Instance.BuildingPlotLocations[new Vector2(snappedX, snappedY)];
+                    if (BuildingPlot.AvailablePlotVectorPosition == availablePlotVectorPosition && BuilderManager.PointerIsOnAvailablePlot) return;
+
+                    BuildingPlot.AvailablePlotVectorPosition = availablePlotVectorPosition;
+
                     SetPointerImageOverlayColor(new Color(1, 1, 1, 1));
                     BuilderManager.PointerIsOnAvailablePlot = true;
-                    BuildingPlot.AvailablePlotVectorPosition = BuilderManager.Instance.BuildingPlotLocations[new Vector2(snappedX, snappedY)];
+                    BuildingPlot buildingPlot = BuilderManager.Instance.BuildingPlots[BuildingPlot.AvailablePlotVectorPosition];
+                    Logger.Log("Rotation of building plot::" + buildingPlot.PlotRotation);
+
+                    Sprite roomIcon = GetRoomIcon(buildingPlot.RoomBlueprint.Name, buildingPlot.PlotRotation);
+                    SetPointerImage(roomIcon, buildingPlot.PlotRotation);
                 }
                 else
                 {
@@ -94,8 +103,9 @@ public class MainCanvas : MonoBehaviour
     }
 
 
-    public void SetPointerImage(Sprite sprite)
+    public void SetPointerImage(Sprite sprite, RoomRotation rotation)
     {
+        SetPointerImageScale(rotation);
         SetPointerImageSize(PointerImage);
 
         PointerImage.sprite = sprite;
@@ -147,5 +157,40 @@ public class MainCanvas : MonoBehaviour
     private void SetPointerImageSize(Image pointerImage, Vector2 pointerImageProportions)
     {
         pointerImage.rectTransform.sizeDelta = pointerImageProportions;
+    }
+
+    private void SetPointerImageScale(RoomRotation rotation)
+    {
+        Logger.Log(":::: ROTIAON {0}", rotation);
+        if (rotation == RoomRotation.Rotation90 || rotation == RoomRotation.Rotation270)
+        {
+            PointerImage.rectTransform.localScale = new Vector3(-1f, 1f, 1f);
+        } else
+        {
+            PointerImage.rectTransform.localScale = new Vector3(1f, 1f, 1f);
+        }
+    }
+
+    public static Sprite GetRoomIcon(string name, RoomRotation rotation)
+    {
+        if (rotation == RoomRotation.Rotation0 || rotation == RoomRotation.Rotation90)
+        {
+            Sprite roomIcon = Resources.Load<Sprite>("Icons/Rooms/" + name + "Rotation0");
+            if (roomIcon == null)
+            {
+                Logger.Error(Logger.Building, "Could not find or load icon for {0}-{1}", name, rotation);
+                return Resources.Load<Sprite>("Icons/Rooms/Room1Rotation0");
+            }
+            return roomIcon;
+        } else
+        {
+            Sprite roomIcon = Resources.Load<Sprite>("Icons/Rooms/" + name + "Rotation180");
+            if (roomIcon == null)
+            {
+                Logger.Error(Logger.Building, "Could not find or load icon for {0}-{1}", name, rotation);
+                return Resources.Load<Sprite>("Icons/Rooms/Room1Rotation0");
+            }
+            return roomIcon;
+        }
     }
 }
