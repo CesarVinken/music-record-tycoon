@@ -12,58 +12,13 @@ public class BuildingPlotBuilder
         _builderManager = BuilderManager.Instance;
     }
 
-    public bool GetPlotIsAvailable(RoomBlueprint roomBlueprint, Vector2 existingRoomStartingPoint, int rightUpAxisLocationFromCurrentRoom, int leftUpAxisLocationFromCurrentRoom)
-    {
-        bool isAvailable = true;
-        Vector2 plotLocationStartingPoint = GridHelper.CalculateLocationOnGrid(existingRoomStartingPoint, rightUpAxisLocationFromCurrentRoom, leftUpAxisLocationFromCurrentRoom);
-        Vector2 point1 = GridHelper.CalculateLocationOnGrid(plotLocationStartingPoint, roomBlueprint.RightUpAxisLength, 0);
-        Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, -roomBlueprint.LeftUpAxisLength);
-        Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, -roomBlueprint.RightUpAxisLength, 0);
-
-        List<BuildingTile> roomSquareTiles = _builderManager.BuildingTiles.FindAll(tile =>
-            tile.StartingPoint.x >= point3.x &&
-            tile.StartingPoint.x <= point1.x &&
-            tile.StartingPoint.y <= point2.y &&
-            tile.StartingPoint.y >= plotLocationStartingPoint.y
-        );
-
-        for (int i = 3; i <= roomBlueprint.RightUpAxisLength; i += 3)
-        {
-            for (int j = roomBlueprint.LeftUpAxisLength; j >= 0; j -= 3)
-            {
-                Vector2 location = GridHelper.CalculateLocationOnGrid(plotLocationStartingPoint, i, -j);
-
-                BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
-
-                if (i == 0 || i == roomBlueprint.RightUpAxisLength || j == 0 || j == roomBlueprint.LeftUpAxisLength)
-                {
-                    // skip tiles that are at the edge because they may overlap with the walls of adjacent rooms
-                    continue;
-                }
-
-                if (tile == null)
-                {
-                    Logger.Error(Logger.Building, "Could not find tile at {0}", location);
-                }
-
-                if (tile.IsAvailable != Availability.Available)
-                {
-                    isAvailable = false;
-                    break;
-                }
-            }
-        }
-
-        return isAvailable;
-    }
-
     // check all tiles where the plot would be drawn if the building tile is available. Only draw a plot when all tiles are available
     public bool GetPlotIsAvailable(RoomBlueprint roomBlueprint, Vector2 roomStartingPoint, RoomRotation roomRotation)
     {
         int rightUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
             roomBlueprint.RightUpAxisLength : roomBlueprint.LeftUpAxisLength;
         int leftUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
-    roomBlueprint.LeftUpAxisLength : roomBlueprint.RightUpAxisLength;
+            roomBlueprint.LeftUpAxisLength : roomBlueprint.RightUpAxisLength;
         Vector2 plotLocationStartingPoint = GridHelper.CalculateLocationOnGrid(roomStartingPoint, 0, 0);
         Vector2 point1 = GridHelper.CalculateLocationOnGrid(plotLocationStartingPoint, rightUpAxisLength, 0);
         Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, -leftUpAxisLength);
