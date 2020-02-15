@@ -15,9 +15,14 @@ public class RoomBuilder : MonoBehaviour
         Room room = roomGO.GetComponent<Room>();
         RoomManager.Instance.AddRoom(room);
 
-        Vector2 point1 = GridHelper.CalculateLocationOnGrid(startingPoint, roomBlueprint.RightUpAxisLength, 0);
-        Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, -roomBlueprint.LeftUpAxisLength);
-        Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, -roomBlueprint.RightUpAxisLength, 0);
+        int rightUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
+    roomBlueprint.RightUpAxisLength : roomBlueprint.LeftUpAxisLength;
+        int leftUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
+            roomBlueprint.LeftUpAxisLength : roomBlueprint.RightUpAxisLength;
+
+        Vector2 point1 = GridHelper.CalculateLocationOnGrid(startingPoint, rightUpAxisLength, 0);
+        Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, -leftUpAxisLength);
+        Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, -rightUpAxisLength, 0);
 
         Dictionary<Direction, Vector2> roomCorners = new Dictionary<Direction, Vector2>()
         {
@@ -29,7 +34,7 @@ public class RoomBuilder : MonoBehaviour
         room.RoomRotation = roomRotation;
         room.RoomBlueprint = roomBlueprint;
         room.SetupCorners(roomCorners);
-        room.SetupCollider(roomBlueprint);
+        room.SetupCollider();
 
         buildingTileBuilder.UpdateBuildingTiles(room);
 
