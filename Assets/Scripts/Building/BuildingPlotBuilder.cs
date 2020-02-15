@@ -136,137 +136,79 @@ public class BuildingPlotBuilder
                 // the doors that are already on the map
                 GridLocation doorPositionOnExistingRoom = GridHelper.CalculateGridLocationFromVector2(existingDoor.transform.position);
 
-                for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
-                {
-                    // for each door location, check if a building plot is available starting at the roomDoorPosition - bluePrintDoorPosition
-                    GridLocation doorPositionOnBlueprint = selectedRoomBlueprint.DoorLocations[k];
-
-                    if ((doorPositionOnExistingRoom.UpRight == doorPositionOnBlueprint.UpRight) && (doorPositionOnExistingRoom.UpLeft == doorPositionOnBlueprint.UpLeft)) continue;
-                    Logger.Log("doorPositionOnExistingRoom {0}, {1} - doorPositionOnBlueprint 0 {2}, {3}", doorPositionOnExistingRoom.UpRight, doorPositionOnExistingRoom.UpLeft, doorPositionOnBlueprint.UpRight, doorPositionOnBlueprint.UpLeft);
-
-                    GridLocation blueprintRoomStartPosition = new GridLocation(doorPositionOnExistingRoom.UpRight - doorPositionOnBlueprint.UpRight, (doorPositionOnExistingRoom.UpLeft - doorPositionOnBlueprint.UpLeft));
-
-                    if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
-                    {
-                        Logger.Log(Logger.Building, "This room cannot be built because it would not start on a (large) tile location. Its start position would be {0}, {1}. Skip. ", blueprintRoomStartPosition.UpRight, blueprintRoomStartPosition.UpLeft);
-                        continue;
-                    }
-
-                    RoomRotation roomRotation = RoomRotation.Rotation0;
-                    Vector2 blueprintRoomStartPositionVector = GridHelper.CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
-                    if (GetPlotIsAvailable(selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation))
-                    {
-                        BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation);
-                        createdPlotForDoor = true;
-                    }
-                }
-
-                // 90 degrees turned
+                createdPlotForDoor = tryBuildPlot(RoomRotation.Rotation0, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 if (!createdPlotForDoor)
                 {
-                    Logger.Log("Try in second rotation, swap x axis 90 degrees");
-                    for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
-                    {
-                        // for each door location, check if a building plot is available starting at the roomDoorPosition - bluePrintDoorPosition
-                        GridLocation rawDoorPositionOnBlueprint = selectedRoomBlueprint.DoorLocations[k];
-                        GridLocation doorPositionOnBlueprint = new GridLocation(
-                            rawDoorPositionOnBlueprint.UpLeft,  //swapped axis on purpose
-                            selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight);
-                        Logger.Log("doorPositionOnExistingRoom {0}, {1} - doorPositionOnBlueprint 90 {2}, {3}", doorPositionOnExistingRoom.UpRight, doorPositionOnExistingRoom.UpLeft, doorPositionOnBlueprint.UpRight, doorPositionOnBlueprint.UpLeft);
-                        if ((doorPositionOnExistingRoom.UpRight == doorPositionOnBlueprint.UpRight) && (doorPositionOnExistingRoom.UpLeft == doorPositionOnBlueprint.UpLeft)) continue;
-
-                        GridLocation blueprintRoomStartPosition = new GridLocation(doorPositionOnExistingRoom.UpRight - doorPositionOnBlueprint.UpRight, (doorPositionOnExistingRoom.UpLeft - doorPositionOnBlueprint.UpLeft));
-
-                        if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
-                        {
-                            Logger.Log(Logger.Building, "This room cannot be built because it would not start on a (large) tile location. Its start position would be {0}, {1}. Skip. ", blueprintRoomStartPosition.UpRight, blueprintRoomStartPosition.UpLeft);
-                            continue;
-                        }
-
-                        RoomRotation roomRotation = RoomRotation.Rotation90;
-                        Vector2 blueprintRoomStartPositionVector = GridHelper.CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
-                        if (GetPlotIsAvailable(selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation))
-                        {
-                            BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation);
-                            Logger.Warning("created 90 degrees plot for door!");
-                            createdPlotForDoor = true;
-                        }
-                    }
+                    createdPlotForDoor = tryBuildPlot(RoomRotation.Rotation90, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 }
-
-                // 180 degrees turned
                 if (!createdPlotForDoor)
                 {
-                    Logger.Log("Try in third rotation, swap x axis 180 degrees");
-                    for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
-                    {
-                        // for each door location, check if a building plot is available starting at the roomDoorPosition - bluePrintDoorPosition
-                        GridLocation rawDoorPositionOnBlueprint = selectedRoomBlueprint.DoorLocations[k];
-                        GridLocation doorPositionOnBlueprint = new GridLocation(
-                            selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight - 1,
-                            selectedRoomBlueprint.LeftUpAxisLength - rawDoorPositionOnBlueprint.UpLeft);
-                        Logger.Log("doorPositionOnExistingRoom {0}, {1} - doorPositionOnBlueprint 180 {2}, {3}", doorPositionOnExistingRoom.UpRight, doorPositionOnExistingRoom.UpLeft, doorPositionOnBlueprint.UpRight, doorPositionOnBlueprint.UpLeft);
-                        if ((doorPositionOnExistingRoom.UpRight == doorPositionOnBlueprint.UpRight) && (doorPositionOnExistingRoom.UpLeft == doorPositionOnBlueprint.UpLeft)) continue;
-
-                        GridLocation blueprintRoomStartPosition = new GridLocation(doorPositionOnExistingRoom.UpRight - doorPositionOnBlueprint.UpRight, (doorPositionOnExistingRoom.UpLeft - doorPositionOnBlueprint.UpLeft));
-
-                        if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
-                        {
-                            Logger.Log(Logger.Building, "This room cannot be built because it would not start on a (large) tile location. Its start position would be {0}, {1}. Skip. ", blueprintRoomStartPosition.UpRight, blueprintRoomStartPosition.UpLeft);
-                            continue;
-                        }
-
-                        RoomRotation roomRotation = RoomRotation.Rotation180;
-                        Vector2 blueprintRoomStartPositionVector = GridHelper.CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
-                        if (GetPlotIsAvailable(selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation))
-                        {
-                            BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation);
-                            createdPlotForDoor = true;
-                        }
-                    }
+                    createdPlotForDoor = tryBuildPlot(RoomRotation.Rotation180, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 }
-
-                // 270 degrees turned
                 if (!createdPlotForDoor)
                 {
-                    Logger.Log("Try in fourth rotation, swap x axis 270 degrees");
-                    for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
-                    {
-                        // for each door location, check if a building plot is available starting at the roomDoorPosition - bluePrintDoorPosition
-                        GridLocation rawDoorPositionOnBlueprint = selectedRoomBlueprint.DoorLocations[k];
-                        GridLocation doorPositionOnBlueprint = new GridLocation(
-                            selectedRoomBlueprint.LeftUpAxisLength - rawDoorPositionOnBlueprint.UpLeft,  //swapped axis on purpose
-                            selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight);
-                        Logger.Log("doorPositionOnExistingRoom {0}, {1} - doorPositionOnBlueprint 270 {2}, {3}", doorPositionOnExistingRoom.UpRight, doorPositionOnExistingRoom.UpLeft, doorPositionOnBlueprint.UpRight, doorPositionOnBlueprint.UpLeft);
-                        if ((doorPositionOnExistingRoom.UpRight == doorPositionOnBlueprint.UpRight) && (doorPositionOnExistingRoom.UpLeft == doorPositionOnBlueprint.UpLeft)) continue;
-
-                        GridLocation blueprintRoomStartPosition = new GridLocation(doorPositionOnExistingRoom.UpRight - doorPositionOnBlueprint.UpRight, (doorPositionOnExistingRoom.UpLeft - doorPositionOnBlueprint.UpLeft));
-                        Logger.Log(Logger.Building, "Its start position would be {0}, {1}. ", blueprintRoomStartPosition.UpRight, blueprintRoomStartPosition.UpLeft);
-
-                        if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
-                        {
-                            Logger.Log(Logger.Building, "This room cannot be built because it would not start on a (large) tile location. Its start position would be {0}, {1}. Skip. ", blueprintRoomStartPosition.UpRight, blueprintRoomStartPosition.UpLeft);
-                            continue;
-                        }
-
-                        RoomRotation roomRotation = RoomRotation.Rotation270;
-                        Vector2 blueprintRoomStartPositionVector = GridHelper.CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
-                        if (GetPlotIsAvailable(selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation))
-                        {
-                            BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation);
-                            createdPlotForDoor = true;
-                        }
-                    }
-                }
+                    tryBuildPlot(RoomRotation.Rotation270, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                }      
             }
-
-
         }
 
         //Initial room space to avoid an empty map.
         if (RoomManager.Rooms.Count == 0)
         {
             BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, new Vector2(0, 0), RoomRotation.Rotation0);
+        }
+    }
+
+    public bool tryBuildPlot(RoomRotation roomRotation, RoomBlueprint selectedRoomBlueprint, GridLocation doorPositionOnExistingRoom)
+    {
+        for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
+        {
+            GridLocation doorPositionOnBlueprint = getDoorPositionOnBlueprint(roomRotation, selectedRoomBlueprint, selectedRoomBlueprint.DoorLocations[k]);
+
+            //Logger.Log("doorPositionOnExistingRoom {0}, {1} - doorPositionOnBlueprint {2} {3}, {4}", doorPositionOnExistingRoom.UpRight, doorPositionOnExistingRoom.UpLeft, roomRotation, doorPositionOnBlueprint.UpRight, doorPositionOnBlueprint.UpLeft);
+            if ((doorPositionOnExistingRoom.UpRight == doorPositionOnBlueprint.UpRight) && (doorPositionOnExistingRoom.UpLeft == doorPositionOnBlueprint.UpLeft)) continue;
+
+            GridLocation blueprintRoomStartPosition = new GridLocation(doorPositionOnExistingRoom.UpRight - doorPositionOnBlueprint.UpRight, (doorPositionOnExistingRoom.UpLeft - doorPositionOnBlueprint.UpLeft));
+
+            if (blueprintRoomStartPosition.UpLeft % 3 != 0 || blueprintRoomStartPosition.UpRight % 3 != 0)
+            {
+                Logger.Log(Logger.Building, "This room cannot be built because it would not start on a (large) tile location. Its start position would be {0}, {1}. Skip. ", blueprintRoomStartPosition.UpRight, blueprintRoomStartPosition.UpLeft);
+                continue;
+            }
+
+            Vector2 blueprintRoomStartPositionVector = GridHelper.CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
+            if (GetPlotIsAvailable(selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation))
+            {
+                BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public GridLocation getDoorPositionOnBlueprint(RoomRotation roomRotation, RoomBlueprint selectedRoomBlueprint, GridLocation door)
+    {
+        GridLocation rawDoorPositionOnBlueprint = door;
+
+        switch (roomRotation)
+        {
+            case RoomRotation.Rotation0:
+                return door;
+            case RoomRotation.Rotation90:
+                return new GridLocation(
+                    rawDoorPositionOnBlueprint.UpLeft,  //swapped axis on purpose
+                    selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight);
+            case RoomRotation.Rotation180:
+                return new GridLocation(
+                    selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight - 1,
+                    selectedRoomBlueprint.LeftUpAxisLength - rawDoorPositionOnBlueprint.UpLeft);
+            case RoomRotation.Rotation270:
+                return new GridLocation(
+                    selectedRoomBlueprint.LeftUpAxisLength - rawDoorPositionOnBlueprint.UpLeft,  //swapped axis on purpose
+                    selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight);
+            default:
+                Logger.Error("Unknown RoomRotation given {0}", roomRotation);
+                return new GridLocation();
         }
     }
 
