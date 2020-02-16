@@ -105,6 +105,7 @@ public class CameraController : MonoBehaviour
             if (MainCanvas.Instance.PointerImage.sprite != null)
             {
                 MainCanvas.Instance.SetPointerImageSize(MainCanvas.Instance.PointerImage);
+                MainCanvas.Instance.RepositionImage();
             }
         }
     }
@@ -118,6 +119,7 @@ public class CameraController : MonoBehaviour
         if (MainCanvas.Instance.PointerImage.sprite != null && !BuildMenuContainer.Instance.IsOpen)
         {
             MainCanvas.Instance.SetPointerImageSize(MainCanvas.Instance.PointerImage);
+            MainCanvas.Instance.RepositionImage();
         }
     }
 

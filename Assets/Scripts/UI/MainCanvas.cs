@@ -13,6 +13,13 @@ public class MainCanvas : MonoBehaviour
     public GameObject NotificationPrefab;
     public GameObject ConfirmationModalPrefab;
 
+    private float _currentSnappedX;
+    private float _currentSnappedY;
+    private float _tileUnitPixelWidth;
+    private RoomRotation _rotationRoomOnLastHover = RoomRotation.Rotation0;
+
+    public static Vector2 TileSizeInUnits = new Vector2(30f, 15f);
+
     public void Awake()
     {
         Instance = this;
@@ -27,6 +34,8 @@ public class MainCanvas : MonoBehaviour
         PointerImage.enabled = false;
         PointerImage.raycastTarget = false;
         IsDraggingIcon = false;
+
+
     }
 
     public void Update()
@@ -50,37 +59,45 @@ public class MainCanvas : MonoBehaviour
                     BuildMenuContainer.Instance.RemoveBuildMenuContent(0.5f);
                 }
                 Vector2 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-                Vector2 tileSizeInUnits = new Vector2(30f, 15f);
+                mouseWorldPosition = new Vector2(mouseWorldPosition.x, mouseWorldPosition.y + 7.5f);
 
-                float xx = Mathf.Round(mouseWorldPosition.y / tileSizeInUnits.y + mouseWorldPosition.x / tileSizeInUnits.x);
-                float yy = Mathf.Round(mouseWorldPosition.y / tileSizeInUnits.y - mouseWorldPosition.x / tileSizeInUnits.x);
+                float xx = Mathf.Round((mouseWorldPosition.y) / TileSizeInUnits.y + (mouseWorldPosition.x) / TileSizeInUnits.x);
+                float yy = Mathf.Round((mouseWorldPosition.y) / TileSizeInUnits.y - (mouseWorldPosition.x) / TileSizeInUnits.x) - 1;
 
                 // Calculate grid aligned position from current position
-                float snappedX = (xx - yy) * 0.5f * tileSizeInUnits.x;
-                float snappedY = (xx + yy) * 0.5f * tileSizeInUnits.y;
+                float snappedX = (xx - yy) * 0.5f * TileSizeInUnits.x;
+                float snappedY = (xx + yy) * 0.5f * TileSizeInUnits.y;
 
-                PointerImageGO.transform.position = Camera.main.WorldToScreenPoint(new Vector2(snappedX - 8f, snappedY + .6f));
-
-                if (BuilderManager.Instance.BuildingPlotLocations.ContainsKey(new Vector2(snappedX, snappedY)))
+                if (_currentSnappedX != snappedX || _currentSnappedY != snappedY)
                 {
-                    Vector2 availablePlotVectorPosition = BuilderManager.Instance.BuildingPlotLocations[new Vector2(snappedX, snappedY)];
-                    if (BuildingPlot.AvailablePlotVectorPosition == availablePlotVectorPosition && BuilderManager.PointerIsOnAvailablePlot) return;
+                    _currentSnappedX = snappedX;
+                    _currentSnappedY = snappedY;
 
-                    BuildingPlot.AvailablePlotVectorPosition = availablePlotVectorPosition;
+                    if (BuilderManager.Instance.BuildingPlotLocations.ContainsKey(new Vector2(_currentSnappedX, _currentSnappedY)))
+                    {
+                        Vector2 availablePlotVectorPosition = BuilderManager.Instance.BuildingPlotLocations[new Vector2(_currentSnappedX, _currentSnappedY)];
+                        if (BuildingPlot.AvailablePlotVectorPosition == availablePlotVectorPosition && BuilderManager.PointerIsOnAvailablePlot) return;
 
-                    SetPointerImageOverlayColor(new Color(1, 1, 1, 1));
-                    BuilderManager.PointerIsOnAvailablePlot = true;
-                    BuildingPlot buildingPlot = BuilderManager.Instance.BuildingPlots[BuildingPlot.AvailablePlotVectorPosition];
-                    Logger.Log("Rotation of building plot::" + buildingPlot.PlotRotation);
+                        BuildingPlot.AvailablePlotVectorPosition = availablePlotVectorPosition;
 
-                    Sprite roomIcon = GetRoomIcon(buildingPlot.RoomBlueprint.Name, buildingPlot.PlotRotation);
-                    SetPointerImage(roomIcon, buildingPlot.PlotRotation);
-                }
-                else
-                {
-                    SetPointerImageOverlayColor(new Color(1, .2f, .2f, .7f));
-                    BuilderManager.PointerIsOnAvailablePlot = false;
-                }
+                        SetPointerImageOverlayColor(new Color(1, 1, 1, 1));
+                        BuilderManager.PointerIsOnAvailablePlot = true;
+                        BuildingPlot buildingPlot = BuilderManager.Instance.BuildingPlots[BuildingPlot.AvailablePlotVectorPosition];
+
+                        Sprite roomIcon = GetRoomIcon(buildingPlot.RoomBlueprint.Name, buildingPlot.PlotRotation);
+                        SetPointerImage(roomIcon, buildingPlot.PlotRotation);
+
+                        RepositionImage();
+                    }
+                    else
+                    {
+                        SetPointerImageOverlayColor(new Color(1, .2f, .2f, .7f));
+                        BuilderManager.PointerIsOnAvailablePlot = false;
+
+                        RepositionImage();
+
+                    }
+                }      
             }
 
             if(GameManager.Instance.CurrentPlatform == Platform.PC)
@@ -113,6 +130,7 @@ public class MainCanvas : MonoBehaviour
         PointerImage.preserveAspect = true;
 
         IsDraggingIcon = true;
+        _rotationRoomOnLastHover = rotation;
     }
 
     public void SetPointerImage(Sprite sprite, Vector2 pointerImageProportions)
@@ -140,12 +158,15 @@ public class MainCanvas : MonoBehaviour
         PointerImage.color = color;
     }
 
+    // NOTE: Make sure icon is rectengular and has the room starting at the bottom
     public Vector2 GetPointerImageSize(RoomBlueprint blueprint, Image pointerImage)
     {
         float TileUnitWidth = 5f;   // the x width of one side (such as right up)
-        float unitPixelWidth = (Camera.main.WorldToScreenPoint(new Vector2(TileUnitWidth * 0.66f, 0)) - Camera.main.WorldToScreenPoint(new Vector2(0, 0))).x;
-        float fullIconWidth = unitPixelWidth * (blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength); // the width on the screen of the blue print. The hover image should have this width as well. 
-                                                                                                                   // BuilderManager.Instance.SelectedRoom.RightUpAxisLength // <-- To get length of room should later on generic like this!
+        _tileUnitPixelWidth = (Camera.main.WorldToScreenPoint(new Vector2(TileUnitWidth * 0.666f, 0)) - Camera.main.WorldToScreenPoint(new Vector2(0, 0))).x;
+        //Logger.Log("unitPixelWidth: {0}", tileUnitPixelWidth);
+        //Logger.Log("blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength = {0}", (blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength));
+        float fullIconWidth = _tileUnitPixelWidth * (blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength); // the width on the screen of the blue print. The hover image should have this width as well. 
+                                                                                                           // BuilderManager.Instance.SelectedRoom.RightUpAxisLength // <-- To get length of room should later on generic like this!
         return new Vector2(fullIconWidth, fullIconWidth);
     }
 
@@ -161,7 +182,6 @@ public class MainCanvas : MonoBehaviour
 
     private void SetPointerImageScale(RoomRotation rotation)
     {
-        Logger.Log(":::: ROTIAON {0}", rotation);
         if (rotation == RoomRotation.Rotation90 || rotation == RoomRotation.Rotation270)
         {
             PointerImage.rectTransform.localScale = new Vector3(-1f, 1f, 1f);
@@ -192,5 +212,37 @@ public class MainCanvas : MonoBehaviour
             }
             return roomIcon;
         }
+    }
+
+    public void RepositionImage()
+    {
+        Vector2 imageOffset = getPointerImageOffset(BuilderManager.Instance.SelectedRoom);
+        PointerImageGO.transform.position = Camera.main.WorldToScreenPoint(new Vector2(
+            _currentSnappedX - imageOffset.x, _currentSnappedY + imageOffset.y));
+    }
+
+    private Vector2 getPointerImageOffset(RoomBlueprint blueprint)
+    {
+        Vector2 offset = new Vector2(0, 0);
+        switch (blueprint.RoomName)
+        {
+            case RoomName.Hallway:
+                offset.x = TileSizeInUnits.x / 2f;
+                offset.y = TileSizeInUnits.y / 2f;
+                break;
+            case RoomName.Room1:
+                offset.x = TileSizeInUnits.x / 4f;
+                if(_rotationRoomOnLastHover == RoomRotation.Rotation0 || _rotationRoomOnLastHover == RoomRotation.Rotation180) {
+                    offset.y = TileSizeInUnits.y;
+                } else
+                {
+                    offset.y = TileSizeInUnits.y * 1.5f;
+                }
+                break;
+            default:
+                Logger.Warning("Image offset not implemented for {0}", blueprint.RoomName);
+                break;
+        }
+        return offset;
     }
 }

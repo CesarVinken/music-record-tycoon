@@ -75,11 +75,11 @@ public class BuildingPlotBuilder
         for (int i = 0; i < RoomManager.Rooms.Count; i++)
         {
             Room existingRoom = RoomManager.Rooms[i];
-            Logger.Log("*********************");
-            Logger.Log("");
-            Logger.Log("Start looking at next room at {0}, {1}", existingRoom.RoomCorners[Direction.Down].x, existingRoom.RoomCorners[Direction.Down].y);
-            Logger.Log("");
-            Logger.Log("*********************");
+            //Logger.Log("*********************");
+            //Logger.Log("");
+            //Logger.Log("Start looking at next room at {0}, {1}", existingRoom.RoomCorners[Direction.Down].x, existingRoom.RoomCorners[Direction.Down].y);
+            //Logger.Log("");
+            //Logger.Log("*********************");
             // for each door, check if it aligns with the doors of the selected room
             for (int j = 0; j < existingRoom.Doors.Count; j++)
             {

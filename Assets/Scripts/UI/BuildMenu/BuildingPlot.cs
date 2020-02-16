@@ -41,6 +41,7 @@ public class BuildingPlot : MonoBehaviour
         LineRenderer.SetPosition(3, point3);
         LineRenderer.SetPosition(4, startingPoint);
 
+        // TODO:: Collider proportions are incorrect!
         SetColliderPath(startingPoint, (int)rightUpAxisLength, (int)leftUpAxisLength);
 
         StartingPoint = startingPoint;

@@ -18,7 +18,6 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler, IPointerD
 
             RoomBlueprint blueprint = BuildItemTile.BuildItemBlueprint as RoomBlueprint;
             BuilderManager.Instance.SetSelectedRoom(blueprint);
-            Logger.Log("Selected: {0}", blueprint.Name);
             Sprite roomIcon = MainCanvas.GetRoomIcon(blueprint.Name, RoomRotation.Rotation0);
 
             RectTransform rectTransform = (RectTransform)transform;
