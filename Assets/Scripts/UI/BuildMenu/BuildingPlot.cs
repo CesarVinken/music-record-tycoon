@@ -7,7 +7,13 @@ public class BuildingPlot : MonoBehaviour
     public PolygonCollider2D Collider;
     public RoomBlueprint RoomBlueprint;
 
-    public Vector2 StartingPoint = new Vector2(0, 0);
+    private Vector2 _startingPoint = new Vector2(0, 0);
+
+    public Vector2 StartingPoint
+    {
+        get { return _startingPoint; }
+        set { _startingPoint = value; }
+    }
 
     public static Vector2 AvailablePlotVectorPosition = new Vector2(0, 0);
 
@@ -26,25 +32,20 @@ public class BuildingPlot : MonoBehaviour
 
         PlotRotation = roomRotation;
         RoomBlueprint = room;
+        StartingPoint = startingPoint;
 
         double rightUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.RightUpAxisLength : room.LeftUpAxisLength;
         double leftUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.LeftUpAxisLength : room.RightUpAxisLength;
 
-        Vector2 point1 = GridHelper.CalculateLocationOnGrid(startingPoint, (int)rightUpAxisLength, 0);
+        Vector2 point1 = GridHelper.CalculateLocationOnGrid(StartingPoint, (int)rightUpAxisLength, 0);
         Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, (int)-leftUpAxisLength);
         Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, (int)-rightUpAxisLength, 0);
 
-        LineRenderer.positionCount = 5;
-        LineRenderer.SetPosition(0, startingPoint);
-        LineRenderer.SetPosition(1, point1);
-        LineRenderer.SetPosition(2, point2);
-        LineRenderer.SetPosition(3, point3);
-        LineRenderer.SetPosition(4, startingPoint);
+        Vector2[] cornerPositions = new Vector2[] { StartingPoint, point1, point2, point3, StartingPoint };
 
-        // TODO:: Collider proportions are incorrect!
-        SetColliderPath(startingPoint, (int)rightUpAxisLength, (int)leftUpAxisLength);
+        SetLineRendererPositionsPath(cornerPositions);
+        SetColliderPath(cornerPositions);
 
-        StartingPoint = startingPoint;
 
         double midpointRightUpAxisLength = rightUpAxisLength / 2;
         double midpointLeftUpAxisLength = leftUpAxisLength / 2;
@@ -54,16 +55,16 @@ public class BuildingPlot : MonoBehaviour
         }
         if (leftUpAxisLength / 2 - Math.Truncate(leftUpAxisLength / 2) != 0)
         {
-            midpointLeftUpAxisLength -= 1.5f;   //DOUBLE CHECK IF IT SHOULD BE - OR +
+            midpointLeftUpAxisLength -= 1.5f;
         }
 
         Vector2 midGridPoint = GridHelper.CalculateLocationOnGrid(
-            startingPoint,
+            StartingPoint,
             (int)midpointRightUpAxisLength,
             -(int)midpointLeftUpAxisLength
         );
 
-        BuilderManager.Instance.BuildingPlotLocations.Add(midGridPoint, startingPoint);
+        BuilderManager.Instance.BuildingPlotLocations.Add(midGridPoint, StartingPoint);
     }
 
     public static BuildingPlot FindBuildingPlot(Vector2 startingPoint)
@@ -89,14 +90,19 @@ public class BuildingPlot : MonoBehaviour
         }
     }
 
-    public void SetColliderPath(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength)
+    public void SetLineRendererPositionsPath(Vector2[] cornerPositions)
     {
-        Vector2 colliderPoint1 = GridHelper.CalculateColliderLocationOnGrid(startingPoint, rightUpAxisLength, 0);
-        Vector2 colliderPoint2 = GridHelper.CalculateColliderLocationOnGrid(colliderPoint1, 0, -leftUpAxisLength);
-        Vector2 colliderPoint3 = GridHelper.CalculateColliderLocationOnGrid(colliderPoint2, -rightUpAxisLength, 0);
+        LineRenderer.positionCount = 5;
+        LineRenderer.SetPosition(0, cornerPositions[0]);
+        LineRenderer.SetPosition(1, cornerPositions[1]);
+        LineRenderer.SetPosition(2, cornerPositions[2]);
+        LineRenderer.SetPosition(3, cornerPositions[3]);
+        LineRenderer.SetPosition(4, cornerPositions[4]);
+    }
 
-        Vector2[] positions = new Vector2[] { startingPoint, colliderPoint1, colliderPoint2, colliderPoint3, startingPoint };
-        Collider.SetPath(0, positions);
+    public void SetColliderPath(Vector2[] cornerPositions)
+    {
+        Collider.SetPath(0, cornerPositions);
     }
 
     public void MakePlotAvailable()
