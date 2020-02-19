@@ -56,6 +56,7 @@ public class BuildingPlot : MonoBehaviour
         if (leftUpAxisLength / 2 - Math.Truncate(leftUpAxisLength / 2) != 0)
         {
             midpointLeftUpAxisLength -= 1.5f;
+
         }
 
         Vector2 midGridPoint = GridHelper.CalculateLocationOnGrid(

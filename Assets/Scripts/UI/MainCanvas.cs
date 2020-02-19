@@ -15,7 +15,6 @@ public class MainCanvas : MonoBehaviour
 
     private float _currentSnappedX;
     private float _currentSnappedY;
-    private float _tileUnitPixelWidth;
     private RoomRotation _rotationRoomOnLastHover = RoomRotation.Rotation0;
 
     public static Vector2 TileSizeInUnits = new Vector2(30f, 15f);
@@ -91,8 +90,11 @@ public class MainCanvas : MonoBehaviour
                     }
                     else
                     {
-                        SetPointerImageOverlayColor(new Color(1, .2f, .2f, .7f));
-                        BuilderManager.PointerIsOnAvailablePlot = false;
+                        if(BuilderManager.PointerIsOnAvailablePlot)
+                        {
+                            SetPointerImageOverlayColor(new Color(1, .2f, .2f, .7f));
+                            BuilderManager.PointerIsOnAvailablePlot = false;
+                        }
 
                         RepositionImage();
 
@@ -133,7 +135,7 @@ public class MainCanvas : MonoBehaviour
         _rotationRoomOnLastHover = rotation;
     }
 
-    public void SetPointerImage(Sprite sprite, Vector2 pointerImageProportions)
+    public void SetNewPointerImage(Sprite sprite, Vector2 pointerImageProportions)
     {
         SetPointerImageSize(PointerImage, pointerImageProportions);
 
@@ -154,20 +156,20 @@ public class MainCanvas : MonoBehaviour
 
     public void SetPointerImageOverlayColor(Color color)
     {
-        // TODO currently colour change is requested every frame!
         PointerImage.color = color;
     }
 
     // NOTE: Make sure icon is rectengular and has the room starting at the bottom
     public Vector2 GetPointerImageSize(RoomBlueprint blueprint, Image pointerImage)
     {
-        float TileUnitWidth = 5f;   // the x width of one side (such as right up)
-        _tileUnitPixelWidth = (Camera.main.WorldToScreenPoint(new Vector2(TileUnitWidth * 0.666f, 0)) - Camera.main.WorldToScreenPoint(new Vector2(0, 0))).x;
-        //Logger.Log("unitPixelWidth: {0}", tileUnitPixelWidth);
-        //Logger.Log("blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength = {0}", (blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength));
-        float fullIconWidth = _tileUnitPixelWidth * (blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength); // the width on the screen of the blue print. The hover image should have this width as well. 
-                                                                                                           // BuilderManager.Instance.SelectedRoom.RightUpAxisLength // <-- To get length of room should later on generic like this!
-        return new Vector2(fullIconWidth, fullIconWidth);
+        float tileLength = 5f;   // distance to go horizontal or vertical to get to next tile row or column
+        float roomWidth = tileLength * (blueprint.LeftUpAxisLength + blueprint.RightUpAxisLength); // the width in tiles on the map of a room
+
+        float defaultScreenFactor = 1280;
+        float pixelMultiplicationFactor = defaultScreenFactor / Screen.width;
+        float roomScreenWidth = (Camera.main.WorldToScreenPoint(new Vector2(roomWidth * pixelMultiplicationFactor, 0)) - Camera.main.WorldToScreenPoint(new Vector2(0, 0))).x; // the width on the screen of the blueprint. The hover image should have this width as well. 
+
+        return new Vector2(roomScreenWidth, roomScreenWidth);
     }
 
     public void SetPointerImageSize(Image pointerImage)
