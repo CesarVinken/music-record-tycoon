@@ -5,12 +5,12 @@ public class BuildingPlot : MonoBehaviour
 {
     public PolygonCollider2D Collider;
     public RoomBlueprint RoomBlueprint;
-    //public SpriteRenderer SpriteRenderer;
 
-    private Vector2 _startingPoint = new Vector2(0, 0);
     public Material Material;
     public MeshFilter MeshFilter;
     public MeshRenderer MeshRenderer;
+
+    private Vector2 _startingPoint = new Vector2(0, 0);
 
     public Vector2 StartingPoint
     {

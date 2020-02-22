@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+public enum PointerImageOverlayState
+{
+    Normal,
+    Red
+}
 public class MainCanvas : MonoBehaviour
 {
     public static MainCanvas Instance;
@@ -16,6 +21,7 @@ public class MainCanvas : MonoBehaviour
     private float _currentSnappedX;
     private float _currentSnappedY;
     private RoomRotation _rotationRoomOnLastHover = RoomRotation.Rotation0;
+    private PointerImageOverlayState _currentPointerImageOverlayState = PointerImageOverlayState.Normal;
 
     public static Vector2 TileSizeInUnits = new Vector2(30f, 15f);
 
@@ -33,8 +39,6 @@ public class MainCanvas : MonoBehaviour
         PointerImage.enabled = false;
         PointerImage.raycastTarget = false;
         IsDraggingIcon = false;
-
-
     }
 
     public void Update()
@@ -69,6 +73,7 @@ public class MainCanvas : MonoBehaviour
 
                 if (_currentSnappedX != snappedX || _currentSnappedY != snappedY)
                 {
+                    Logger.Log("Ui");
                     _currentSnappedX = snappedX;
                     _currentSnappedY = snappedY;
 
@@ -79,7 +84,7 @@ public class MainCanvas : MonoBehaviour
 
                         BuildingPlot.AvailablePlotVectorPosition = availablePlotVectorPosition;
 
-                        SetPointerImageOverlayColor(new Color(1, 1, 1, 1));
+                        SetPointerImageOverlayColor(PointerImageOverlayState.Normal);
                         BuilderManager.PointerIsOnAvailablePlot = true;
                         BuildingPlot buildingPlot = BuilderManager.Instance.BuildingPlots[BuildingPlot.AvailablePlotVectorPosition];
 
@@ -90,14 +95,17 @@ public class MainCanvas : MonoBehaviour
                     }
                     else
                     {
-                        if(BuilderManager.PointerIsOnAvailablePlot)
+                        Logger.Log("Gabby");
+                        if (BuilderManager.PointerIsOnAvailablePlot)
                         {
-                            SetPointerImageOverlayColor(new Color(1, .2f, .2f, .7f));
                             BuilderManager.PointerIsOnAvailablePlot = false;
+                        }
+                        if(_currentPointerImageOverlayState == PointerImageOverlayState.Normal)
+                        {
+                            SetPointerImageOverlayColor(PointerImageOverlayState.Red);
                         }
 
                         RepositionImage();
-
                     }
                 }      
             }
@@ -144,6 +152,8 @@ public class MainCanvas : MonoBehaviour
         PointerImage.preserveAspect = true;
 
         IsDraggingIcon = true;
+
+        SetPointerImageOverlayColor(PointerImageOverlayState.Normal);
     }
 
     public void UnsetPointerImage()
@@ -154,9 +164,21 @@ public class MainCanvas : MonoBehaviour
         IsDraggingIcon = false;
     }
 
-    public void SetPointerImageOverlayColor(Color color)
+    public void SetPointerImageOverlayColor(PointerImageOverlayState overlayState)
     {
-        PointerImage.color = color;
+        _currentPointerImageOverlayState = overlayState;
+        switch (overlayState)
+        {
+            case PointerImageOverlayState.Normal:
+                PointerImage.color = new Color(1, 1, 1, 1);
+                break;
+            case PointerImageOverlayState.Red:
+                PointerImage.color = new Color(1, .2f, .2f, .7f);
+                break;
+            default:
+                Logger.Error(Logger.UI, "State {0} was not yet implemented", overlayState);
+                break;
+        }
     }
 
     // NOTE: Make sure icon is rectengular and has the room starting at the bottom
@@ -185,12 +207,9 @@ public class MainCanvas : MonoBehaviour
     private void SetPointerImageScale(RoomRotation rotation)
     {
         if (rotation == RoomRotation.Rotation90 || rotation == RoomRotation.Rotation270)
-        {
             PointerImage.rectTransform.localScale = new Vector3(-1f, 1f, 1f);
-        } else
-        {
+        else
             PointerImage.rectTransform.localScale = new Vector3(1f, 1f, 1f);
-        }
     }
 
     public static Sprite GetRoomIcon(string name, RoomRotation rotation)
