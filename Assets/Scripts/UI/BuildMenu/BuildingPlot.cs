@@ -3,11 +3,14 @@ using UnityEngine;
 
 public class BuildingPlot : MonoBehaviour
 {
-    public LineRenderer LineRenderer;
     public PolygonCollider2D Collider;
     public RoomBlueprint RoomBlueprint;
+    //public SpriteRenderer SpriteRenderer;
 
     private Vector2 _startingPoint = new Vector2(0, 0);
+    public Material Material;
+    public MeshFilter MeshFilter;
+    public MeshRenderer MeshRenderer;
 
     public Vector2 StartingPoint
     {
@@ -22,8 +25,12 @@ public class BuildingPlot : MonoBehaviour
 
     public void Awake()
     {
-        if (LineRenderer == null)
-            Logger.Error(Logger.Initialisation, "Cannot find LineRenderer");
+        if (Material == null)
+            Logger.Error(Logger.Initialisation, "Cannot find Material");
+        if (MeshFilter == null)
+            Logger.Error(Logger.Initialisation, "Cannot find MeshFilter");
+        if (MeshRenderer == null)
+            Logger.Error(Logger.Initialisation, "Cannot find MeshRenderer");
     }
 
     public void Setup(RoomBlueprint room, Vector2 startingPoint, RoomRotation roomRotation)
@@ -32,20 +39,17 @@ public class BuildingPlot : MonoBehaviour
 
         PlotRotation = roomRotation;
         RoomBlueprint = room;
-        StartingPoint = startingPoint;
+        StartingPoint = new Vector3(startingPoint.x, startingPoint.y, 1);
 
         double rightUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.RightUpAxisLength : room.LeftUpAxisLength;
         double leftUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.LeftUpAxisLength : room.RightUpAxisLength;
 
+        // == counter clockwise, starting at bottom
         Vector2 point1 = GridHelper.CalculateLocationOnGrid(StartingPoint, (int)rightUpAxisLength, 0);
         Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, (int)-leftUpAxisLength);
         Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, (int)-rightUpAxisLength, 0);
 
-        Vector2[] cornerPositions = new Vector2[] { StartingPoint, point1, point2, point3, StartingPoint };
-
-        SetLineRendererPositionsPath(cornerPositions);
-        SetColliderPath(cornerPositions);
-
+        SetColliderPath(new Vector2[] { StartingPoint, point1, point2, point3, StartingPoint });
 
         double midpointRightUpAxisLength = rightUpAxisLength / 2;
         double midpointLeftUpAxisLength = leftUpAxisLength / 2;
@@ -56,7 +60,6 @@ public class BuildingPlot : MonoBehaviour
         if (leftUpAxisLength / 2 - Math.Truncate(leftUpAxisLength / 2) != 0)
         {
             midpointLeftUpAxisLength -= 1.5f;
-
         }
 
         Vector2 midGridPoint = GridHelper.CalculateLocationOnGrid(
@@ -66,12 +69,43 @@ public class BuildingPlot : MonoBehaviour
         );
 
         BuilderManager.Instance.BuildingPlotLocations.Add(midGridPoint, StartingPoint);
+
+        CreateMesh(new Vector2[] { StartingPoint, point1, point2, point3 });
     }
 
     public static BuildingPlot FindBuildingPlot(Vector2 startingPoint)
     {
         BuildingPlot buildingPlot = BuilderManager.Instance.BuildingPlots[startingPoint];
         return buildingPlot;
+    }
+
+    public void CreateMesh(Vector2[] points)
+    {
+        Vector3[] vertices = new Vector3[4];
+        Vector2[] uvs = new Vector2[4];
+        int[] triangles = new int[6];
+
+        vertices[0] = points[0];
+        vertices[1] = points[1];
+        vertices[2] = points[2];
+        vertices[3] = points[3];
+
+        // clockwise. Represent the index of the vertices
+        triangles[0] = 3;
+        triangles[1] = 2;
+        triangles[2] = 1;
+        triangles[3] = 3;
+        triangles[4] = 1;
+        triangles[5] = 0;
+
+        Mesh mesh = new Mesh();
+
+        mesh.vertices = vertices;
+        mesh.uv = uvs;
+        mesh.triangles = triangles;
+
+        MeshFilter.mesh = mesh;
+        MeshRenderer.material = Material;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -89,16 +123,6 @@ public class BuildingPlot : MonoBehaviour
         {
             MakePlotAvailable();
         }
-    }
-
-    public void SetLineRendererPositionsPath(Vector2[] cornerPositions)
-    {
-        LineRenderer.positionCount = 5;
-        LineRenderer.SetPosition(0, cornerPositions[0]);
-        LineRenderer.SetPosition(1, cornerPositions[1]);
-        LineRenderer.SetPosition(2, cornerPositions[2]);
-        LineRenderer.SetPosition(3, cornerPositions[3]);
-        LineRenderer.SetPosition(4, cornerPositions[4]);
     }
 
     public void SetColliderPath(Vector2[] cornerPositions)
