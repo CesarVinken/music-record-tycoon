@@ -3,7 +3,7 @@
 public class CharacterLocomotion : MonoBehaviour
 {
     public ObjectDirection CharacterDirection = ObjectDirection.Down;
-
+    public Character Character;
     public float BaseSpeed = 8f;
     public float Speed;
 
@@ -13,13 +13,16 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void Awake()
     {
+        if (Character == null)
+            Logger.Log(Logger.Initialisation, "Could not find Actor component on character");
+
         Speed = BaseSpeed;
     }
 
     public void Start()
     {
-        _characterNavTransform = PlayerCharacter.Instance.NavTransform;
-        _characterAnimationHandler = PlayerCharacter.Instance.CharacterAnimationHandler;
+        _characterNavTransform = Character.NavActor.transform;
+        _characterAnimationHandler = Character.CharacterAnimationHandler;
     }
     void Update()
     {
@@ -27,7 +30,7 @@ public class CharacterLocomotion : MonoBehaviour
             return;
 
         CheckPointerInput();
-        if(PlayerCharacter.Instance.CharacterActionState == CharacterActionState.Moving)
+        if(Character.CharacterActionState == CharacterActionState.Moving)
         {
             HandleMovement();
         }
@@ -36,6 +39,13 @@ public class CharacterLocomotion : MonoBehaviour
 
     private void CheckPointerInput()
     {
+        if (!(Character is IPlayable))
+            return;
+
+        PlayableCharacter playableCharacter = Character as PlayableCharacter;
+        if (!playableCharacter.IsSelected)
+            return;
+
         if (PointerHelper.IsPointerOverGameObject())
             return;
 
@@ -78,22 +88,22 @@ public class CharacterLocomotion : MonoBehaviour
         Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
 
         _characterAnimationHandler.InLocomotion = true;
-        PlayerCharacter.Instance.SetCharacterActionState(CharacterActionState.Moving);
+        Character.SetCharacterActionState(CharacterActionState.Moving);
 
-        PlayerCharacter.Instance.PlayerNav.Target = new Vector3(newTarget.x, newTarget.y, PlayerCharacter.Instance.transform.position.z);
+        Character.NavActor.Target = new Vector3(newTarget.x, newTarget.y, transform.position.z);
     }
 
     public void RetryReachLocomotionTarget()
     {
         Logger.Log("Retry locomotion target");
 
-        Vector3 target = new Vector3(PlayerCharacter.Instance.PlayerNav.Target.x, PlayerCharacter.Instance.PlayerNav.Target.y, PlayerCharacter.Instance.transform.position.z);
-        PlayerCharacter.Instance.PlayerNav.Target = target;
+        Vector3 target = new Vector3(Character.NavActor.Target.x, Character.NavActor.Target.y, transform.position.z);
+        Character.NavActor.Target = target;
     }
 
     private void HandleMovement()
     {
-        if (!PlayerCharacter.Instance.PlayerNav.FollowingPath)
+        if (!Character.NavActor.FollowingPath)
         {
             _characterAnimationHandler.InLocomotion = false;
             return;
@@ -103,7 +113,7 @@ public class CharacterLocomotion : MonoBehaviour
             _characterAnimationHandler.InLocomotion = true;
         }
         CalculateCharacterDirection();
-        if (!PlayerCharacter.Instance.PlayerNav.FollowingPath)
+        if (!Character.NavActor.FollowingPath)
         {
             _characterAnimationHandler.InLocomotion = false;
         }
@@ -112,7 +122,7 @@ public class CharacterLocomotion : MonoBehaviour
     public void StopLocomotion()
     {
         _characterAnimationHandler.InLocomotion = false;
-        PlayerCharacter.Instance.SetCharacterActionState(CharacterActionState.Idle);
+        Character.SetCharacterActionState(CharacterActionState.Idle);
     }
 
     public void CalculateCharacterDirection()

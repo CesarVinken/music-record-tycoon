@@ -42,9 +42,9 @@ public class RoomBuilder
         // When building a room that is next to the room where the currently selected character is, then the bordering wall graphicals should be switched to the 'low' wall versions
         for (int i = 0; i < room.AdjacentRooms.Count; i++)
         {
-            if (room.AdjacentRooms[i].Id == PlayerCharacter.Instance.CurrentRoom.Id)
+            if (room.AdjacentRooms[i].Id == CharacterManager.Instance.SelectedCharacter.CurrentRoom.Id)
             {
-                PlayerCharacter.Instance.CurrentRoom.LowerWallPieces();
+                CharacterManager.Instance.SelectedCharacter.CurrentRoom.LowerWallPieces();
             }
         }
 

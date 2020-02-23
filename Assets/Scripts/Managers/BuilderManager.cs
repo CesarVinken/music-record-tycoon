@@ -65,11 +65,12 @@ public class BuilderManager : MonoBehaviour
         _buildingTileBuilder = new BuildingTileBuilder();
         _roomBuilder = new RoomBuilder();
 
-        _buildingTileBuilder.SetupInitialBuildingTiles();    // Temporary, should only happen for empty map!
     }
 
     public void Start()
     {
+        _buildingTileBuilder.SetupInitialBuildingTiles();    // Temporary, should only happen for empty map!
+
         SetupInitialRoom();
     }
 
@@ -180,12 +181,6 @@ public class BuilderManager : MonoBehaviour
     public void DrawAvailablePlots()
     {
         _buildingPlotBuilder.DrawAvailablePlots();
-    }
-
-    public void UpdatePathfindingGrid()
-    {
-        IEnumerator updateGrid = WaitAndUpdatePathfindingGrid();
-        StartCoroutine(updateGrid);
     }
 
     public void SetupInitialRoom()
@@ -328,18 +323,5 @@ public class BuilderManager : MonoBehaviour
     public void DeleteAllTriggers()
     {
         BuildHallwayTrigger.DeleteAllHallwayTriggers();
-    }
-
-    public IEnumerator WaitAndUpdatePathfindingGrid()
-    {
-        yield return new WaitForSeconds(0.01f);
-        GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
-        //PlayerCharacter.Instance.PlayerLocomotion.StopLocomotion();
-        PlayerCharacter.Instance.PlayerNav.IsReevaluating = true;
-        yield return new WaitForSeconds(0.08f);
-
-        // TODO: update routes for all moving characters on the map
-
-        PlayerCharacter.Instance.PlayerLocomotion.RetryReachLocomotionTarget();
     }
 }

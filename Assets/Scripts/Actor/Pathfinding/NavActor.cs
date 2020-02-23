@@ -13,12 +13,21 @@ public class NavActor : MonoBehaviour
     public bool IsReevaluating;
 
     public NavPath Path;
+    public Character Character;
 
     public void Start()
     {
         FollowingPath = false;
         IsReevaluating = false;
         StartCoroutine(UpdatePath());
+    }
+
+    public void SetCharacter(Character character)
+    {
+        Character = character;
+        character.NavActor = this;
+
+        transform.position = Character.transform.position;
     }
 
     public void OnPathFound(Vector3[] waypoints, bool pathSuccessful)
@@ -91,10 +100,10 @@ public class NavActor : MonoBehaviour
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(Path.LookPoints[pathIndex] - transform.position);
                     transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * TurnSpeed);
-                    transform.Translate(Vector3.forward * Time.deltaTime * PlayerCharacter.Instance.PlayerLocomotion.Speed, Space.Self);
+                    transform.Translate(Vector3.forward * Time.deltaTime * Character.PlayerLocomotion.Speed, Space.Self);
 
                     transform.position = new Vector3(transform.position.x, transform.position.y, -1);
-                    PlayerCharacter.Instance.PlayerLocomotion.SetPosition(transform.position);
+                    Character.PlayerLocomotion.SetPosition(transform.position);
                 }
                 yield return null;
             }

@@ -51,8 +51,8 @@ public class GameManager : MonoBehaviour
     {
         //PathfindingGrid.DrawPathfindingGridGizmos();
 
-        if (PlayerCharacter.Instance != null)
-            PlayerCharacter.Instance.PlayerNav.DrawPathGizmo();
+        //if (PlayableCharacter.Instance != null && PlayableCharacter.Instance.PlayerNav != null)
+        //    PlayableCharacter.Instance.PlayerNav.DrawPathGizmo();
 
         if (BuilderManager.Instance != null)
         {

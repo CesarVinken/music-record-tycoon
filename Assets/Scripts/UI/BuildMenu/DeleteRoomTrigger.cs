@@ -46,7 +46,7 @@ public class DeleteRoomTrigger : MonoBehaviour
         Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
         tempRoomCopy.CleanUpDeletedRoomTiles();
 
-        BuilderManager.Instance.UpdatePathfindingGrid();
+        CharacterManager.Instance.UpdatePathfindingGrid();
 
         for (int l = 0; l < RoomManager.Rooms.Count; l++)
         {

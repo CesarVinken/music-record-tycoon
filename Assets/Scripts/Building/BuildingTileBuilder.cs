@@ -50,7 +50,7 @@ public class BuildingTileBuilder
 
         _builderManager.SetMapPanMaximum(room.RoomCorners);
 
-        BuilderManager.Instance.UpdatePathfindingGrid();
+        CharacterManager.Instance.UpdatePathfindingGrid();
     }
 
     public BuildingTile CreateNeighbourTile(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength, List<BuildingTile> surroundingSquareTiles)

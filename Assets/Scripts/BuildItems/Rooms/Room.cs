@@ -14,7 +14,7 @@ public class Room : BuildItem
     public List<Door> Doors = new List<Door>();
     public List<Room> AdjacentRooms = new List<Room>();
     public List<BuildingTile> RoomEdgeTiles = new List<BuildingTile>(); // possible optimisation: already divide pieces into correct side: upleft, downleft etc.
-    public List<PlayerCharacter> CharactersInRoom = new List<PlayerCharacter>();
+    public List<PlayableCharacter> CharactersInRoom = new List<PlayableCharacter>();
     public List<WallPiece> WallPieces;  // possible optimisation: already divide pieces into correct wall side: upleft, downleft etc.
 
     private DeleteRoomTrigger _deleteRoomTrigger;
@@ -30,7 +30,7 @@ public class Room : BuildItem
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        PlayerCharacter character = collision.gameObject.GetComponent<PlayerCharacter>();
+        PlayableCharacter character = collision.gameObject.GetComponent<PlayableCharacter>();
         if (character)
         {
             // A character entered the room
@@ -46,7 +46,7 @@ public class Room : BuildItem
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        PlayerCharacter character = collision.gameObject.GetComponent<PlayerCharacter>();
+        PlayableCharacter character = collision.gameObject.GetComponent<PlayableCharacter>();
         if (character)
         {
             Logger.Log(Logger.Locomotion, "{0} left room {1}", character.Id, Id);
@@ -54,7 +54,7 @@ public class Room : BuildItem
             {
                 character.LeaveRoom();
             }
-            foreach (PlayerCharacter c in CharactersInRoom)
+            foreach (PlayableCharacter c in CharactersInRoom)
             {
                 if (c.Id == character.Id)
                 {
