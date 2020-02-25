@@ -42,8 +42,7 @@ public class CharacterLocomotion : MonoBehaviour
         if (!(Character is IPlayable))
             return;
 
-        PlayableCharacter playableCharacter = Character as PlayableCharacter;
-        if (!playableCharacter.IsSelected)
+        if (Character.Id != CharacterManager.Instance.SelectedCharacter.Id)
             return;
 
         if (PointerHelper.IsPointerOverGameObject())
