@@ -49,8 +49,6 @@ public class BuildingTileBuilder
         List<BuildingTile> fourthRankNewTiles = CreateTileRing(thirdRankNewTiles, surroundingSquareTiles);
 
         _builderManager.SetMapPanMaximum(room.RoomCorners);
-
-        CharacterManager.Instance.UpdatePathfindingGrid();
     }
 
     public BuildingTile CreateNeighbourTile(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength, List<BuildingTile> surroundingSquareTiles)

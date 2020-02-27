@@ -54,6 +54,8 @@ public class CharacterManager : MonoBehaviour
         SelectCharacter(playableCharacter);
 
         Characters.Add(playableCharacter);
+
+        UpdatePathfindingGrid();
     }
 
     public void SelectCharacter(PlayableCharacter playableCharacter)
@@ -66,21 +68,29 @@ public class CharacterManager : MonoBehaviour
 
     public void UpdatePathfindingGrid()
     {
+        IEnumerator updateGrid = WaitAndUpdatePathfindingGrid();
+        StartCoroutine(updateGrid);
         for (int i = 0; i < Characters.Count; i++)
         {
-            IEnumerator updateGrid = WaitAndUpdatePathfindingGrid(Characters[i]);
-            StartCoroutine(updateGrid);
+            IEnumerator retryReachLocomotionTarget = WaitAndRetryReachLocomotionTarget(Characters[i]);
+            StartCoroutine(retryReachLocomotionTarget);
         }
     }
 
-    public IEnumerator WaitAndUpdatePathfindingGrid(Character character)
+    public IEnumerator WaitAndUpdatePathfindingGrid()
     {
         yield return new WaitForSeconds(0.01f);
-        GameManager.Instance.PathfindingGrid.CreateGrid();  // May have to change to partly recreating the grid.
 
+        Logger.Log("Update pathfinding grid");
+        GameManager.Instance.PathfindingGrid.CreateGrid();
+    }
+
+    public IEnumerator WaitAndRetryReachLocomotionTarget(Character character)
+    {
         character.NavActor.IsReevaluating = true;
         yield return new WaitForSeconds(0.08f);
 
         character.PlayerLocomotion.RetryReachLocomotionTarget();
     }
+
 }

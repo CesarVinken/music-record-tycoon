@@ -75,7 +75,6 @@ public class MainCanvas : MonoBehaviour
 
                 if (_currentSnappedX != snappedX || _currentSnappedY != snappedY)
                 {
-                    Logger.Log("Ui");
                     _currentSnappedX = snappedX;
                     _currentSnappedY = snappedY;
 
@@ -97,7 +96,6 @@ public class MainCanvas : MonoBehaviour
                     }
                     else
                     {
-                        Logger.Log("Gabby");
                         if (BuilderManager.PointerIsOnAvailablePlot)
                         {
                             BuilderManager.PointerIsOnAvailablePlot = false;

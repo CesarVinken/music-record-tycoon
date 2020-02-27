@@ -49,6 +49,7 @@ public class RoomBuilder
         }
 
         FollowUpRoomBuilding(roomBlueprint, roomCorners, buildingPlotBuilder);
+        CharacterManager.Instance.UpdatePathfindingGrid();
     }
 
     public void FollowUpRoomBuilding(RoomBlueprint roomBlueprint, Dictionary<Direction, Vector2> roomCorners, BuildingPlotBuilder buildingPlotBuilder)

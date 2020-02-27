@@ -40,7 +40,7 @@ public class Grid : MonoBehaviour
             _walkableRegionsDictionary.Add((int)Mathf.Log(region.TerrainMask.value, 2), region.TerrainPenalty);
         }
 
-        CreateGrid();
+        //CreateGrid();
     }
 
     public int MaxSize
