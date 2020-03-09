@@ -44,6 +44,10 @@ public class GameManager : MonoBehaviour
         {
             MainMenuCanvas.Instance.ToggleMainMenu();
         }
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            ConsoleContainer.Instance.ToggleConsole();
+        }
     }
 
     //Central function to turn on/off different gizmos

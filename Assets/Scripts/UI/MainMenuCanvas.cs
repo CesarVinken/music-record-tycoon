@@ -35,6 +35,8 @@ public class MainMenuCanvas : MonoBehaviour
         OpenMainMenu();
     }
 
+
+
     public void OpenMainMenu()
     {
         FreezeUI();
