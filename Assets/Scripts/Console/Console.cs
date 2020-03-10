@@ -8,6 +8,7 @@ public class Console : MonoBehaviour
     public Text InputText;
     public Text ReportText;
     public InputField InputField;
+    public int inputHistoryIndex = 99;
 
     void Awake()
     {
@@ -25,9 +26,18 @@ public class Console : MonoBehaviour
 
     public void Update()
     {
-
+        if (InputField.isFocused)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                GetPreviousInput();
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                GetNextInput();
+            }
+        }
     }
-
 
     public void SetConsoleState(ConsoleState newConsoleState)
     {
@@ -49,5 +59,51 @@ public class Console : MonoBehaviour
 
         InputField.ActivateInputField();
         InputField.Select();
+    }
+
+    public void GetPreviousInput()
+    {
+        if (ReportText.text == "") return;
+
+        string[] newLine = { "\n" };
+        string[] reportTextArray = ReportText.text.Split('\n');
+
+        if (inputHistoryIndex == 99)
+        {
+            inputHistoryIndex = reportTextArray.Length - 1;
+        } else if(inputHistoryIndex > 1)
+        {
+            inputHistoryIndex--;
+        } else
+        {
+            inputHistoryIndex = reportTextArray.Length - 1;
+        }
+
+        string previousReportText = reportTextArray[inputHistoryIndex];
+        InputField.text = previousReportText;
+    }
+
+    public void GetNextInput()
+    {
+        if (ReportText.text == "") return;
+
+        string[] newLine = { "\n" };
+        string[] reportTextArray = ReportText.text.Split('\n');
+
+        if (inputHistoryIndex == 99)
+        {
+            inputHistoryIndex = 1;
+        }
+        else if (inputHistoryIndex < reportTextArray.Length - 1)
+        {
+            inputHistoryIndex++;
+        }
+        else
+        {
+            inputHistoryIndex = 1;
+        }
+
+        string nextReportText = reportTextArray[inputHistoryIndex];
+        InputField.text = nextReportText;
     }
 }
