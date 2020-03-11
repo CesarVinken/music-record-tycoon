@@ -7,7 +7,6 @@ public class ConsoleContainer : MonoBehaviour
     public GameObject ConsolePrefab;
     public GameObject ConsoleGO;
 
-    private Console _console;
     private Animator _animator;
 
     public int AnimatorConsoleState
@@ -40,18 +39,16 @@ public class ConsoleContainer : MonoBehaviour
             if (!_animator)
                 Logger.Error(Logger.Initialisation, "Cannot find animator");
 
-            _console = ConsoleGO.GetComponent<Console>();
-
-            if (!_console)
+            if (!Console.Instance)
                 Logger.Error(Logger.Initialisation, "Cannot find console");
         }
 
-        if (_console.ConsoleState == ConsoleState.Closed)
+        if (Console.Instance.ConsoleState == ConsoleState.Closed)
         {
 
             SetConsoleState(ConsoleState.Small);
         }
-        else if (_console.ConsoleState == ConsoleState.Small)
+        else if (Console.Instance.ConsoleState == ConsoleState.Small)
         {
             SetConsoleState(ConsoleState.Large);
         }
@@ -79,6 +76,6 @@ public class ConsoleContainer : MonoBehaviour
                 break;
         }
 
-        _console.SetConsoleState(nextState);   
+        Console.Instance.SetConsoleState(nextState);   
     }
 }

@@ -1,14 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Console : MonoBehaviour
 {
+    public static Console Instance;
     public ConsoleState ConsoleState;
 
     public Text InputText;
     public Text ReportText;
     public InputField InputField;
     public int inputHistoryIndex = 99;
+
+    public List<ConsoleCommand> Commands = new List<ConsoleCommand>();
 
     void Awake()
     {
@@ -21,7 +25,10 @@ public class Console : MonoBehaviour
         if (InputField == null)
             Logger.Log(Logger.Initialisation, "Could not find InputField component on console");
 
+        Instance = this;
         ConsoleState = ConsoleState.Closed;
+
+        RegisterCommands();
     }
 
     public void Update()
@@ -50,15 +57,28 @@ public class Console : MonoBehaviour
     {
         if (InputField.text == "") return;
 
-        string reportText = ReportText.text;
-        reportText += "\n";
-        reportText += InputText.text;
+        string inputText = InputText.text;
+
+        PrintToReportText(inputText);
 
         InputField.text = "";
-        ReportText.text = reportText;
 
         InputField.ActivateInputField();
         InputField.Select();
+
+        if (inputText[0] == '$')
+        {
+            RunCommand(inputText);
+        }
+    }
+
+    public void PrintToReportText(string text)
+    {
+        string reportText = ReportText.text;
+        reportText += "\n";
+        reportText += text;
+
+        ReportText.text = reportText;
     }
 
     public void GetPreviousInput()
@@ -105,5 +125,42 @@ public class Console : MonoBehaviour
 
         string nextReportText = reportTextArray[inputHistoryIndex];
         InputField.text = nextReportText;
+    }
+
+    public void RunCommand(string line)
+    {
+        string sanatisedLine = line.Substring(1);
+        sanatisedLine.Trim();
+        Logger.Log("Command input {0}", sanatisedLine);
+        string[] arguments = sanatisedLine.Split(' ');
+        List<string> sanatisedArguments = new List<string>();
+        for (int i = 0; i < arguments.Length; i++)
+        {
+            if (arguments[i] == "") continue;
+            sanatisedArguments.Add(arguments[i].ToLower());
+        }
+
+        string commandName = sanatisedArguments[0];
+        sanatisedArguments.RemoveAt(0); // remove title from arguments
+
+        ConsoleCommand Command = Commands.Find(j => j.Name == commandName);
+
+        if(Command == null)
+        {
+            Logger.Warning("Could not find a command with the name {0}", commandName);
+            PrintToReportText("Could not find a command with the name {0}");
+            return;
+        }
+
+        Command.Execute(sanatisedArguments);
+    }
+
+    public void RegisterCommands()
+    {
+        ConsoleCommand testCommand = ConsoleCommand.AddCommand("test", 3, 4);
+        ConsoleCommand addCommand = ConsoleCommand.AddCommand("add", 2, 2);
+
+        Commands.Add(testCommand);
+        Commands.Add(addCommand);
     }
 }
