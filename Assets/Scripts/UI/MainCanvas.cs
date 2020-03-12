@@ -47,6 +47,9 @@ public class MainCanvas : MonoBehaviour
 
     public void Update()
     {
+        if (Console.Instance && Console.Instance.ConsoleState == ConsoleState.Large)
+            return;
+
         if (PointerImage.sprite != null)
         {
             Vector2 mousePosition = Input.mousePosition;

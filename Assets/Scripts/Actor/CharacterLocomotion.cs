@@ -29,6 +29,9 @@ public class CharacterLocomotion : MonoBehaviour
         if (GameManager.MainMenuOpen)
             return;
 
+        if (Console.Instance && Console.Instance.ConsoleState == ConsoleState.Large)
+            return;
+
         CheckPointerInput();
         if(Character.CharacterActionState == CharacterActionState.Moving)
         {
