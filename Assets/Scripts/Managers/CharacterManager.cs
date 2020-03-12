@@ -2,6 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct CharacterStats
+{
+    public CharacterStats(string name, int age, Gender gender, string image)
+    {
+        Name = name;
+        Age = age;
+        Gender = gender;
+        Image = image;
+    }
+    public string Name;
+    public int Age;
+    public Gender Gender;
+    public string Image;
+}
+
 public class CharacterManager : MonoBehaviour
 {
     public static CharacterManager Instance;
@@ -31,23 +46,26 @@ public class CharacterManager : MonoBehaviour
     void Start()
     {
         _avatarContainer = AvatarContainer.Instance;
-        GeneratePlayableCharacter("Bruce", 27, Gender.Male, "imageString");
-        GeneratePlayableCharacter("Frank Zappa", 33, Gender.Male, "imageString");
+
+        GeneratePlayableCharacter(new CharacterStats("Bruce", 27, Gender.Male, "imageString"), new Vector2(0, 15));
+        GeneratePlayableCharacter(new CharacterStats("Frank Zappa", 33, Gender.Male, "imageString"), new Vector2(5, 10));
     }
 
-    public void GeneratePlayableCharacter(string name, int age, Gender gender, string image)
+    public void GeneratePlayableCharacter(CharacterStats characterStats, Vector2 position)
     {
         Logger.Log(Logger.Initialisation, "Create character");
 
         GameObject characterGO = Instantiate(CharacterPrefab, SceneObjectsGO.transform);
         PlayableCharacter playableCharacter = characterGO.GetComponent<PlayableCharacter>();
+        playableCharacter.transform.position = position;
 
         GameObject navActorGO = Instantiate(NavActorPrefab, PathfindingGO.transform);
         NavActor navActor = navActorGO.GetComponent<NavActor>();
         navActor.SetCharacter(playableCharacter);
+        navActorGO.transform.position = characterGO.transform.position;
 
-        characterGO.name = name;
-        playableCharacter.Setup(name, age, gender, image);
+        characterGO.name = characterStats.Name;
+        playableCharacter.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
 
         _avatarContainer.CreateAvatar(playableCharacter);
 
@@ -72,6 +90,11 @@ public class CharacterManager : MonoBehaviour
         StartCoroutine(updateGrid);
         for (int i = 0; i < Characters.Count; i++)
         {
+            if (Characters[i].NavActor.Target.x == Characters[i].transform.position.x &&
+                Characters[i].NavActor.Target.y == Characters[i].transform.position.y ||
+                Characters[i].NavActor.Target == new Vector3(0, 0, 0))
+                continue;
+
             IEnumerator retryReachLocomotionTarget = WaitAndRetryReachLocomotionTarget(Characters[i]);
             StartCoroutine(retryReachLocomotionTarget);
         }
