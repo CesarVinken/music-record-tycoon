@@ -34,16 +34,26 @@ public class ConsoleCommand
 
     private void CheckArgumentCount(List<string> arguments)
     {
+        string argumentCountMinPluralSuffix = "";
+        string argumentCountMaxPluralSuffix = "";
+        string argumentsPluralSuffix = "";
+        if (ArgumentCountMin > 1)
+            argumentCountMinPluralSuffix = "s";
+        if (ArgumentCountMax > 1)
+            argumentCountMaxPluralSuffix = "s";
+        if (arguments.Count > 1)
+            argumentsPluralSuffix = "s";
+
         if (arguments.Count < ArgumentCountMin && ArgumentCountMin != -1)
         {
             if (ArgumentCountMin == ArgumentCountMax)
             {
-                Console.Instance.PrintToReportText("Command " + Name + " needs exactly " + ArgumentCountMin + " arguments. Received " + arguments.Count + " arguments");
+                Console.Instance.PrintToReportText("Command " + Name + " needs exactly " + ArgumentCountMin + " argument" + argumentCountMinPluralSuffix + ". Received " + arguments.Count + " argument" + argumentsPluralSuffix);
                 return;
             }
             else
             {
-                Console.Instance.PrintToReportText("Command " + Name + " needs at least " + ArgumentCountMin + " arguments. Received " + arguments.Count + " arguments");
+                Console.Instance.PrintToReportText("Command " + Name + " needs at least " + ArgumentCountMin + " argument" + argumentCountMinPluralSuffix + ". Received " + arguments.Count + " argument" + argumentsPluralSuffix);
                 return;
             }
         }
@@ -51,12 +61,12 @@ public class ConsoleCommand
         {
             if (ArgumentCountMin == ArgumentCountMax)
             {
-                Console.Instance.PrintToReportText("Command " + Name + " needs exactly " + ArgumentCountMin + " arguments. Received " + arguments.Count + " arguments");
+                Console.Instance.PrintToReportText("Command " + Name + " needs exactly " + ArgumentCountMin + " argument" + argumentCountMinPluralSuffix + ". Received " + arguments.Count + " argument" + argumentsPluralSuffix);
                 return;
             }
             else
             {
-                Console.Instance.PrintToReportText("Command " + Name + " needs at most " + ArgumentCountMax + " arguments. Received " + arguments.Count + " arguments");
+                Console.Instance.PrintToReportText("Command " + Name + " needs at most " + ArgumentCountMax + " argument" + argumentCountMaxPluralSuffix + ". Received " + arguments.Count + " argument" + argumentsPluralSuffix);
                 return;
             }
         }
