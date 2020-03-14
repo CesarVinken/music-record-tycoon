@@ -58,6 +58,23 @@ public class ConsoleContainer : MonoBehaviour
         }
     }
 
+    public void ToggleConsole(ConsoleState forcedState)
+    {
+        if (!ConsoleGO)
+        {
+            ConsoleGO = Instantiate(ConsolePrefab, transform, false);
+
+            _animator = ConsoleGO.GetComponent<Animator>();
+
+            if (!_animator)
+                Logger.Error(Logger.Initialisation, "Cannot find animator");
+
+            if (!Console.Instance)
+                Logger.Error(Logger.Initialisation, "Cannot find console");
+        }
+        SetConsoleState(forcedState);
+    }
+
     private void SetConsoleState (ConsoleState nextState)
     {
         switch (nextState)

@@ -61,14 +61,6 @@ public class MainMenu : MenuScreen
         InstantiatePanel(OptionsPanelPrefab);
     }
 
-    //public void CloseMenu()
-    //{
-    //    if (MainMenuCanvas.Instance == null)
-    //        Logger.Error(Logger.UI, "Cannot find MainMenuCanvas");
-
-    //    MainMenuCanvas.Instance.CloseMainMenu();
-    //}
-
     public void QuitGame()
     {
         Logger.Log(Logger.General, "Quit application");
