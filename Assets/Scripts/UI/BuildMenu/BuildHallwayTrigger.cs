@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class BuildHallwayTrigger : MonoBehaviour
@@ -52,6 +53,7 @@ public class BuildHallwayTrigger : MonoBehaviour
     {
         DeleteAllHallwayTriggers();
         await BuilderManager.Instance.BuildRoom(BuilderManager.Instance.SelectedRoom, _startingPoint, RoomRotation.Rotation0);
+        return;
     }
 
     public static void DeleteAllHallwayTriggers()

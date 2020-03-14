@@ -44,15 +44,15 @@ public class CharacterManager : MonoBehaviour
         Instance = this;
     }
 
-    void Start()
+    async void Start()
     {
         _avatarContainer = AvatarContainer.Instance;
 
-        GeneratePlayableCharacter(new CharacterStats("Bruce", 27, Gender.Male, "imageString"), new Vector2(0, 15));
-        GeneratePlayableCharacter(new CharacterStats("Frank Zappa", 33, Gender.Male, "imageString"), new Vector2(5, 10));
+        await GeneratePlayableCharacter(new CharacterStats("Bruce", 27, Gender.Male, "imageString"), new Vector2(0, 15));
+        await GeneratePlayableCharacter(new CharacterStats("Frank Zappa", 33, Gender.Male, "imageString"), new Vector2(5, 10));
     }
 
-    public async void GeneratePlayableCharacter(CharacterStats characterStats, Vector2 position)
+    public async Task GeneratePlayableCharacter(CharacterStats characterStats, Vector2 position)
     {
         Logger.Log(Logger.Initialisation, "Create character");
 
@@ -75,6 +75,7 @@ public class CharacterManager : MonoBehaviour
         Characters.Add(playableCharacter);
 
         await UpdatePathfindingGrid();
+        return;
     }
 
     public void SelectCharacter(PlayableCharacter playableCharacter)
@@ -87,8 +88,10 @@ public class CharacterManager : MonoBehaviour
 
     public async Task UpdatePathfindingGrid()
     {
-        await Task.Delay(20);
+        //await Task.Delay(20);
+        await Task.Yield();
         GameManager.Instance.PathfindingGrid.CreateGrid();
+
 
         for (int i = 0; i < Characters.Count; i++)
         {

@@ -67,11 +67,11 @@ public class BuilderManager : MonoBehaviour
 
     }
 
-    public void Start()
+    public async void Start()
     {
         _buildingTileBuilder.SetupInitialBuildingTiles();    // Temporary, should only happen for empty map!
 
-        SetupInitialRoom();
+        await SetupInitialRoom();
     }
 
     void Update()
@@ -183,10 +183,11 @@ public class BuilderManager : MonoBehaviour
         _buildingPlotBuilder.DrawAvailablePlots();
     }
 
-    public async void SetupInitialRoom()
+    public async Task SetupInitialRoom()
     {
         RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
         await BuildRoom(room1, new Vector2(0, 0), RoomRotation.Rotation0);
+        return;
     }
 
     public void SetSelectedRoom(RoomBlueprint selectedRoom)
@@ -199,9 +200,9 @@ public class BuilderManager : MonoBehaviour
         await _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, startingPoint, roomRotation);
     }
 
-    public void BuildRoom(RoomBlueprint roomBlueprint, BuildingPlot buildingPlot)
+    public async void BuildRoom(RoomBlueprint roomBlueprint, BuildingPlot buildingPlot)
     {
-        _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, buildingPlot);
+        await _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, buildingPlot);
     }
 
     public void ActivateBuildMenuMode()
@@ -340,17 +341,4 @@ public class BuilderManager : MonoBehaviour
             Logger.Log(Logger.Building, "{0} has {1} adjacent rooms", RoomManager.Rooms[l].Id, RoomManager.Rooms[l].AdjacentRooms.Count);
         }
     }
-
-    //public void WaitAndBuild(RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
-    //{
-    //    IEnumerator waitAndBuildRoutine = WaitAndBuildRoutine(roomBlueprint, startingPoint, roomRotation);
-    //    StartCoroutine(waitAndBuildRoutine);
-    //}
-
-    //public IEnumerator WaitAndBuildRoutine(RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
-    //{
-    //    yield return new WaitForSeconds(1f);
-    //    BuildRoom(roomBlueprint, startingPoint, roomRotation);
-
-    //}
 }

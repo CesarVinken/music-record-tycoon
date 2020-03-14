@@ -32,12 +32,12 @@ public class ConfirmationModal : MonoBehaviour  // Later on maybe turn this in t
         _midpoint = midpoint;
     }
 
-    public void Confirm()
+    public async void Confirm()
     {
         switch (_buildAction)
         {
             case BuildAction.DeleteRoom:
-                DeleteRoomTrigger.DeleteRoom();
+                await DeleteRoomTrigger.DeleteRoom();
                 DeleteRoomTrigger.DeleteAllDeleteRoomTriggers();
                 break;
             default:

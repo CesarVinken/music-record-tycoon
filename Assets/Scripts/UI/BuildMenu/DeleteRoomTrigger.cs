@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class DeleteRoomTrigger : MonoBehaviour
@@ -37,24 +38,11 @@ public class DeleteRoomTrigger : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public async void DeleteRoom()
+    public async Task DeleteRoom()
     {
         BuilderManager.Instance.DeleteRoom(_room);
         await CharacterManager.Instance.UpdatePathfindingGrid();
-
-        //Room tempRoomCopy = _room;
-        //_room.RemoveDoorConnectionFromAdjacentRooms();
-        //_room.RemoveThisRoomFromAdjacentRooms();
-        //_room.DeleteRoom();
-        //Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
-        //tempRoomCopy.CleanUpDeletedRoomTiles();
-
-        //CharacterManager.Instance.UpdatePathfindingGrid();
-
-        //for (int l = 0; l < RoomManager.Rooms.Count; l++)
-        //{
-        //    Logger.Log(Logger.Building, "{0} has {1} adjacent rooms", RoomManager.Rooms[l].Id, RoomManager.Rooms[l].AdjacentRooms.Count);
-        //}
+        return;
     }
 
     public static void DeleteAllDeleteRoomTriggers()
