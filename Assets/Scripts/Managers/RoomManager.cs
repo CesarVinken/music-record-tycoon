@@ -22,4 +22,12 @@ public class RoomManager : MonoBehaviour
     {
         Rooms.Remove(Room);
     }
+
+    public void DeleteAllRooms()
+    {
+        for (int i = Rooms.Count - 1; i >= 0; i--)
+        {
+            BuilderManager.Instance.DeleteRoom(Rooms[i]);
+        }
+    }
 }

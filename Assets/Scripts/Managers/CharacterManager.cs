@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public struct CharacterStats
@@ -51,7 +52,7 @@ public class CharacterManager : MonoBehaviour
         GeneratePlayableCharacter(new CharacterStats("Frank Zappa", 33, Gender.Male, "imageString"), new Vector2(5, 10));
     }
 
-    public void GeneratePlayableCharacter(CharacterStats characterStats, Vector2 position)
+    public async void GeneratePlayableCharacter(CharacterStats characterStats, Vector2 position)
     {
         Logger.Log(Logger.Initialisation, "Create character");
 
@@ -73,7 +74,7 @@ public class CharacterManager : MonoBehaviour
 
         Characters.Add(playableCharacter);
 
-        UpdatePathfindingGrid();
+        await UpdatePathfindingGrid();
     }
 
     public void SelectCharacter(PlayableCharacter playableCharacter)
@@ -84,10 +85,11 @@ public class CharacterManager : MonoBehaviour
         _avatarContainer.SelectAvatar(playableCharacter, previouslySelectedCharacter);
     }
 
-    public void UpdatePathfindingGrid()
+    public async Task UpdatePathfindingGrid()
     {
-        IEnumerator updateGrid = WaitAndUpdatePathfindingGrid();
-        StartCoroutine(updateGrid);
+        await Task.Delay(20);
+        GameManager.Instance.PathfindingGrid.CreateGrid();
+
         for (int i = 0; i < Characters.Count; i++)
         {
             if (Characters[i].NavActor.Target.x == Characters[i].transform.position.x &&
@@ -98,14 +100,7 @@ public class CharacterManager : MonoBehaviour
             IEnumerator retryReachLocomotionTarget = WaitAndRetryReachLocomotionTarget(Characters[i]);
             StartCoroutine(retryReachLocomotionTarget);
         }
-    }
-
-    public IEnumerator WaitAndUpdatePathfindingGrid()
-    {
-        yield return new WaitForSeconds(0.01f);
-
-        Logger.Log("Update pathfinding grid");
-        GameManager.Instance.PathfindingGrid.CreateGrid();
+        Logger.Log("Updated pathfinding grid");
     }
 
     public IEnumerator WaitAndRetryReachLocomotionTarget(Character character)

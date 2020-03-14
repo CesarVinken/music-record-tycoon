@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -183,10 +183,10 @@ public class BuilderManager : MonoBehaviour
         _buildingPlotBuilder.DrawAvailablePlots();
     }
 
-    public void SetupInitialRoom()
+    public async void SetupInitialRoom()
     {
         RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
-        BuildRoom(room1, new Vector2(0, 0), RoomRotation.Rotation0);
+        await BuildRoom(room1, new Vector2(0, 0), RoomRotation.Rotation0);
     }
 
     public void SetSelectedRoom(RoomBlueprint selectedRoom)
@@ -194,9 +194,9 @@ public class BuilderManager : MonoBehaviour
         SelectedRoom = selectedRoom;
     }
 
-    public void BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
+    public async Task BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
     {
-        _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, startingPoint, roomRotation);
+        await _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, startingPoint, roomRotation);
     }
 
     public void BuildRoom(RoomBlueprint roomBlueprint, BuildingPlot buildingPlot)
@@ -324,4 +324,33 @@ public class BuilderManager : MonoBehaviour
     {
         BuildHallwayTrigger.DeleteAllHallwayTriggers();
     }
+
+    public void DeleteRoom(Room room)
+    {
+        Room tempRoomCopy = room;
+        room.RemoveDoorConnectionFromAdjacentRooms();
+        room.RemoveThisRoomFromAdjacentRooms();
+        room.DeleteRoom();
+        Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
+        tempRoomCopy.CleanUpDeletedRoomTiles();
+
+
+        for (int l = 0; l < RoomManager.Rooms.Count; l++)
+        {
+            Logger.Log(Logger.Building, "{0} has {1} adjacent rooms", RoomManager.Rooms[l].Id, RoomManager.Rooms[l].AdjacentRooms.Count);
+        }
+    }
+
+    //public void WaitAndBuild(RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
+    //{
+    //    IEnumerator waitAndBuildRoutine = WaitAndBuildRoutine(roomBlueprint, startingPoint, roomRotation);
+    //    StartCoroutine(waitAndBuildRoutine);
+    //}
+
+    //public IEnumerator WaitAndBuildRoutine(RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    BuildRoom(roomBlueprint, startingPoint, roomRotation);
+
+    //}
 }

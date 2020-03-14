@@ -209,6 +209,7 @@ public class Room : BuildItem
             {
                 Vector2 location = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j);
                 BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
+
                 tile.BuildingTileRooms.Add(this);
                 if ((i == 0 && j < leftUpAxisLength) || (j == 0 && i < rightUpAxisLength))
                 {

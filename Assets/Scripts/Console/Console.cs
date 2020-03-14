@@ -157,10 +157,8 @@ public class Console : MonoBehaviour
 
     public void RegisterCommands()
     {
-        ConsoleCommand testCommand = ConsoleCommand.AddCommand("close", new CloseConsoleCommand());
-        ConsoleCommand addCommand = ConsoleCommand.AddCommand("add", 1, new AddCommand());
-
-        Commands.Add(testCommand);
-        Commands.Add(addCommand);
+        Commands.Add(ConsoleCommand.AddCommand("close", new CloseConsoleCommand()));
+        Commands.Add(ConsoleCommand.AddCommand("add", 1, new AddCommand()));
+        Commands.Add(ConsoleCommand.AddCommand("build", 1, 2, new BuildCommand()));
     }
 }

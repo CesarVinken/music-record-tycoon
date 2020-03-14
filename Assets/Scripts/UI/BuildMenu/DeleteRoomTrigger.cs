@@ -37,21 +37,24 @@ public class DeleteRoomTrigger : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void DeleteRoom()
+    public async void DeleteRoom()
     {
-        Room tempRoomCopy = _room;
-        _room.RemoveDoorConnectionFromAdjacentRooms();
-        _room.RemoveThisRoomFromAdjacentRooms();
-        _room.DeleteRoom();
-        Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
-        tempRoomCopy.CleanUpDeletedRoomTiles();
+        BuilderManager.Instance.DeleteRoom(_room);
+        await CharacterManager.Instance.UpdatePathfindingGrid();
 
-        CharacterManager.Instance.UpdatePathfindingGrid();
+        //Room tempRoomCopy = _room;
+        //_room.RemoveDoorConnectionFromAdjacentRooms();
+        //_room.RemoveThisRoomFromAdjacentRooms();
+        //_room.DeleteRoom();
+        //Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
+        //tempRoomCopy.CleanUpDeletedRoomTiles();
 
-        for (int l = 0; l < RoomManager.Rooms.Count; l++)
-        {
-            Logger.Log(Logger.Building, "{0} has {1} adjacent rooms", RoomManager.Rooms[l].Id, RoomManager.Rooms[l].AdjacentRooms.Count);
-        }
+        //CharacterManager.Instance.UpdatePathfindingGrid();
+
+        //for (int l = 0; l < RoomManager.Rooms.Count; l++)
+        //{
+        //    Logger.Log(Logger.Building, "{0} has {1} adjacent rooms", RoomManager.Rooms[l].Id, RoomManager.Rooms[l].AdjacentRooms.Count);
+        //}
     }
 
     public static void DeleteAllDeleteRoomTriggers()
