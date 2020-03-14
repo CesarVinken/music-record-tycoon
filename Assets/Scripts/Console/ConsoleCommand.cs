@@ -6,8 +6,9 @@ public class ConsoleCommand
     public string Name;
     public int ArgumentCountMin;
     public int ArgumentCountMax;
+    public CommandProcedure CommandProcedure;
 
-    private ConsoleCommand(string name, int argumentCountMin, int argumentCountMax)
+    private ConsoleCommand(string name, int argumentCountMin, int argumentCountMax, CommandProcedure commandProcedure)
     {
         Guard.CheckIsEmptyString("name", name);
 
@@ -19,20 +20,36 @@ public class ConsoleCommand
         Name = name.ToLower();
         ArgumentCountMin = argumentCountMin;
         ArgumentCountMax = argumentCountMax;
+
+        CommandProcedure = commandProcedure;
     }
 
-    public static ConsoleCommand AddCommand(string name, int argumentCountMin, int argumentCountMax)
+    public static ConsoleCommand AddCommand(string name, int argumentCountMin, int argumentCountMax, CommandProcedure commandProcedure)
     {
-        return new ConsoleCommand(name, argumentCountMin, argumentCountMax);
+        return new ConsoleCommand(name, argumentCountMin, argumentCountMax, commandProcedure);
+    }
+
+    public static ConsoleCommand AddCommand(string name, CommandProcedure commandProcedure)
+    {
+        return new ConsoleCommand(name, 0, 0, commandProcedure);
+    }
+
+    public static ConsoleCommand AddCommand(string name, int argumentCountMin, CommandProcedure commandProcedure)
+    {
+        return new ConsoleCommand(name, argumentCountMin, 9999, commandProcedure);
     }
 
     public void Execute(List<string> arguments)
     {
-        CheckArgumentCount(arguments);
-        Logger.Log("Run command {0}", Name);
+        bool hasValidArgumentCount = CheckArgumentCount(arguments);
+      
+        if (!hasValidArgumentCount) return;
+
+        CommandProcedure.Run(arguments);
+        Logger.Log("Successfuly executed command {0}", Name);
     }
 
-    private void CheckArgumentCount(List<string> arguments)
+    private bool CheckArgumentCount(List<string> arguments)
     {
         string argumentCountMinPluralSuffix = "";
         string argumentCountMaxPluralSuffix = "";
@@ -49,26 +66,31 @@ public class ConsoleCommand
             if (ArgumentCountMin == ArgumentCountMax)
             {
                 Console.Instance.PrintToReportText("Command " + Name + " needs exactly " + ArgumentCountMin + " argument" + argumentCountMinPluralSuffix + ". Received " + arguments.Count + " argument" + argumentsPluralSuffix);
-                return;
             }
             else
             {
                 Console.Instance.PrintToReportText("Command " + Name + " needs at least " + ArgumentCountMin + " argument" + argumentCountMinPluralSuffix + ". Received " + arguments.Count + " argument" + argumentsPluralSuffix);
-                return;
             }
+            return false;
         }
         else if (arguments.Count > ArgumentCountMax && ArgumentCountMin != -1)
         {
             if (ArgumentCountMin == ArgumentCountMax)
             {
                 Console.Instance.PrintToReportText("Command " + Name + " needs exactly " + ArgumentCountMin + " argument" + argumentCountMinPluralSuffix + ". Received " + arguments.Count + " argument" + argumentsPluralSuffix);
-                return;
             }
             else
             {
                 Console.Instance.PrintToReportText("Command " + Name + " needs at most " + ArgumentCountMax + " argument" + argumentCountMaxPluralSuffix + ". Received " + arguments.Count + " argument" + argumentsPluralSuffix);
-                return;
             }
+            return false;
         }
+        return true;
     }
 }
+
+public abstract class CommandProcedure
+{
+    public abstract void Run(List<string> arguments);
+}
+
