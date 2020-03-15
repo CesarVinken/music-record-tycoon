@@ -13,16 +13,16 @@ public class BuildingPlotBuilder
     }
 
     // check all tiles where the plot would be drawn if the building tile is available. Only draw a plot when all tiles are available
-    public bool GetPlotIsAvailable(RoomBlueprint roomBlueprint, Vector2 roomStartingPoint, RoomRotation roomRotation)
+    public bool GetPlotIsAvailable(RoomBlueprint roomBlueprint, Vector2 roomStartingPoint, ObjectRotation roomRotation)
     {
-        int rightUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
+        int rightUpAxisLength = roomRotation == ObjectRotation.Rotation0 || roomRotation == ObjectRotation.Rotation180 ?
             roomBlueprint.RightUpAxisLength : roomBlueprint.LeftUpAxisLength;
-        int leftUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
+        int leftUpAxisLength = roomRotation == ObjectRotation.Rotation0 || roomRotation == ObjectRotation.Rotation180 ?
             roomBlueprint.LeftUpAxisLength : roomBlueprint.RightUpAxisLength;
-        Vector2 plotLocationStartingPoint = GridHelper.CalculateLocationOnGrid(roomStartingPoint, 0, 0);
-        Vector2 point1 = GridHelper.CalculateLocationOnGrid(plotLocationStartingPoint, rightUpAxisLength, 0);
-        Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, -leftUpAxisLength);
-        Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, -rightUpAxisLength, 0);
+        Vector2 plotLocationStartingPoint = GridHelper.GridToVectorLocation(roomStartingPoint, 0, 0);
+        Vector2 point1 = GridHelper.GridToVectorLocation(plotLocationStartingPoint, rightUpAxisLength, 0);
+        Vector2 point2 = GridHelper.GridToVectorLocation(point1, 0, -leftUpAxisLength);
+        Vector2 point3 = GridHelper.GridToVectorLocation(point2, -rightUpAxisLength, 0);
 
         List<BuildingTile> roomSquareTiles = _builderManager.BuildingTiles.FindAll(tile =>
             tile.StartingPoint.x >= point3.x &&
@@ -50,7 +50,7 @@ public class BuildingPlotBuilder
 
                 if (tile == null)
                 {
-                    Logger.Error(Logger.Building, "Could not find tile at {0}", GridHelper.CalculateLocationOnGrid(plotLocationStartingPoint, i, -j));
+                    Logger.Error(Logger.Building, "Could not find tile at {0}", GridHelper.GridToVectorLocation(plotLocationStartingPoint, i, -j));
                 }
 
                 if (tile.IsAvailable != Availability.Available)
@@ -89,20 +89,20 @@ public class BuildingPlotBuilder
                 bool createdPlotForDoor = false;
 
                 // the doors that are already on the map
-                GridLocation doorPositionOnExistingRoom = GridHelper.CalculateGridLocationFromVector2(existingDoor.transform.position);
+                GridLocation doorPositionOnExistingRoom = GridHelper.VectorToGridLocation(existingDoor.transform.position);
 
-                createdPlotForDoor = tryBuildPlot(RoomRotation.Rotation0, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                createdPlotForDoor = tryBuildPlot(ObjectRotation.Rotation0, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 if (!createdPlotForDoor)
                 {
-                    createdPlotForDoor = tryBuildPlot(RoomRotation.Rotation90, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                    createdPlotForDoor = tryBuildPlot(ObjectRotation.Rotation90, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 }
                 if (!createdPlotForDoor)
                 {
-                    createdPlotForDoor = tryBuildPlot(RoomRotation.Rotation180, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                    createdPlotForDoor = tryBuildPlot(ObjectRotation.Rotation180, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 }
                 if (!createdPlotForDoor)
                 {
-                    tryBuildPlot(RoomRotation.Rotation270, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                    tryBuildPlot(ObjectRotation.Rotation270, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 }      
             }
         }
@@ -110,11 +110,11 @@ public class BuildingPlotBuilder
         //Initial room space to avoid an empty map.
         if (RoomManager.Rooms.Count == 0)
         {
-            BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, new Vector2(0, 0), RoomRotation.Rotation0);
+            BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, new Vector2(0, 0), ObjectRotation.Rotation0);
         }
     }
 
-    public bool tryBuildPlot(RoomRotation roomRotation, RoomBlueprint selectedRoomBlueprint, GridLocation doorPositionOnExistingRoom)
+    public bool tryBuildPlot(ObjectRotation roomRotation, RoomBlueprint selectedRoomBlueprint, GridLocation doorPositionOnExistingRoom)
     {
         for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
         {
@@ -131,7 +131,7 @@ public class BuildingPlotBuilder
                 continue;
             }
 
-            Vector2 blueprintRoomStartPositionVector = GridHelper.CalculateLocationOnGrid((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
+            Vector2 blueprintRoomStartPositionVector = GridHelper.GridToVectorLocation((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
             if (GetPlotIsAvailable(selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation))
             {
                 BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation);
@@ -141,23 +141,23 @@ public class BuildingPlotBuilder
         return false;
     }
 
-    public GridLocation getDoorPositionOnBlueprint(RoomRotation roomRotation, RoomBlueprint selectedRoomBlueprint, GridLocation door)
+    public GridLocation getDoorPositionOnBlueprint(ObjectRotation roomRotation, RoomBlueprint selectedRoomBlueprint, GridLocation door)
     {
         GridLocation rawDoorPositionOnBlueprint = door;
 
         switch (roomRotation)
         {
-            case RoomRotation.Rotation0:
+            case ObjectRotation.Rotation0:
                 return door;
-            case RoomRotation.Rotation90:
+            case ObjectRotation.Rotation90:
                 return new GridLocation(
                     rawDoorPositionOnBlueprint.UpLeft,  //swapped axis on purpose
                     selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight);
-            case RoomRotation.Rotation180:
+            case ObjectRotation.Rotation180:
                 return new GridLocation(
                     selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight - 1,
                     selectedRoomBlueprint.LeftUpAxisLength - rawDoorPositionOnBlueprint.UpLeft);
-            case RoomRotation.Rotation270:
+            case ObjectRotation.Rotation270:
                 return new GridLocation(
                     selectedRoomBlueprint.LeftUpAxisLength - rawDoorPositionOnBlueprint.UpLeft,  //swapped axis on purpose
                     selectedRoomBlueprint.RightUpAxisLength - rawDoorPositionOnBlueprint.UpRight);
@@ -169,7 +169,7 @@ public class BuildingPlotBuilder
 
     private BuildingTile GetBuildingTileForAvailability(int rightUpAxisFromStartingPoint, int leftUpAxisFromStartingPoint, Vector2 plotLocationStartingPoint, List<BuildingTile> roomSquareTiles)
     {
-        Vector2 location = GridHelper.CalculateLocationOnGrid(plotLocationStartingPoint, rightUpAxisFromStartingPoint, -leftUpAxisFromStartingPoint);
+        Vector2 location = GridHelper.GridToVectorLocation(plotLocationStartingPoint, rightUpAxisFromStartingPoint, -leftUpAxisFromStartingPoint);
 
         BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
 

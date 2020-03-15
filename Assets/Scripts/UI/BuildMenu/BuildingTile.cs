@@ -18,7 +18,7 @@ public class BuildingTile
     public static BuildingTile CreateBuildingTile(int rightUpStartPosition, int leftUpStartPosition, Availability availability)
     {
         BuildingTile buildingTile = new BuildingTile();
-        buildingTile.StartingPoint = GridHelper.CalculateLocationOnGrid(rightUpStartPosition, leftUpStartPosition);
+        buildingTile.StartingPoint = GridHelper.GridToVectorLocation(rightUpStartPosition, leftUpStartPosition);
         buildingTile.IsAvailable = availability;
         BuilderManager.Instance.BuildingTileLocations.Add(buildingTile.StartingPoint);
         return buildingTile;

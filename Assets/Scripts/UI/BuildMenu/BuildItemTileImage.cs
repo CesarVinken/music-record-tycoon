@@ -18,7 +18,7 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler, IPointerD
 
             RoomBlueprint blueprint = BuildItemTile.BuildItemBlueprint as RoomBlueprint;
             BuilderManager.Instance.SetSelectedRoom(blueprint);
-            Sprite roomIcon = MainCanvas.GetRoomIcon(blueprint.Name, RoomRotation.Rotation0);
+            Sprite roomIcon = MainCanvas.GetRoomIcon(blueprint.Name, ObjectRotation.Rotation0);
 
             RectTransform rectTransform = (RectTransform)transform;
             MainCanvas.Instance.SetNewPointerImage(roomIcon, new Vector2(rectTransform.rect.width, rectTransform.rect.height));
@@ -38,7 +38,7 @@ public class BuildItemTileImage : MonoBehaviour, IPointerClickHandler, IPointerD
                 RoomBlueprint blueprint = BuildItemTile.BuildItemBlueprint as RoomBlueprint;
                 BuilderManager.Instance.SetSelectedRoom(blueprint);
 
-                Sprite roomIcon = MainCanvas.GetRoomIcon(blueprint.Name, RoomRotation.Rotation0);
+                Sprite roomIcon = MainCanvas.GetRoomIcon(blueprint.Name, ObjectRotation.Rotation0);
 
                 RectTransform rectTransform = (RectTransform)transform;
                 MainCanvas.Instance.SetNewPointerImage(roomIcon, new Vector2(rectTransform.rect.width, rectTransform.rect.height));

@@ -21,7 +21,7 @@ public class BuildingPlot : MonoBehaviour
     public static Vector2 AvailablePlotVectorPosition = new Vector2(0, 0);
 
     private bool plotIsFree = true;
-    public RoomRotation PlotRotation;
+    public ObjectRotation PlotRotation;
 
     public void Awake()
     {
@@ -33,7 +33,7 @@ public class BuildingPlot : MonoBehaviour
             Logger.Error(Logger.Initialisation, "Cannot find MeshRenderer");
     }
 
-    public void Setup(RoomBlueprint room, Vector2 startingPoint, RoomRotation roomRotation)
+    public void Setup(RoomBlueprint room, Vector2 startingPoint, ObjectRotation roomRotation)
     {
         if (BuilderManager.Instance.BuildingPlotLocations.ContainsValue(startingPoint)) return;
 
@@ -41,13 +41,13 @@ public class BuildingPlot : MonoBehaviour
         RoomBlueprint = room;
         StartingPoint = new Vector3(startingPoint.x, startingPoint.y, 1);
 
-        double rightUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.RightUpAxisLength : room.LeftUpAxisLength;
-        double leftUpAxisLength = PlotRotation == RoomRotation.Rotation0 || PlotRotation == RoomRotation.Rotation180 ? room.LeftUpAxisLength : room.RightUpAxisLength;
+        double rightUpAxisLength = PlotRotation == ObjectRotation.Rotation0 || PlotRotation == ObjectRotation.Rotation180 ? room.RightUpAxisLength : room.LeftUpAxisLength;
+        double leftUpAxisLength = PlotRotation == ObjectRotation.Rotation0 || PlotRotation == ObjectRotation.Rotation180 ? room.LeftUpAxisLength : room.RightUpAxisLength;
 
         // == counter clockwise, starting at bottom
-        Vector2 point1 = GridHelper.CalculateLocationOnGrid(StartingPoint, (int)rightUpAxisLength, 0);
-        Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, (int)-leftUpAxisLength);
-        Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, (int)-rightUpAxisLength, 0);
+        Vector2 point1 = GridHelper.GridToVectorLocation(StartingPoint, (int)rightUpAxisLength, 0);
+        Vector2 point2 = GridHelper.GridToVectorLocation(point1, 0, (int)-leftUpAxisLength);
+        Vector2 point3 = GridHelper.GridToVectorLocation(point2, (int)-rightUpAxisLength, 0);
 
         SetColliderPath(new Vector2[] { StartingPoint, point1, point2, point3, StartingPoint });
 
@@ -62,7 +62,7 @@ public class BuildingPlot : MonoBehaviour
             midpointLeftUpAxisLength -= 1.5f;
         }
 
-        Vector2 midGridPoint = GridHelper.CalculateLocationOnGrid(
+        Vector2 midGridPoint = GridHelper.GridToVectorLocation(
             StartingPoint,
             (int)midpointRightUpAxisLength,
             -(int)midpointLeftUpAxisLength

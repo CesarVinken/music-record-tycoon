@@ -22,7 +22,7 @@ public class MainCanvas : MonoBehaviour
 
     private float _currentSnappedX;
     private float _currentSnappedY;
-    private RoomRotation _rotationRoomOnLastHover = RoomRotation.Rotation0;
+    private ObjectRotation _rotationRoomOnLastHover = ObjectRotation.Rotation0;
     private PointerImageOverlayState _currentPointerImageOverlayState = PointerImageOverlayState.Normal;
 
     public static Vector2 TileSizeInUnits = new Vector2(30f, 15f);
@@ -135,7 +135,7 @@ public class MainCanvas : MonoBehaviour
     }
 
 
-    public void SetPointerImage(Sprite sprite, RoomRotation rotation)
+    public void SetPointerImage(Sprite sprite, ObjectRotation rotation)
     {
         SetPointerImageScale(rotation);
         SetPointerImageSize(PointerImage);
@@ -209,17 +209,17 @@ public class MainCanvas : MonoBehaviour
         pointerImage.rectTransform.sizeDelta = pointerImageProportions;
     }
 
-    private void SetPointerImageScale(RoomRotation rotation)
+    private void SetPointerImageScale(ObjectRotation rotation)
     {
-        if (rotation == RoomRotation.Rotation90 || rotation == RoomRotation.Rotation270)
+        if (rotation == ObjectRotation.Rotation90 || rotation == ObjectRotation.Rotation270)
             PointerImage.rectTransform.localScale = new Vector3(-1f, 1f, 1f);
         else
             PointerImage.rectTransform.localScale = new Vector3(1f, 1f, 1f);
     }
 
-    public static Sprite GetRoomIcon(string name, RoomRotation rotation)
+    public static Sprite GetRoomIcon(string name, ObjectRotation rotation)
     {
-        if (rotation == RoomRotation.Rotation0 || rotation == RoomRotation.Rotation90)
+        if (rotation == ObjectRotation.Rotation0 || rotation == ObjectRotation.Rotation90)
         {
             Sprite roomIcon = Resources.Load<Sprite>("Icons/Rooms/" + name + "Rotation0");
             if (roomIcon == null)
@@ -258,7 +258,7 @@ public class MainCanvas : MonoBehaviour
                 break;
             case RoomName.Room1:
                 offset.x = TileSizeInUnits.x / 4f;
-                if(_rotationRoomOnLastHover == RoomRotation.Rotation0 || _rotationRoomOnLastHover == RoomRotation.Rotation180) {
+                if(_rotationRoomOnLastHover == ObjectRotation.Rotation0 || _rotationRoomOnLastHover == ObjectRotation.Rotation180) {
                     offset.y = TileSizeInUnits.y;
                 } else
                 {

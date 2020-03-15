@@ -1,4 +1,4 @@
-﻿public enum RoomRotation
+﻿public enum ObjectRotation
 {
     Rotation0,
     Rotation90,

@@ -59,20 +59,20 @@ public class BuildCommand : CommandProcedure
                     RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
                     RoomBlueprint hallway = RoomBlueprint.CreateBlueprint(RoomName.Hallway);
 
-                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(0, 0), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(45, -37.5f), RoomRotation.Rotation180);
-                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(60, -75), RoomRotation.Rotation180);
-                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(-15, -67.5f), RoomRotation.Rotation270);
+                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(0, 0), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(45, -37.5f), ObjectRotation.Rotation180);
+                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(60, -75), ObjectRotation.Rotation180);
+                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(-15, -67.5f), ObjectRotation.Rotation270);
 
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, 0), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(45, -7.5f), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, -15), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(15, -22.5f), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(0, -30), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(15, -37.5f), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, -45), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(45, -52.5f), RoomRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(0, -45), RoomRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, 0), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(45, -7.5f), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, -15), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(15, -22.5f), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(0, -30), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(15, -37.5f), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, -45), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(45, -52.5f), ObjectRotation.Rotation0);
+                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(0, -45), ObjectRotation.Rotation0);
 
                     BuildHallwayTrigger.DeleteAllHallwayTriggers();
 

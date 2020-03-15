@@ -10,7 +10,7 @@ public class RoomBuilder
         return;
     }
 
-    public async Task BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, Vector2 startingPoint, RoomRotation roomRotation)
+    public async Task BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, Vector2 startingPoint, ObjectRotation roomRotation)
     {
         GameObject roomGO = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.RoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform);
         roomGO.transform.position = startingPoint;
@@ -18,14 +18,14 @@ public class RoomBuilder
         Room room = roomGO.GetComponent<Room>();
         RoomManager.Instance.AddRoom(room);
 
-        int rightUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
+        int rightUpAxisLength = roomRotation == ObjectRotation.Rotation0 || roomRotation == ObjectRotation.Rotation180 ?
             roomBlueprint.RightUpAxisLength : roomBlueprint.LeftUpAxisLength;
-        int leftUpAxisLength = roomRotation == RoomRotation.Rotation0 || roomRotation == RoomRotation.Rotation180 ?
+        int leftUpAxisLength = roomRotation == ObjectRotation.Rotation0 || roomRotation == ObjectRotation.Rotation180 ?
             roomBlueprint.LeftUpAxisLength : roomBlueprint.RightUpAxisLength;
 
-        Vector2 point1 = GridHelper.CalculateLocationOnGrid(startingPoint, rightUpAxisLength, 0);
-        Vector2 point2 = GridHelper.CalculateLocationOnGrid(point1, 0, -leftUpAxisLength);
-        Vector2 point3 = GridHelper.CalculateLocationOnGrid(point2, -rightUpAxisLength, 0);
+        Vector2 point1 = GridHelper.GridToVectorLocation(startingPoint, rightUpAxisLength, 0);
+        Vector2 point2 = GridHelper.GridToVectorLocation(point1, 0, -leftUpAxisLength);
+        Vector2 point3 = GridHelper.GridToVectorLocation(point2, -rightUpAxisLength, 0);
 
         Dictionary<Direction, Vector2> roomCorners = new Dictionary<Direction, Vector2>()
         {
@@ -38,6 +38,7 @@ public class RoomBuilder
         room.RoomBlueprint = roomBlueprint;
         room.SetupCorners(roomCorners);
         room.SetupCollider();
+        room.SetupRoomObjects();
 
         buildingTileBuilder.UpdateBuildingTiles(room);
 
@@ -62,20 +63,20 @@ public class RoomBuilder
             case RoomName.Hallway:
                 // create follow up icons for longer hallways
                 Vector2 pointLeftUp = roomCorners[Direction.Left];
-                Vector2 pointLeftDown = GridHelper.CalculateLocationOnGrid(roomCorners[Direction.Down], -3, 0);
-                Vector2 pointRightDown = GridHelper.CalculateLocationOnGrid(roomCorners[Direction.Down], 0, 3);
+                Vector2 pointLeftDown = GridHelper.GridToVectorLocation(roomCorners[Direction.Down], -3, 0);
+                Vector2 pointRightDown = GridHelper.GridToVectorLocation(roomCorners[Direction.Down], 0, 3);
                 Vector2 pointRightUp = roomCorners[Direction.Right];
 
-                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointLeftUp, RoomRotation.Rotation0))
+                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointLeftUp, ObjectRotation.Rotation0))
                     CreateBuildHallwayTrigger(pointLeftUp, ObjectDirection.LeftUp);
 
-                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointLeftDown, RoomRotation.Rotation0))
+                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointLeftDown, ObjectRotation.Rotation0))
                     CreateBuildHallwayTrigger(pointLeftDown, ObjectDirection.LeftDown);
 
-                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointRightDown, RoomRotation.Rotation0))
+                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointRightDown, ObjectRotation.Rotation0))
                     CreateBuildHallwayTrigger(pointRightDown, ObjectDirection.RightDown);
 
-                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointRightUp, RoomRotation.Rotation0))
+                if (buildingPlotBuilder.GetPlotIsAvailable(roomBlueprint, pointRightUp, ObjectRotation.Rotation0))
                     CreateBuildHallwayTrigger(pointRightUp, ObjectDirection.RightUp);
                 break;
             default:

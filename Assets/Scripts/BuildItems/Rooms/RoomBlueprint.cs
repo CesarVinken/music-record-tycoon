@@ -1,12 +1,18 @@
-﻿public class RoomBlueprint : BuildItemBlueprint
+﻿using UnityEngine;
+
+public class RoomBlueprint : BuildItemBlueprint
 {
+    public RoomName RoomName;
+    
     public int RightUpAxisLength;
     public int LeftUpAxisLength;
 
     public GridLocation[] DoorLocations;
+    public RoomObjectBlueprintForRoom[] RoomObjects = new RoomObjectBlueprintForRoom[] { };
 
-    protected RoomBlueprint(RoomName roomName, string name, string description) : base(roomName, name, description)
+    protected RoomBlueprint(RoomName roomName, string name, string description) : base(name, description)
     {
+        RoomName = roomName;
     }
 
     public static RoomBlueprint CreateBlueprint(RoomName roomName)
@@ -25,6 +31,18 @@
         }
     }
 
+    public struct RoomObjectBlueprintForRoom
+    {
+        public RoomObjectBlueprint RoomObjectBlueprint;
+        public GridLocation RoomObjectLocation;
+
+        public RoomObjectBlueprintForRoom(RoomObjectBlueprint roomObjectBlueprint, GridLocation roomObjectLocation)
+        {
+            RoomObjectBlueprint = roomObjectBlueprint;
+            RoomObjectLocation = roomObjectLocation;
+        }
+    }
+
     // test room with one door
     private static RoomBlueprint CreateRoom1Blueprint()
     {
@@ -35,6 +53,10 @@
         blueprint.DoorLocations = new GridLocation[]
         {
             new GridLocation(4, 0)
+        };
+        blueprint.RoomObjects = new RoomObjectBlueprintForRoom[]
+        {
+            new RoomObjectBlueprintForRoom(RoomObjectBlueprint.CreateBlueprint(RoomObjectName.Piano), new GridLocation(8, 4))       
         };
 
         return blueprint;
@@ -74,17 +96,5 @@
         };
 
         return blueprint;
-    }
-}
-
-public struct GridLocation
-{
-    public float UpRight;
-    public float UpLeft;
-
-    public GridLocation(float upRight, float upLeft)
-    {
-        UpRight = upRight;    
-        UpLeft = upLeft;
     }
 }

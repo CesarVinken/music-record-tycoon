@@ -6,8 +6,10 @@ public class Room : BuildItem
 {
     private List<BuildingTile> _roomEdgeTiles = new List<BuildingTile>();
 
+    public RoomObjectsContainer RoomObjectsContainer;
+
     public Dictionary<Direction, Vector2> RoomCorners;
-    public RoomRotation RoomRotation;
+    public ObjectRotation RoomRotation;
     public PolygonCollider2D Collider;
     public RoomBlueprint RoomBlueprint;
 
@@ -24,6 +26,9 @@ public class Room : BuildItem
         base.Awake();
         AdjacentRooms.Clear();
         CharactersInRoom.Clear();
+
+        if (RoomObjectsContainer == null)
+            Logger.Error(Logger.Initialisation, "Could not find RoomObjectsContainer script");
 
         if (WallPieces.Count == 0) Logger.Warning("There are no wall pieces found for this room. Maybe they were not yet set up.");
     }
@@ -94,12 +99,20 @@ public class Room : BuildItem
 
         Collider = gameObject.AddComponent<PolygonCollider2D>();
 
-        Vector2 colliderPoint1 = GridHelper.CalculateLocationOnGrid(rightUpAxisLength, 0);
-        Vector2 colliderPoint2 = GridHelper.CalculateLocationOnGrid(rightUpAxisLength, leftUpAxisLength);
-        Vector2 colliderPoint3 = GridHelper.CalculateLocationOnGrid(0 , leftUpAxisLength);
+        Vector2 colliderPoint1 = GridHelper.GridToVectorLocation(rightUpAxisLength, 0);
+        Vector2 colliderPoint2 = GridHelper.GridToVectorLocation(rightUpAxisLength, leftUpAxisLength);
+        Vector2 colliderPoint3 = GridHelper.GridToVectorLocation(0 , leftUpAxisLength);
 
         Vector2[] positions = new Vector2[] { new Vector2(0, 0), colliderPoint1, colliderPoint2, colliderPoint3, new Vector2(0, 0) };
         Collider.SetPath(0, positions);
+    }
+
+    public void SetupRoomObjects()
+    {
+        for (int i = 0; i < RoomBlueprint.RoomObjects.Length; i++)
+        {
+            BuilderManager.Instance.BuildRoomObject(RoomBlueprint.RoomObjects[i].RoomObjectBlueprint, RoomBlueprint.RoomObjects[i].RoomObjectLocation, this);
+        }
     }
 
     public void SetAdjacentRooms()
@@ -112,11 +125,11 @@ public class Room : BuildItem
                 Room otherRoom = _roomEdgeTiles[i].BuildingTileRooms[j];
                 if (otherRoom != this && !this.AdjacentRooms.Contains(otherRoom))
                 {
-                    Logger.Log("Add {0} as adjacent room for {1}", RoomRotation, otherRoom.RoomRotation);
+                    Logger.Log("Add {0}.{1} as adjacent room for {2}.{3}", RoomBlueprint.Name, RoomRotation, otherRoom.RoomBlueprint.Name, otherRoom.RoomRotation);
                     AddAdjacentRoom(otherRoom);
                     if (!otherRoom.AdjacentRooms.Contains(this))
                     {
-                        Logger.Log("Add {1} as adjacent room for {0}", RoomRotation, otherRoom.RoomRotation);
+                        Logger.Log("Add {0}.{1} as adjacent room for {2}.{3}", RoomBlueprint.Name, RoomRotation, otherRoom.RoomBlueprint.Name, otherRoom.RoomRotation);
                         otherRoom.AddAdjacentRoom(this);
                     }
                 }
@@ -207,7 +220,7 @@ public class Room : BuildItem
         {
             for (int j = leftUpAxisLength; j >= 0; j -= 3)
             {
-                Vector2 location = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j);
+                Vector2 location = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i, -j);
                 BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
 
                 tile.BuildingTileRooms.Add(this);
@@ -257,7 +270,7 @@ public class Room : BuildItem
             List<BuildingTile> tilesThatIncludeDeletedRoom = new List<BuildingTile>(); // all tiles that the deleted room was built on
             for (int j = leftUpAxisLength; j >= 0; j -= 3)
             {
-                Vector2 location = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j);
+                Vector2 location = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i, -j);
                 BuildingTile tile = roomSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
                 if (tile.BuildingTileRooms.Count == 1)
                 {
@@ -281,9 +294,9 @@ public class Room : BuildItem
                             {
                                 if (i == rightUpAxisLength)
                                 {
-                                    Vector2 location1 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j - 3);
+                                    Vector2 location1 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i, -j - 3);
                                     BuildingTile tile1 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
-                                    Vector2 location2 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j + 3);
+                                    Vector2 location2 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i, -j + 3);
                                     BuildingTile tile2 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
 
                                     if (tile1.IsAvailable != Availability.Unavailable && tile2.IsAvailable != Availability.Unavailable)
@@ -291,9 +304,9 @@ public class Room : BuildItem
                                 }
                                 else if (j == leftUpAxisLength)
                                 {
-                                    Vector2 location1 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i - 3, -j);
+                                    Vector2 location1 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i - 3, -j);
                                     BuildingTile tile1 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
-                                    Vector2 location2 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i + 3, -j);
+                                    Vector2 location2 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i + 3, -j);
                                     BuildingTile tile2 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location);
 
                                     if (tile1.IsAvailable != Availability.Unavailable && tile2.IsAvailable != Availability.Unavailable)
@@ -309,9 +322,9 @@ public class Room : BuildItem
                             {
                                 if (i > 0)
                                 {
-                                    Vector2 location1 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j + 3);
+                                    Vector2 location1 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i, -j + 3);
                                     BuildingTile tile1 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location1);
-                                    Vector2 location2 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i, -j - 3);
+                                    Vector2 location2 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i, -j - 3);
                                     BuildingTile tile2 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location2);
 
                                     if (tile1 == null) Logger.Error("Error during tile clean up. Tried to find tile at location {0},{1}", location1.x, location1.y);
@@ -322,9 +335,9 @@ public class Room : BuildItem
                                 }
                                 else if (j > 0)
                                 {
-                                    Vector2 location1 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i - 3, -j);
+                                    Vector2 location1 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i - 3, -j);
                                     BuildingTile tile1 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location1);
-                                    Vector2 location2 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i + 3, -j);
+                                    Vector2 location2 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i + 3, -j);
                                     BuildingTile tile2 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location2);
 
                                     if (tile1 == null) Logger.Error("Error during tile clean up. Tried to find tile at location {0},{1}", location1.x, location1.y);
@@ -341,7 +354,7 @@ public class Room : BuildItem
                             }
                             else if (tile.BuildingTileRooms.Count == 4)
                             {
-                                Vector2 location1 = GridHelper.CalculateLocationOnGrid(RoomCorners[Direction.Down], i + 3, -j - 3);
+                                Vector2 location1 = GridHelper.GridToVectorLocation(RoomCorners[Direction.Down], i + 3, -j - 3);
                                 BuildingTile tile1 = roomLargerSquareTiles.FirstOrDefault(t => t.StartingPoint == location1);
                                 if (leftUpAxisLength == 3 &&
                                     rightUpAxisLength == 3 &&
@@ -492,12 +505,12 @@ public class Room : BuildItem
     }
 
     public int GetRightUpAxisLengthForRoomRotation() {
-        return RoomRotation == RoomRotation.Rotation0 || RoomRotation == RoomRotation.Rotation180 ?
+        return RoomRotation == ObjectRotation.Rotation0 || RoomRotation == ObjectRotation.Rotation180 ?
         RoomBlueprint.RightUpAxisLength : RoomBlueprint.LeftUpAxisLength;
     }
     public int GetLeftUpAxisLengthForRoomRotation()
     {
-        return RoomRotation == RoomRotation.Rotation0 || RoomRotation == RoomRotation.Rotation180 ?
+        return RoomRotation == ObjectRotation.Rotation0 || RoomRotation == ObjectRotation.Rotation180 ?
         RoomBlueprint.LeftUpAxisLength : RoomBlueprint.RightUpAxisLength;
     }
 }

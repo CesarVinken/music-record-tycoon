@@ -53,7 +53,7 @@ public class BuildingTileBuilder
 
     public BuildingTile CreateNeighbourTile(Vector2 startingPoint, int rightUpAxisLength, int leftUpAxisLength, List<BuildingTile> surroundingSquareTiles)
     {
-        Vector2 neighbourLocation = GridHelper.CalculateLocationOnGrid(startingPoint, rightUpAxisLength, leftUpAxisLength);
+        Vector2 neighbourLocation = GridHelper.GridToVectorLocation(startingPoint, rightUpAxisLength, leftUpAxisLength);
         if (!_builderManager.BuildingTileLocations.Contains(neighbourLocation))
         {
             BuildingTile tile = BuildingTile.CreateBuildingTile(neighbourLocation, Availability.Available);

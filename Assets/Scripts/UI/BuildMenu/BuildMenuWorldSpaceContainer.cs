@@ -10,7 +10,7 @@ public class BuildMenuWorldSpaceContainer : MonoBehaviour
         Instance = this;
     }
 
-    public void CreateBuildingPlot(GameObject buildingPlot, RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
+    public void CreateBuildingPlot(GameObject buildingPlot, RoomBlueprint roomBlueprint, Vector2 startingPoint, ObjectRotation roomRotation)
     {
         if (BuilderManager.Instance.BuildingPlots.ContainsKey(startingPoint)) return;
 

@@ -23,13 +23,15 @@ public class BuilderManager : MonoBehaviour
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();
     public Dictionary<Vector2, BuildingPlot> BuildingPlots = new Dictionary<Vector2, BuildingPlot>();
-    public Dictionary<RoomName, Dictionary<RoomRotation, GameObject>> RoomPrefabs = new Dictionary<RoomName, Dictionary<RoomRotation, GameObject>>();
+    public Dictionary<RoomName, Dictionary<ObjectRotation, GameObject>> RoomPrefabs = new Dictionary<RoomName, Dictionary<ObjectRotation, GameObject>>();
+    public Dictionary<RoomObjectName, Dictionary<ObjectRotation, GameObject>> RoomObjectPrefabs = new Dictionary<RoomObjectName, Dictionary<ObjectRotation, GameObject>>();
     public HashSet<Vector2> BuildingTileLocations = new HashSet<Vector2>();
     public Dictionary<Vector2, Vector2> BuildingPlotLocations = new Dictionary<Vector2, Vector2>();   // The middle position of the building plot, which is the location that triggers the build, AND the starting point location of the plot (bottom)
 
     private BuildingPlotBuilder _buildingPlotBuilder;
     private BuildingTileBuilder _buildingTileBuilder;
     private RoomBuilder _roomBuilder;
+    private RoomObjectBuilder _roomObjectBuilder;
 
     void Awake()
     {
@@ -49,21 +51,36 @@ public class BuilderManager : MonoBehaviour
         BuildingPlots.Clear();
         BuildingPlotLocations.Clear();
 
-        Dictionary<RoomRotation, GameObject> Room1Prefabs = new Dictionary<RoomRotation, GameObject>();
-        Room1Prefabs.Add(RoomRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation0", typeof(GameObject)));
-        Room1Prefabs.Add(RoomRotation.Rotation90, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation90", typeof(GameObject)));
-        Room1Prefabs.Add(RoomRotation.Rotation180, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation180", typeof(GameObject)));
-        Room1Prefabs.Add(RoomRotation.Rotation270, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation270", typeof(GameObject)));
+        // Room prefabs
+        Dictionary<ObjectRotation, GameObject> Room1Prefabs = new Dictionary<ObjectRotation, GameObject>();
+        Room1Prefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation0", typeof(GameObject)));
+        Room1Prefabs.Add(ObjectRotation.Rotation90, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation90", typeof(GameObject)));
+        Room1Prefabs.Add(ObjectRotation.Rotation180, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation180", typeof(GameObject)));
+        Room1Prefabs.Add(ObjectRotation.Rotation270, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation270", typeof(GameObject)));
         RoomPrefabs.Add(RoomName.Room1, Room1Prefabs);
 
-        Dictionary<RoomRotation, GameObject> HallwayPrefabs = new Dictionary<RoomRotation, GameObject>();
-        HallwayPrefabs.Add(RoomRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Hallway", typeof(GameObject)));
-
+        Dictionary<ObjectRotation, GameObject> HallwayPrefabs = new Dictionary<ObjectRotation, GameObject>();
+        HallwayPrefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Hallway", typeof(GameObject)));
         RoomPrefabs.Add(RoomName.Hallway, HallwayPrefabs);
+
+        // Room object prefabs
+        Dictionary<ObjectRotation, GameObject> PianoPrefabs = new Dictionary<ObjectRotation, GameObject>();
+        PianoPrefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/RoomObjects/Piano/PianoRotation0", typeof(GameObject)));
+        RoomObjectPrefabs.Add(RoomObjectName.Piano, PianoPrefabs);
+
+        Dictionary<ObjectRotation, GameObject> GuitarPrefabs = new Dictionary<ObjectRotation, GameObject>();
+        GuitarPrefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/RoomObjects/Guitar/GuitarRotation0", typeof(GameObject)));
+        RoomObjectPrefabs.Add(RoomObjectName.Guitar, GuitarPrefabs);
+
+
+
+
+
 
         _buildingPlotBuilder = new BuildingPlotBuilder();
         _buildingTileBuilder = new BuildingTileBuilder();
         _roomBuilder = new RoomBuilder();
+        _roomObjectBuilder = new RoomObjectBuilder();
 
     }
 
@@ -186,7 +203,7 @@ public class BuilderManager : MonoBehaviour
     public async Task SetupInitialRoom()
     {
         RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
-        await BuildRoom(room1, new Vector2(0, 0), RoomRotation.Rotation0);
+        await BuildRoom(room1, new Vector2(0, 0), ObjectRotation.Rotation0);
         return;
     }
 
@@ -195,7 +212,7 @@ public class BuilderManager : MonoBehaviour
         SelectedRoom = selectedRoom;
     }
 
-    public async Task BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint, RoomRotation roomRotation)
+    public async Task BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint, ObjectRotation roomRotation)
     {
         await _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, startingPoint, roomRotation);
     }
@@ -203,6 +220,11 @@ public class BuilderManager : MonoBehaviour
     public async void BuildRoom(RoomBlueprint roomBlueprint, BuildingPlot buildingPlot)
     {
         await _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, buildingPlot);
+    }
+
+    public void BuildRoomObject(RoomObjectBlueprint roomObjectBlueprint, GridLocation roomObjectLocation, Room parentRoom)
+    {
+        _roomObjectBuilder.BuildRoomObject(roomObjectBlueprint, roomObjectLocation, parentRoom);
     }
 
     public void ActivateBuildMenuMode()
