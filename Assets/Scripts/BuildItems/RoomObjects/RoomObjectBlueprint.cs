@@ -2,6 +2,7 @@
 public class RoomObjectBlueprint : BuildItemBlueprint
 {
     public RoomObjectName RoomObjectName;
+    public ObjectInteraction[] ObjectInteractions = new ObjectInteraction[] { };
 
     protected RoomObjectBlueprint(RoomObjectName roomObjectName, string name, string description) : base(name, description)
     {
@@ -34,9 +35,14 @@ public class RoomObjectBlueprint : BuildItemBlueprint
 
     private static RoomObjectBlueprint CreatePianoBlueprint()
     {
-        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Piano, "Piano", "Be more like mozart");
+        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Piano, "Piano", "Be more like Mozart");
 
         // add interaction specifics
+        ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
+            new ObjectInteraction(ObjectInteractionName.Perform, "Play guitar", "A mean guitar"),
+            new ObjectInteraction(ObjectInteractionName.Practice, "Learn playing guitar", "Our hero hopes he will be as good Jimmy Hendrix one day.")
+        };
+        blueprint.ObjectInteractions = objectInteractions;
 
         return blueprint;
     }
