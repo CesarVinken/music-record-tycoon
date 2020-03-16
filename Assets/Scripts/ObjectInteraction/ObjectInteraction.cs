@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class ObjectInteraction
 {
-    public ObjectInteractionName ObjectInteractionName;
+    public ObjectInteractionType ObjectInteractionType;
     public string Name; // the label that is displayed in game
     public string Reaction; // string reaction. Temporary: should be more sophisticated later (eg. multiple strings in an animated sequence)
 
-    public ObjectInteraction(ObjectInteractionName objectInteractionName, string name, string reaction)
+    public ObjectInteraction(ObjectInteractionType objectInteractionType, string name, string reaction)
     {
-        ObjectInteractionName = objectInteractionName;
+        ObjectInteractionType = objectInteractionType;
         Name = name;
         Reaction = reaction;
     }

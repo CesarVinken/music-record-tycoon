@@ -15,6 +15,7 @@ public class RoomObjectBuilder
 
 
         RoomObject roomObject = roomObjectGO.GetComponent<RoomObject>();
+        roomObject.Initialise(roomObjectBlueprint, parentRoom.RoomRotation, parentRoom);
         parentRoom.RoomObjectsContainer.AddRoomObject(roomObject);
     }
 

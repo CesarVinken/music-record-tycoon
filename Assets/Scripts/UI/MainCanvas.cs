@@ -19,6 +19,7 @@ public class MainCanvas : MonoBehaviour
     public GameObject ConfirmationModalPrefab;
     public GameObject AvatarContainer;
     public GameObject ConsoleContainer;
+    public GameObject OnScreenTextContainer;
 
     private float _currentSnappedX;
     private float _currentSnappedY;
@@ -35,6 +36,7 @@ public class MainCanvas : MonoBehaviour
         Guard.CheckIsNull(TriggersContainer, "TriggersContainer");
         Guard.CheckIsNull(AvatarContainer, "AvatarContainer");
         Guard.CheckIsNull(ConsoleContainer, "ConsoleContainer");
+        Guard.CheckIsNull(OnScreenTextContainer, "OnScreenTextContainer");
 
         Guard.CheckIsNull(NotificationPrefab, "NotificationPrefab");
         Guard.CheckIsNull(ConfirmationModalPrefab, "ConfirmationModalPrefab");
