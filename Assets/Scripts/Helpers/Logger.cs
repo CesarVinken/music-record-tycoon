@@ -17,7 +17,7 @@ public static class Logger
     public static LogCategory Datareading = new LogCategory("Datareading");
     public static LogCategory UI = new LogCategory("UI");
 
-    public static Color stringColor = new Color(184, 163, 85);
+    public static Color stringColor = new Color(144, 123, 35);
     public static Color intColor = new Color(54, 0, 153);
     public static Color objectColor = new Color(72, 109, 132);
 
