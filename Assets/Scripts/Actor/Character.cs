@@ -60,7 +60,7 @@ public class Character : MonoBehaviour
 
     public void SetCharacterActionState(CharacterActionState newState)
     {
-        Logger.Log(Logger.Character, "CharacterActionState of {0} set to {1}", Id, newState);
+        Logger.Log(Logger.Character, "CharacterActionState of {0}({1}) set to {2}", Name, Id, newState);
         CharacterActionState = newState;
     }
 }

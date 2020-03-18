@@ -31,4 +31,9 @@ public class CharacterAnimationHandler : MonoBehaviour
     {
         Animator.SetFloat("Vertical", speed);
     }
+
+    public void SetLocomotion(bool value)
+    {
+        InLocomotion = value;
+    }
 }

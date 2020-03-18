@@ -45,7 +45,7 @@ public class NavActor : MonoBehaviour
         }
     }
 
-    IEnumerator UpdatePath()
+    private IEnumerator UpdatePath()
     {
         if(Time.timeSinceLevelLoad < .3f)
         {
@@ -68,7 +68,7 @@ public class NavActor : MonoBehaviour
         }
     }
 
-    IEnumerator FollowPath()
+    private IEnumerator FollowPath()
     {
         if (Path.LookPoints.Length == 0)
         {

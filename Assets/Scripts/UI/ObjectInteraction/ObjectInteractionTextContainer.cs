@@ -11,6 +11,7 @@ public class ObjectInteractionTextContainer : MonoBehaviour
     public Text Title;
 
     public ObjectInteraction[] ObjectInteractionOptions = new ObjectInteraction[] { };
+    public RoomObject RoomObject;
 
     void Awake()
     {
@@ -24,6 +25,7 @@ public class ObjectInteractionTextContainer : MonoBehaviour
 
     public void Initialise(RoomObject roomObject)
     {
+        RoomObject = roomObject;
         ObjectInteractionOptions = roomObject.RoomObjectBlueprint.ObjectInteractions;
 
         AddRoomObjectName(roomObject.RoomObjectBlueprint.Name);
@@ -37,7 +39,7 @@ public class ObjectInteractionTextContainer : MonoBehaviour
     {
         GameObject InteractionOptionGO = Instantiate(InteractionOptionPrefab, InteractionOptionsContainer.transform);
         ObjectInteractionOptionButton objectInteractionOptionButton = InteractionOptionGO.GetComponent<ObjectInteractionOptionButton>();
-        objectInteractionOptionButton.Initialise(objectInteraction);
+        objectInteractionOptionButton.Initialise(objectInteraction, RoomObject.transform.position);
     }
 
     public void AddRoomObjectName(string objectName)

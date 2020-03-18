@@ -54,6 +54,9 @@ public class CharacterLocomotion : MonoBehaviour
         if (BuilderManager.InBuildMode)
             return;
 
+        if (OnScreenTextContainer.Instance.ObjectInteractionTextContainer)
+            return;
+
         if (GameManager.Instance.CurrentPlatform == Platform.PC)
         {
             if (Input.GetMouseButtonDown(0))
@@ -89,7 +92,7 @@ public class CharacterLocomotion : MonoBehaviour
     {
         Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
 
-        _characterAnimationHandler.InLocomotion = true;
+        _characterAnimationHandler.SetLocomotion(true);
         Character.SetCharacterActionState(CharacterActionState.Moving);
 
         Character.NavActor.Target = new Vector3(newTarget.x, newTarget.y, transform.position.z);
@@ -105,25 +108,25 @@ public class CharacterLocomotion : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (!Character.NavActor.FollowingPath)
+        if (!Character.NavActor.FollowingPath && _characterAnimationHandler.InLocomotion)
         {
-            _characterAnimationHandler.InLocomotion = false;
+            _characterAnimationHandler.SetLocomotion(false);
             return;
         }
-        else
+        else if(Character.NavActor.FollowingPath)
         {
-            _characterAnimationHandler.InLocomotion = true;
+            _characterAnimationHandler.SetLocomotion(true);
         }
         CalculateCharacterDirection();
-        if (!Character.NavActor.FollowingPath)
+        if (!Character.NavActor.FollowingPath && _characterAnimationHandler.InLocomotion)
         {
-            _characterAnimationHandler.InLocomotion = false;
+            _characterAnimationHandler.SetLocomotion(false);
         }
     }
 
     public void StopLocomotion()
     {
-        _characterAnimationHandler.InLocomotion = false;
+        _characterAnimationHandler.SetLocomotion(false);
         Character.SetCharacterActionState(CharacterActionState.Idle);
     }
 
