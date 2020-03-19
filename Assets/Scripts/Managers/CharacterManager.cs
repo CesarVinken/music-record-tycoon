@@ -97,7 +97,7 @@ public class CharacterManager : MonoBehaviour
         {
             if (Characters[i].NavActor.Target.x == Characters[i].transform.position.x &&
                 Characters[i].NavActor.Target.y == Characters[i].transform.position.y ||
-                Characters[i].NavActor.Target == new Vector3(0, 0, 0))
+                Characters[i].NavActor.Target == new Vector2(0, 0))
                 continue;
 
             IEnumerator retryReachLocomotionTarget = WaitAndRetryReachLocomotionTarget(Characters[i]);

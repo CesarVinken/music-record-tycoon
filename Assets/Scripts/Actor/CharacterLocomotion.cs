@@ -92,8 +92,11 @@ public class CharacterLocomotion : MonoBehaviour
     {
         Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
 
-        _characterAnimationHandler.SetLocomotion(true);
-        Character.SetCharacterActionState(CharacterActionState.Moving);
+        if(Character.CharacterActionState != CharacterActionState.Action)
+        {
+            _characterAnimationHandler.SetLocomotion(true);
+            Character.SetCharacterActionState(CharacterActionState.Moving);
+        }
 
         Character.NavActor.Target = new Vector3(newTarget.x, newTarget.y, transform.position.z);
     }
@@ -124,10 +127,10 @@ public class CharacterLocomotion : MonoBehaviour
         }
     }
 
-    public void StopLocomotion()
+    public void StopLocomotion(CharacterActionState nextState)
     {
         _characterAnimationHandler.SetLocomotion(false);
-        Character.SetCharacterActionState(CharacterActionState.Idle);
+        Character.SetCharacterActionState(nextState);
     }
 
     public void CalculateCharacterDirection()

@@ -25,15 +25,41 @@ public class ObjectInteractionOptionButton : MonoBehaviour
 
     public async void Run()
     {
+        Character character = CharacterManager.Instance.SelectedCharacter;
         OnScreenTextContainer.Instance.DeleteObjectInteractionTextContainer();
         Logger.Log("Spawn text {0}", ObjectInteraction.Reaction);
+        Vector2 roomObjectLocation = RoomObjectLocation;
+        character.PlayerLocomotion.SetLocomotionTarget(RoomObjectLocation);
+        Vector2 characterTarget = character.NavActor.Target;
 
-        CharacterManager.Instance.SelectedCharacter.PlayerLocomotion.SetLocomotionTarget(RoomObjectLocation);
+
+        while (Vector2.Distance(character.transform.position, RoomObjectLocation) > 12)
+        {
+            await Task.Yield();
+            if (roomObjectLocation != RoomObjectLocation)
+                return;
+            if (characterTarget != character.NavActor.Target)
+                return;
+        }
+        character.PlayerLocomotion.StopLocomotion(CharacterActionState.Action);
+        character.PlayerLocomotion.SetLocomotionTarget(character.transform.position);
+
 
         GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction);
         await Task.Delay(3000);
+
         if(interactionSequenceLine != null)
             OnScreenTextContainer.Instance.DeleteInteractionSequenceLine(interactionSequenceLine);
+
+        if(characterTarget != character.NavActor.Target)
+        {
+            character.CharacterAnimationHandler.SetLocomotion(true);
+            character.SetCharacterActionState(CharacterActionState.Moving);
+        } else
+        {
+            character.SetCharacterActionState(CharacterActionState.Idle);
+        }
+
         return;
     }
 }

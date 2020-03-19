@@ -6,7 +6,7 @@ public class NavActor : MonoBehaviour
     const float MIN_PATH_UPDATE_TIME = .2f;
     const float PATH_UPDATE_MOVE_THRESHOLD = .5f;
 
-    public Vector3 Target;
+    public Vector2 Target;
     public float TurnSpeed = 3;
     public float TurnDst = 5;
     public bool FollowingPath;
@@ -53,7 +53,7 @@ public class NavActor : MonoBehaviour
         }
 
         float sqrMoveThreshold = PATH_UPDATE_MOVE_THRESHOLD * PATH_UPDATE_MOVE_THRESHOLD;
-        Vector3 targetPosOld = Target;
+        Vector2 targetPosOld = Target;
 
         while (true)
         {
@@ -83,6 +83,12 @@ public class NavActor : MonoBehaviour
 
             while (FollowingPath)
             {
+                if (Character.CharacterActionState == CharacterActionState.Action)
+                {
+                    yield return null;
+                    continue;
+                }
+
                 Vector2 pos2D = new Vector2(transform.position.x, transform.position.y);
                 while (Path.TurnBoundaries[pathIndex].HasCrossedLine(pos2D))
                 {
