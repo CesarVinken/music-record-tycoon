@@ -29,9 +29,10 @@ public class DeleteRoomTrigger : MonoBehaviour
 
     public void CreateDeleteRoomConfirmation()
     {
-        GameObject modal = Instantiate(MainCanvas.Instance.ConfirmationModalPrefab);
-        modal.transform.position = Camera.main.WorldToScreenPoint(_midpoint);
-        modal.transform.SetParent(MainCanvas.Instance.TriggersContainer.transform);
+        GameObject modal = GameManager.Instance.InstantiatePrefab(
+            MainCanvas.Instance.ConfirmationModalPrefab,
+            MainCanvas.Instance.TriggersContainer.transform,
+            Camera.main.WorldToScreenPoint(_midpoint));
 
         modal.GetComponent<ConfirmationModal>().Setup(this, _midpoint);
 

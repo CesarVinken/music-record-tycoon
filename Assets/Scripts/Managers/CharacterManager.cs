@@ -56,14 +56,12 @@ public class CharacterManager : MonoBehaviour
     {
         Logger.Log(Logger.Initialisation, "Create character");
 
-        GameObject characterGO = Instantiate(CharacterPrefab, SceneObjectsGO.transform);
+        GameObject characterGO = GameManager.Instance.InstantiatePrefab(CharacterPrefab, SceneObjectsGO.transform, position);
         PlayableCharacter playableCharacter = characterGO.GetComponent<PlayableCharacter>();
-        playableCharacter.transform.position = position;
 
-        GameObject navActorGO = Instantiate(NavActorPrefab, PathfindingGO.transform);
+        GameObject navActorGO = GameManager.Instance.InstantiatePrefab(NavActorPrefab, PathfindingGO.transform, characterGO.transform.position);
         NavActor navActor = navActorGO.GetComponent<NavActor>();
         navActor.SetCharacter(playableCharacter);
-        navActorGO.transform.position = characterGO.transform.position;
 
         characterGO.name = characterStats.Name;
         playableCharacter.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
@@ -89,7 +87,6 @@ public class CharacterManager : MonoBehaviour
     public async Task UpdatePathfindingGrid()
     {
         await Task.Yield();
-        //await Task.Yield();
         GameManager.Instance.PathfindingGrid.CreateGrid();
 
 

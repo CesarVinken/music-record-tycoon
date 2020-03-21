@@ -20,4 +20,10 @@ public class ObjectInteraction
         Reaction = reaction;
         ObjectInteractionLocationType = objectInteractionLocationType;
     }
+
+    public ObjectInteraction SetObjectInteractionLocationType(ObjectInteraction objectInteraction, ObjectInteractionLocationType objectInteractionLocationType)
+    {
+        objectInteraction.ObjectInteractionLocationType = objectInteractionLocationType;
+        return objectInteraction;
+    }
 }
