@@ -88,8 +88,8 @@ public class CharacterManager : MonoBehaviour
 
     public async Task UpdatePathfindingGrid()
     {
-        //await Task.Delay(20);
         await Task.Yield();
+        //await Task.Yield();
         GameManager.Instance.PathfindingGrid.CreateGrid();
 
 

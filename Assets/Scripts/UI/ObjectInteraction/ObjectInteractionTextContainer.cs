@@ -39,7 +39,7 @@ public class ObjectInteractionTextContainer : MonoBehaviour
     {
         GameObject InteractionOptionGO = Instantiate(InteractionOptionPrefab, InteractionOptionsContainer.transform);
         ObjectInteractionOptionButton objectInteractionOptionButton = InteractionOptionGO.GetComponent<ObjectInteractionOptionButton>();
-        objectInteractionOptionButton.Initialise(objectInteraction, RoomObject.transform.position);
+        objectInteractionOptionButton.Initialise(objectInteraction, RoomObject, RoomObject.transform.position);
     }
 
     public void AddRoomObjectName(string objectName)

@@ -40,7 +40,7 @@ public class RoomObjectBlueprint : BuildItemBlueprint
         // add interaction specifics
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
             new ObjectInteraction(ObjectInteractionType.Perform, "Play guitar", "A mean guitar"),
-            new ObjectInteraction(ObjectInteractionType.Practice, "Learn playing guitar", "Our hero hopes he will be as good Jimmy Hendrix one day.")
+            new ObjectInteraction(ObjectInteractionType.Practice, "Learn playing guitar", "Our hero hopes he will be as good Jimmy Hendrix one day.", ObjectInteractionLocationType.RoomWide)
         };
         blueprint.ObjectInteractions = objectInteractions;
 

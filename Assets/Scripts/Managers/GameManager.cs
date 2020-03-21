@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
     //Central function to turn on/off different gizmos
     public void OnDrawGizmos()
     {
-        //PathfindingGrid.DrawPathfindingGridGizmos();
+        PathfindingGrid.DrawPathfindingGridGizmos();
 
         if (CharacterManager.Instance != null && CharacterManager.Instance.SelectedCharacter != null && CharacterManager.Instance.SelectedCharacter.NavActor != null)
             CharacterManager.Instance.SelectedCharacter.NavActor.DrawPathGizmo();
@@ -75,8 +75,8 @@ public class GameManager : MonoBehaviour
         Logger.Initialisation.enableLogs = true;
     }
 
-    public GameObject InstantiatePrefab(GameObject prefab, Transform parent)
+    public GameObject InstantiatePrefab(GameObject prefab, Transform parent, Vector2 position)
     {
-        return Instantiate(prefab, parent);
+        return Instantiate(prefab, position, new Quaternion(), parent);
     }
 }

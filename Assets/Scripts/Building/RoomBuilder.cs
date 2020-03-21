@@ -12,8 +12,7 @@ public class RoomBuilder
 
     public async Task BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, Vector2 startingPoint, ObjectRotation roomRotation)
     {
-        GameObject roomGO = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.RoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform);
-        roomGO.transform.position = startingPoint;
+        GameObject roomGO = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.RoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform, startingPoint);
 
         Room room = roomGO.GetComponent<Room>();
         RoomManager.Instance.AddRoom(room);
@@ -53,6 +52,7 @@ public class RoomBuilder
 
         FollowUpRoomBuilding(roomBlueprint, roomCorners, buildingPlotBuilder);
         await CharacterManager.Instance.UpdatePathfindingGrid();
+
         return;
     }
 
@@ -88,7 +88,10 @@ public class RoomBuilder
 
     public void CreateBuildHallwayTrigger(Vector2 startingPoint, ObjectDirection direction)
     {
-        BuildHallwayTrigger buildHallwayTrigger = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.BuildHallwayTriggerPrefab, MainCanvas.Instance.TriggersContainer.transform).GetComponent<BuildHallwayTrigger>();
+        BuildHallwayTrigger buildHallwayTrigger = GameManager.Instance.InstantiatePrefab(
+            BuilderManager.Instance.BuildHallwayTriggerPrefab,
+            MainCanvas.Instance.TriggersContainer.transform,
+            startingPoint).GetComponent<BuildHallwayTrigger>();
         buildHallwayTrigger.Setup(startingPoint, direction);
     }
 }
