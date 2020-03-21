@@ -94,8 +94,7 @@ public class CharacterLocomotion : MonoBehaviour
 
         if(Character.CharacterActionState != CharacterActionState.Action)
         {
-            _characterAnimationHandler.SetLocomotion(true);
-            Character.SetCharacterActionState(CharacterActionState.Moving);
+            _characterAnimationHandler.SetLocomotion(true, Character);
         }
 
         Character.NavActor.Target = new Vector3(newTarget.x, newTarget.y, transform.position.z);
@@ -113,21 +112,21 @@ public class CharacterLocomotion : MonoBehaviour
     {
         if (!Character.NavActor.FollowingPath && _characterAnimationHandler.InLocomotion)
         {
-            _characterAnimationHandler.SetLocomotion(false);
+            StopLocomotion();
             return;
         }
         else if(Character.NavActor.FollowingPath)
         {
-            _characterAnimationHandler.SetLocomotion(true);
+            _characterAnimationHandler.SetLocomotion(true, Character);
         }
         CalculateCharacterDirection();
         if (!Character.NavActor.FollowingPath && _characterAnimationHandler.InLocomotion)
         {
-            _characterAnimationHandler.SetLocomotion(false);
+            StopLocomotion();
         }
     }
 
-    public void StopLocomotion(CharacterActionState nextState)
+    public void StopLocomotion(CharacterActionState nextState = CharacterActionState.Idle)
     {
         _characterAnimationHandler.SetLocomotion(false);
         Character.SetCharacterActionState(nextState);

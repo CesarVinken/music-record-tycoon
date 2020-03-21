@@ -48,8 +48,7 @@ public class ObjectInteractionOptionButton : MonoBehaviour
 
         if(characterTarget != character.NavActor.Target)
         {
-            character.CharacterAnimationHandler.SetLocomotion(true);
-            character.SetCharacterActionState(CharacterActionState.Moving);
+            character.CharacterAnimationHandler.SetLocomotion(true, character);
         } else
         {
             character.SetCharacterActionState(CharacterActionState.Idle);
