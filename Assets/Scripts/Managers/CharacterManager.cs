@@ -5,14 +5,14 @@ using UnityEngine;
 
 public struct CharacterStats
 {
-    public CharacterStats(string name, int age, Gender gender, string image)
+    public CharacterStats(int age, Gender gender, string image)
     {
-        Name = name;
+        Name = CharacterNameGenerator.GenerateName(gender);
         Age = age;
         Gender = gender;
         Image = image;
     }
-    public string Name;
+    public CharacterName Name;
     public int Age;
     public Gender Gender;
     public string Image;
@@ -48,8 +48,14 @@ public class CharacterManager : MonoBehaviour
     {
         _avatarContainer = AvatarContainer.Instance;
 
-        await GeneratePlayableCharacter(new CharacterStats("Bruce", 27, Gender.Male, "imageString"), new Vector2(0, 15));
-        await GeneratePlayableCharacter(new CharacterStats("Frank Zappa", 33, Gender.Male, "imageString"), new Vector2(5, 10));
+        await GeneratePlayableCharacter(new CharacterStats(27, CharacterNameGenerator.PickGender(), "imageString"), new Vector2(0, 15));
+        await GeneratePlayableCharacter(new CharacterStats(33, CharacterNameGenerator.PickGender(), "imageString"), new Vector2(5, 10));
+    }
+
+    public void Update()
+    {
+        Logger.Log("GENERATE NAME:::: {0}", CharacterNameGenerator.GetName(CharacterNameGenerator.GenerateName(CharacterNameGenerator.PickGender())));
+
     }
 
     public async Task GeneratePlayableCharacter(CharacterStats characterStats, Vector2 position)
@@ -63,7 +69,7 @@ public class CharacterManager : MonoBehaviour
         NavActor navActor = navActorGO.GetComponent<NavActor>();
         navActor.SetCharacter(playableCharacter);
 
-        characterGO.name = characterStats.Name;
+        characterGO.name = CharacterNameGenerator.GetName(characterStats.Name);
         playableCharacter.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
 
         _avatarContainer.CreateAvatar(playableCharacter);

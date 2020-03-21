@@ -6,7 +6,7 @@ public class Character : MonoBehaviour
     public Room CurrentRoom;
 
     public string Id;
-    public string Name;
+    public CharacterName Name;
     public int Age;
     public Gender Gender;
     public string Image;
@@ -28,7 +28,7 @@ public class Character : MonoBehaviour
         SetCharacterActionState(CharacterActionState.Idle);
     }
 
-    public void Setup(string name, int age, Gender gender, string image)
+    public void Setup(CharacterName name, int age, Gender gender, string image)
     {
         Id = Guid.NewGuid().ToString();
         Name = name;
