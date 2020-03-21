@@ -24,7 +24,7 @@ public static class CharacterNameGenerator
         public string LastName;
     }
 
-    public static CharacterName GenerateName(Gender gender)
+    public static CharacterName Generate(Gender gender)
     {
         Random random = new Random();
         int randomNumber = random.Next(20);

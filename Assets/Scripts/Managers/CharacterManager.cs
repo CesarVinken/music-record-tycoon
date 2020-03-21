@@ -5,12 +5,12 @@ using UnityEngine;
 
 public struct CharacterStats
 {
-    public CharacterStats(int age, Gender gender, string image)
+    public CharacterStats(int age, Gender gender)
     {
-        Name = CharacterNameGenerator.GenerateName(gender);
+        Name = CharacterNameGenerator.Generate(gender);
         Age = age;
         Gender = gender;
-        Image = image;
+        Image = CharacterImageGenerator.Generate(gender);
     }
     public CharacterName Name;
     public int Age;
@@ -33,6 +33,9 @@ public class CharacterManager : MonoBehaviour
 
     private AvatarContainer _avatarContainer;
 
+    public Sprite[] AvatarsMale;
+    public Sprite[] AvatarsFemale;
+
     void Awake()
     {
         Guard.CheckIsNull(CharacterPrefab, "CharacterPrefab");
@@ -42,19 +45,22 @@ public class CharacterManager : MonoBehaviour
         Guard.CheckIsNull(PathfindingGO, "PathfindingGO");
 
         Instance = this;
+
+        AvatarsMale = Resources.LoadAll<Sprite>("Icons/Avatars/TestAvatarsMale");
+        AvatarsFemale = Resources.LoadAll<Sprite>("Icons/Avatars/TestAvatarsFemale");
     }
 
     async void Start()
     {
         _avatarContainer = AvatarContainer.Instance;
 
-        await GeneratePlayableCharacter(new CharacterStats(27, CharacterNameGenerator.PickGender(), "imageString"), new Vector2(0, 15));
-        await GeneratePlayableCharacter(new CharacterStats(33, CharacterNameGenerator.PickGender(), "imageString"), new Vector2(5, 10));
+        await GeneratePlayableCharacter(new CharacterStats(27, CharacterNameGenerator.PickGender()), new Vector2(0, 15));
+        await GeneratePlayableCharacter(new CharacterStats(33, CharacterNameGenerator.PickGender()), new Vector2(5, 10));
     }
 
     public void Update()
     {
-        Logger.Log("GENERATE NAME:::: {0}", CharacterNameGenerator.GetName(CharacterNameGenerator.GenerateName(CharacterNameGenerator.PickGender())));
+        //Logger.Log("GENERATE NAME:::: {0}", CharacterNameGenerator.GetName(CharacterNameGenerator.Generate(CharacterNameGenerator.PickGender())));
 
     }
 

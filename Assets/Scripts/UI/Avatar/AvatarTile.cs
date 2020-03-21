@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class AvatarTile : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
+    const string BASE_IMAGE_PATH = "Icons/Avatars/";
     public Image AvatarImage;
     public PlayableCharacter Character;
 
@@ -19,7 +21,11 @@ public class AvatarTile : MonoBehaviour, IPointerClickHandler, IPointerDownHandl
     public void Setup(PlayableCharacter character)
     {
         Character = character;
-        // set sprite for character
+
+        if (Character.Gender == Gender.Male)
+            AvatarImage.sprite = CharacterManager.Instance.AvatarsMale.Single(s => s.name == character.Image);
+        if (Character.Gender == Gender.Female)
+            AvatarImage.sprite = CharacterManager.Instance.AvatarsFemale.Single(s => s.name == character.Image);
     }
 
     public void OnPointerClick(PointerEventData eventData)
