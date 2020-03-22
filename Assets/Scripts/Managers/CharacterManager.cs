@@ -54,14 +54,13 @@ public class CharacterManager : MonoBehaviour
     {
         _avatarContainer = AvatarContainer.Instance;
 
-        await GeneratePlayableCharacter(new CharacterStats(27, CharacterNameGenerator.PickGender()), new Vector2(0, 15));
-        await GeneratePlayableCharacter(new CharacterStats(33, CharacterNameGenerator.PickGender()), new Vector2(5, 10));
+        await GeneratePlayableCharacter(new CharacterStats(CharacterAgeGenerator.Generate(), CharacterNameGenerator.PickGender()), new Vector2(0, 15));
+        await GeneratePlayableCharacter(new CharacterStats(CharacterAgeGenerator.Generate(), CharacterNameGenerator.PickGender()), new Vector2(5, 10));
     }
 
     public void Update()
     {
         //Logger.Log("GENERATE NAME:::: {0}", CharacterNameGenerator.GetName(CharacterNameGenerator.Generate(CharacterNameGenerator.PickGender())));
-
     }
 
     public async Task GeneratePlayableCharacter(CharacterStats characterStats, Vector2 position)

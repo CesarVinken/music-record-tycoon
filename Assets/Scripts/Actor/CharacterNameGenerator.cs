@@ -28,7 +28,7 @@ public static class CharacterNameGenerator
     {
         Random random = new Random();
         int randomNumber = random.Next(20);
-        //Logger.Log("randomNumber {0}", randomNumber);
+
         switch (randomNumber)
         {
             case int n when (n == 0): // pick existing pseudonym
