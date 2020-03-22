@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+public enum CharacterPlayability
+{
+    Playable,
+    NPC
+}
+
 public struct CharacterStats
 {
     public CharacterStats(int age, Gender gender)
@@ -30,6 +36,8 @@ public class CharacterManager : MonoBehaviour
 
     public PlayableCharacter SelectedCharacter;
     public List<Character> Characters = new List<Character>();
+    public List<PlayableCharacter> PlayableCharacters = new List<PlayableCharacter>();
+    public List<Character> NPCs = new List<Character>();
 
     private AvatarContainer _avatarContainer;
 
@@ -54,8 +62,16 @@ public class CharacterManager : MonoBehaviour
     {
         _avatarContainer = AvatarContainer.Instance;
 
-        await GeneratePlayableCharacter(new CharacterStats(CharacterAgeGenerator.Generate(), CharacterNameGenerator.PickGender()), new Vector2(0, 15));
-        await GeneratePlayableCharacter(new CharacterStats(CharacterAgeGenerator.Generate(), CharacterNameGenerator.PickGender()), new Vector2(5, 10));
+        await GenerateCharacter(
+            new CharacterStats(CharacterAgeGenerator.Generate(), CharacterNameGenerator.PickGender()), 
+            new Vector2(0, 15),
+            CharacterPlayability.Playable
+            );
+        await GenerateCharacter(new CharacterStats(CharacterAgeGenerator.Generate(),
+            CharacterNameGenerator.PickGender()),
+            new Vector2(5, 10),
+            CharacterPlayability.Playable
+            );
     }
 
     public void Update()
@@ -63,28 +79,54 @@ public class CharacterManager : MonoBehaviour
         //Logger.Log("GENERATE NAME:::: {0}", CharacterNameGenerator.GetName(CharacterNameGenerator.Generate(CharacterNameGenerator.PickGender())));
     }
 
-    public async Task GeneratePlayableCharacter(CharacterStats characterStats, Vector2 position)
+    public async Task GenerateCharacter(CharacterStats characterStats, Vector2 position, CharacterPlayability playability)
     {
         Logger.Log(Logger.Initialisation, "Create character");
 
         GameObject characterGO = GameManager.Instance.InstantiatePrefab(CharacterPrefab, SceneObjectsGO.transform, position);
-        PlayableCharacter playableCharacter = characterGO.GetComponent<PlayableCharacter>();
+
+        Character character = SetupCharacter(characterGO, characterStats, playability);
 
         GameObject navActorGO = GameManager.Instance.InstantiatePrefab(NavActorPrefab, PathfindingGO.transform, characterGO.transform.position);
         NavActor navActor = navActorGO.GetComponent<NavActor>();
-        navActor.SetCharacter(playableCharacter);
+        navActor.SetCharacter(character);
 
         characterGO.name = CharacterNameGenerator.GetName(characterStats.Name);
-        playableCharacter.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
 
-        _avatarContainer.CreateAvatar(playableCharacter);
-
-        SelectCharacter(playableCharacter);
-
-        Characters.Add(playableCharacter);
+        Characters.Add(character);
 
         await UpdatePathfindingGrid();
         return;
+    }
+
+    public Character SetupCharacter(GameObject characterGO, CharacterStats characterStats, CharacterPlayability playability)
+    {
+        if (playability == CharacterPlayability.Playable)
+            return SetupPlayableCharacter(characterGO, characterStats);
+        else
+            return SetupNPC(characterGO, characterStats);
+    }
+
+    public PlayableCharacter SetupPlayableCharacter(GameObject characterGO, CharacterStats characterStats)
+    {
+        PlayableCharacter playableCharacter = characterGO.AddComponent<PlayableCharacter>();
+        playableCharacter.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
+
+        _avatarContainer.CreateAvatar(playableCharacter);
+        SelectCharacter(playableCharacter);
+        PlayableCharacters.Add(playableCharacter);
+
+        return playableCharacter;
+
+    }
+
+    public Character SetupNPC(GameObject characterGO, CharacterStats characterStats)
+    {
+        Character character = characterGO.AddComponent<Character>();
+        character.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
+        NPCs.Add(character);
+
+        return character;
     }
 
     public void SelectCharacter(PlayableCharacter playableCharacter)

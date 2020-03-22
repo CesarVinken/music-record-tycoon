@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 
 public class CharacterLocomotion : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void Awake()
     {
+        Character = GetComponent<Character>();
+
         if (Character == null)
             Logger.Log(Logger.Initialisation, "Could not find Actor component on character");
 
@@ -91,8 +94,7 @@ public class CharacterLocomotion : MonoBehaviour
     public void SetLocomotionTarget(Vector3 newTarget)
     {
         Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
-
-        if(Character.CharacterActionState != CharacterActionState.Action)
+        if (Character.CharacterActionState != CharacterActionState.Action)
         {
             _characterAnimationHandler.SetLocomotion(true, Character);
         }
@@ -112,24 +114,21 @@ public class CharacterLocomotion : MonoBehaviour
     {
         if (!Character.NavActor.FollowingPath && _characterAnimationHandler.InLocomotion)
         {
-            StopLocomotion();
+            // Because of the NavActor looks for updated paths every .2 seconds, we only set InLocomotion to False and do not also change the Character State here
+            _characterAnimationHandler.SetLocomotion(false);
             return;
         }
         else if(Character.NavActor.FollowingPath)
         {
-            _characterAnimationHandler.SetLocomotion(true, Character);
+            if(!Character.CharacterAnimationHandler.InLocomotion)
+                _characterAnimationHandler.SetLocomotion(true, Character);
         }
         CalculateCharacterDirection();
         if (!Character.NavActor.FollowingPath && _characterAnimationHandler.InLocomotion)
         {
-            StopLocomotion();
+            // Because of the NavActor looks for updated paths every .2 seconds, we only set InLocomotion to False and do not also change the Character State here
+            _characterAnimationHandler.SetLocomotion(false);
         }
-    }
-
-    public void StopLocomotion(CharacterActionState nextState = CharacterActionState.Idle)
-    {
-        _characterAnimationHandler.SetLocomotion(false);
-        Character.SetCharacterActionState(nextState);
     }
 
     public void CalculateCharacterDirection()
@@ -137,7 +136,7 @@ public class CharacterLocomotion : MonoBehaviour
         float verticalAngle = Vector3.Angle(_characterNavTransform.forward, transform.up);
         float horizontalAngle = Vector3.Angle(_characterNavTransform.forward, -transform.right);  //This expects the playerGO always to be pointed to the right
 
-        if (horizontalAngle < 75)//we are moving left if the angle is less than 90
+        if (horizontalAngle < 75) //we are moving left if the angle is less than 90
         {
             _characterAnimationHandler.SetHorizontal(1f);
             if (verticalAngle < 75)  //if vertical angle is less than 90, it means we are moving up

@@ -28,7 +28,6 @@ public class ObjectInteractionOptionButton : MonoBehaviour
     {
         Character character = CharacterManager.Instance.SelectedCharacter;
         OnScreenTextContainer.Instance.DeleteObjectInteractionTextContainer();
-        Logger.Log("Spawn text {0}", ObjectInteraction.Reaction);
 
         Vector2 roomObjectLocation = RoomObjectLocation;
         character.PlayerLocomotion.SetLocomotionTarget(RoomObjectLocation);
@@ -36,7 +35,8 @@ public class ObjectInteractionOptionButton : MonoBehaviour
 
         await MoveToInteractionLocation(character, roomObjectLocation, characterTarget);
 
-        character.PlayerLocomotion.StopLocomotion(CharacterActionState.Action);
+        character.CharacterAnimationHandler.SetLocomotion(false);
+        character.SetCharacterActionState(CharacterActionState.Action);
         character.PlayerLocomotion.SetLocomotionTarget(character.transform.position);
 
 
@@ -59,7 +59,6 @@ public class ObjectInteractionOptionButton : MonoBehaviour
 
     public async Task MoveToInteractionLocation(Character character, Vector2 roomObjectLocation, Vector2 characterTarget)
     {
-        Logger.Log("HAALALA::::" + ObjectInteraction.ObjectInteractionLocationType);
         if(ObjectInteraction.ObjectInteractionLocationType == ObjectInteractionLocationType.AtRoomObject)
         {
             while (Vector2.Distance(character.transform.position, RoomObjectLocation) > 12)

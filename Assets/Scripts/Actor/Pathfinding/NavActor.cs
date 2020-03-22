@@ -28,6 +28,7 @@ public class NavActor : MonoBehaviour
         character.NavActor = this;
 
         transform.position = Character.transform.position;
+        gameObject.name = "NavActor " + Character.Name;
     }
 
     public void OnPathFound(Vector3[] waypoints, bool pathSuccessful)

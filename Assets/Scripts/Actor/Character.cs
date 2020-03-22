@@ -20,12 +20,15 @@ public class Character : MonoBehaviour
 
     void Awake()
     {
+        PlayerLocomotion = gameObject.AddComponent<CharacterLocomotion>();
+        PlayerLocomotion.Character = this;
+
+        CharacterAnimationHandler = gameObject.AddComponent<CharacterAnimationHandler>();
+
         if (PlayerLocomotion == null)
             Logger.Log(Logger.Initialisation, "Could not find PlayerLocomotion component on character");
         if (CharacterAnimationHandler == null)
             Logger.Log(Logger.Initialisation, "Could not find CharacterAnimationHandler component on character");
-
-        SetCharacterActionState(CharacterActionState.Idle);
     }
 
     public void Setup(CharacterName name, int age, Gender gender, string image)
@@ -35,6 +38,9 @@ public class Character : MonoBehaviour
         Age = age;
         Gender = gender;
         Image = image;
+
+        SetCharacterActionState(CharacterActionState.Idle);
+
     }
 
     public void EnterRoom(Room newRoom)

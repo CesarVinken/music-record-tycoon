@@ -7,9 +7,9 @@ public class PlayableCharacter : Character, IPlayable
     //    get { return this; }
     //    set { }
     //}
-    void Awake()
-    {
-    }
+    //void Awake()
+    //{
+    //}
 
     //public void Select()
     //{
