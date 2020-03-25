@@ -58,11 +58,12 @@ public class OnScreenTextContainer : MonoBehaviour
         ObjectInteractionTextContainer = null;
     }
 
-    public GameObject CreateInteractionSequenceLine(ObjectInteraction objectInteraction)
+    public GameObject CreateInteractionSequenceLine(ObjectInteraction objectInteraction, Character interactingCharacter)
     {
-        GameObject interactionSequenceLineGO = Instantiate(InteractionSequenceLinePrefab, transform);
+        Vector2 sequenceLinePosition = Camera.main.WorldToScreenPoint(interactingCharacter.transform.position);
+        GameObject interactionSequenceLineGO = GameManager.Instance.InstantiatePrefab(InteractionSequenceLinePrefab, transform, sequenceLinePosition);
         InteractionSequenceLine interactionSequenceLine = interactionSequenceLineGO.GetComponent<InteractionSequenceLine>();
-        interactionSequenceLine.Initialise(objectInteraction.Reaction);
+        interactionSequenceLine.Initialise(objectInteraction.Reaction, interactingCharacter);
 
         return interactionSequenceLineGO;
     }

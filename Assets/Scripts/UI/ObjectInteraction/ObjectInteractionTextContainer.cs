@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ObjectInteractionTextContainer : MonoBehaviour
@@ -12,6 +11,7 @@ public class ObjectInteractionTextContainer : MonoBehaviour
 
     public ObjectInteraction[] ObjectInteractionOptions = new ObjectInteraction[] { };
     public RoomObject RoomObject;
+    public Character InteractingCharacter;
 
     void Awake()
     {
@@ -23,10 +23,17 @@ public class ObjectInteractionTextContainer : MonoBehaviour
             Logger.Error(Logger.Initialisation, "could not find Title");
     }
 
+    public void Update()
+    {
+        Vector2 textPosition = Camera.main.WorldToScreenPoint(RoomObject.transform.position);
+        transform.position = textPosition;
+    }
+
     public void Initialise(RoomObject roomObject)
     {
         RoomObject = roomObject;
         ObjectInteractionOptions = roomObject.RoomObjectBlueprint.ObjectInteractions;
+        InteractingCharacter = CharacterManager.Instance.SelectedCharacter;
 
         AddRoomObjectName(roomObject.RoomObjectBlueprint.Name);
         for (int i = 0; i < ObjectInteractionOptions.Length; i++)
@@ -44,7 +51,7 @@ public class ObjectInteractionTextContainer : MonoBehaviour
         rect.anchoredPosition = interactionOptionPosition;
 
         ObjectInteractionOptionButton objectInteractionOptionButton = InteractionOptionGO.GetComponent<ObjectInteractionOptionButton>();
-        objectInteractionOptionButton.Initialise(objectInteraction, RoomObject, RoomObject.transform.position);
+        objectInteractionOptionButton.Initialise(objectInteraction, RoomObject, RoomObject.transform.position, InteractingCharacter);
     }
 
     public void AddRoomObjectName(string objectName)

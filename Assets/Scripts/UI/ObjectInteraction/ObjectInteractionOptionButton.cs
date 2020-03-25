@@ -8,7 +8,8 @@ public class ObjectInteractionOptionButton : MonoBehaviour
 
     public ObjectInteraction ObjectInteraction;
     public Vector2 RoomObjectLocation;
-    RoomObject RoomObject;
+    public RoomObject RoomObject;
+    public Character InteractingCharacter;
 
     public void Awake()
     {
@@ -16,12 +17,13 @@ public class ObjectInteractionOptionButton : MonoBehaviour
             Logger.Log(Logger.Initialisation, "Could not find InteractionOptionText component on ObjectInteractionOption");
     }
 
-    public void Initialise(ObjectInteraction objectInteraction, RoomObject roomObject, Vector2 roomObjectLocation)
+    public void Initialise(ObjectInteraction objectInteraction, RoomObject roomObject, Vector2 roomObjectLocation, Character interactingCharacter)
     {
         ObjectInteraction = objectInteraction;
         RoomObjectLocation = roomObjectLocation;
         RoomObject = roomObject;
         InteractionOptionText.text = objectInteraction.Name;
+        InteractingCharacter = interactingCharacter;
     }
 
     public async void Run()
@@ -39,8 +41,13 @@ public class ObjectInteractionOptionButton : MonoBehaviour
         character.SetCharacterActionState(CharacterActionState.Action);
         character.PlayerLocomotion.SetLocomotionTarget(character.transform.position);
 
+        if (InteractingCharacter == null)
+        {
+            Logger.Log("Cannot run sequence line because the interacting character cannot be found");
+            return;
+        }
 
-        GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction);
+        GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, InteractingCharacter);
         await Task.Delay(3000);
 
         if(interactionSequenceLine != null)
