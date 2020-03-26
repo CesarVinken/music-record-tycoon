@@ -45,6 +45,8 @@ public class ConsoleCommand
       
         if (!hasValidArgumentCount) return;
 
+        arguments = arguments.ConvertAll(argument => argument.ToLower());
+
         CommandProcedure.Run(arguments);
         Logger.Log("Successfuly executed command {0}", Name);
     }

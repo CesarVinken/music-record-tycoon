@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -15,6 +17,9 @@ public class BuildCommand : CommandProcedure
         {
             case "room":
                 await BuildRoom(arguments);
+                break;
+            case "character":
+                await BuildCharacter(arguments);
                 break;
             default:
                 Console.Instance.PrintToReportText("Unknown build command to build " + arguments[0]);
@@ -90,5 +95,42 @@ public class BuildCommand : CommandProcedure
         }
 
         Console.Instance.PrintToReportText("Built room");
+    }
+
+    public async Task BuildCharacter(List<string> arguments)
+    {
+        List<string> remainingArguments = arguments.Where((v, i) => i != 0).ToList();
+
+        CharacterPlayability characterPlayability = CharacterPlayability.Playable;
+
+        string npcArgument = remainingArguments.SingleOrDefault(argument => argument == "npc");
+        if (npcArgument != null)
+        {
+            characterPlayability = CharacterPlayability.NPC;
+            remainingArguments.Remove(npcArgument);
+        }
+
+        if(remainingArguments.Count > 0)
+        {
+            Console.Instance.PrintToReportText("Argument '" + remainingArguments[0] + "' was invalid. Could not create character");
+            return;
+        }
+
+        CharacterStats characterStats = new CharacterStats(
+                CharacterAgeGenerator.Generate(),
+                CharacterNameGenerator.PickGender());
+
+        Vector2 startingPosition = new Vector2(15, 15);
+
+        await CharacterManager.Instance.GenerateCharacter(
+            characterStats,
+            startingPosition,
+            characterPlayability
+            );
+
+        Character character = CharacterManager.Instance.Characters[CharacterManager.Instance.Characters.Count - 1];
+        string characterName = CharacterNameGenerator.GetName(character.Name);
+        Console.Instance.PrintToReportText(characterName + " was just born");
+
     }
 }

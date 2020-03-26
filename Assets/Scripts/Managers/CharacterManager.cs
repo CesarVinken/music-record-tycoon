@@ -63,12 +63,16 @@ public class CharacterManager : MonoBehaviour
         _avatarContainer = AvatarContainer.Instance;
 
         await GenerateCharacter(
-            new CharacterStats(CharacterAgeGenerator.Generate(), CharacterNameGenerator.PickGender()), 
+            new CharacterStats(
+                CharacterAgeGenerator.Generate(),
+                CharacterNameGenerator.PickGender()), 
             new Vector2(0, 15),
             CharacterPlayability.Playable
             );
-        await GenerateCharacter(new CharacterStats(CharacterAgeGenerator.Generate(),
-            CharacterNameGenerator.PickGender()),
+        await GenerateCharacter(
+            new CharacterStats(
+                CharacterAgeGenerator.Generate(),
+                CharacterNameGenerator.PickGender()),
             new Vector2(5, 10),
             CharacterPlayability.Playable
             );

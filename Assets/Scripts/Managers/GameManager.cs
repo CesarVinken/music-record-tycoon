@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
     //Central function to turn on/off different gizmos
     public void OnDrawGizmos()
     {
-        PathfindingGrid.DrawPathfindingGridGizmos();
+        //PathfindingGrid.DrawPathfindingGridGizmos();
 
         if (CharacterManager.Instance != null && CharacterManager.Instance.SelectedCharacter != null && CharacterManager.Instance.SelectedCharacter.NavActor != null)
             CharacterManager.Instance.SelectedCharacter.NavActor.DrawPathGizmo();
