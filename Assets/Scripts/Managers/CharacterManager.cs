@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-//public enum CharacterPlayability
-//{
-//    Playable,
-//    NPC
-//}
 
 public struct CharacterStats
 {
@@ -36,8 +31,6 @@ public class CharacterManager : MonoBehaviour
 
     public Character SelectedCharacter;
     public List<Character> Characters = new List<Character>();
-    //public List<PlayableCharacter> PlayableCharacters = new List<PlayableCharacter>();
-    //public List<Character> NPCs = new List<Character>();
 
     private AvatarContainer _avatarContainer;
 
@@ -104,46 +97,17 @@ public class CharacterManager : MonoBehaviour
         Character character = characterGO.AddComponent<Character>();
         character.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
 
-        _avatarContainer.CreateAvatar(character);
         SelectCharacter(character);
         Characters.Add(character);
         return character;
-        //return SetupPlayableCharacter(characterGO, characterStats);
-
-        //if (playability == CharacterPlayability.Playable)
-        //    return SetupPlayableCharacter(characterGO, characterStats);
-        //else
-        //    return SetupNPC(characterGO, characterStats);
     }
-
-    //public PlayableCharacter SetupPlayableCharacter(GameObject characterGO, CharacterStats characterStats)
-    //{
-    //    PlayableCharacter playableCharacter = characterGO.AddComponent<PlayableCharacter>();
-    //    playableCharacter.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
-
-    //    _avatarContainer.CreateAvatar(playableCharacter);
-    //    SelectCharacter(playableCharacter);
-    //    PlayableCharacters.Add(playableCharacter);
-
-    //    return playableCharacter;
-
-    //}
-
-    //public Character SetupNPC(GameObject characterGO, CharacterStats characterStats)
-    //{
-    //    Character character = characterGO.AddComponent<Character>();
-    //    character.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
-    //    NPCs.Add(character);
-
-    //    return character;
-    //}
 
     public void SelectCharacter(Character character)
     {
         Character previouslySelectedCharacter = SelectedCharacter;
         SelectedCharacter = character;
 
-        _avatarContainer.SelectAvatar(character, previouslySelectedCharacter);
+        _avatarContainer.CreateAvatar(character);
     }
 
     public async Task UpdatePathfindingGrid()
