@@ -11,6 +11,7 @@ public class CharacterLocomotion : MonoBehaviour
     private Transform _characterNavTransform;
     private CharacterAnimationHandler _characterAnimationHandler;
     private Vector2 m_FingerDownPosition;
+    private bool _listenForInput;
 
     public void Awake()
     {
@@ -26,6 +27,7 @@ public class CharacterLocomotion : MonoBehaviour
     {
         _characterNavTransform = Character.NavActor.transform;
         _characterAnimationHandler = Character.CharacterAnimationHandler;
+        _listenForInput = true;
     }
     void Update()
     {
@@ -47,6 +49,9 @@ public class CharacterLocomotion : MonoBehaviour
     {
         //if (!(Character is IPlayable))
         //    return;
+
+        if (!_listenForInput)
+            return;
 
         if (Character.Id != CharacterManager.Instance.SelectedCharacter.Id)
             return;
@@ -194,5 +199,12 @@ public class CharacterLocomotion : MonoBehaviour
     public void SetPosition(Vector3 position)
     {
         transform.position = position;
+    }
+
+    public async void SetInputListeningFreeze(int timeInMiliseconds)
+    {
+        _listenForInput = false;
+        await Task.Delay(timeInMiliseconds);
+        _listenForInput = true;
     }
 }
