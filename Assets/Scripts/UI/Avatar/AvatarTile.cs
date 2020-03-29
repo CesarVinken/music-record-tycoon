@@ -7,7 +7,7 @@ public class AvatarTile : MonoBehaviour, IPointerClickHandler, IPointerDownHandl
 {
     const string BASE_IMAGE_PATH = "Icons/Avatars/";
     public Image AvatarImage;
-    public PlayableCharacter Character;
+    public Character Character;
 
     public GameObject SelectionMarker;
 
@@ -18,7 +18,7 @@ public class AvatarTile : MonoBehaviour, IPointerClickHandler, IPointerDownHandl
             Logger.Log(Logger.Initialisation, "Could not find AvatarImage image component");
     }
 
-    public void Setup(PlayableCharacter character)
+    public void Setup(Character character)
     {
         Character = character;
 

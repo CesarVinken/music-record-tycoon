@@ -45,8 +45,8 @@ public class CharacterLocomotion : MonoBehaviour
 
     private void CheckPointerInput()
     {
-        if (!(Character is IPlayable))
-            return;
+        //if (!(Character is IPlayable))
+        //    return;
 
         if (Character.Id != CharacterManager.Instance.SelectedCharacter.Id)
             return;

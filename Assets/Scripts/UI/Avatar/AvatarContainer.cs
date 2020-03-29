@@ -17,7 +17,7 @@ public class AvatarContainer : MonoBehaviour
         Instance = this;
     }
 
-    public void CreateAvatar(PlayableCharacter character)
+    public void CreateAvatar(Character character)
     {
         GameObject avatarGO = Instantiate(AvatarPrefab, transform);
         AvatarGOs.Add(character.Id, avatarGO);
@@ -27,7 +27,7 @@ public class AvatarContainer : MonoBehaviour
         Avatars.Add(character.Id, avatar);
     }
 
-    public void DeleteAvatar(PlayableCharacter character)
+    public void DeleteAvatar(Character character)
     {
         if (!Avatars.ContainsKey(character.Id))
         {
@@ -47,7 +47,7 @@ public class AvatarContainer : MonoBehaviour
         Destroy(avatarGO);
     }
 
-    public void SelectAvatar(PlayableCharacter selectedCharacter, PlayableCharacter previousCharacter)
+    public void SelectAvatar(Character selectedCharacter, Character previousCharacter)
     {
         if (previousCharacter != null)
         {

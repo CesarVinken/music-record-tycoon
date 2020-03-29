@@ -101,14 +101,12 @@ public class BuildCommand : CommandProcedure
     {
         List<string> remainingArguments = arguments.Where((v, i) => i != 0).ToList();
 
-        CharacterPlayability characterPlayability = CharacterPlayability.Playable;
-
-        string npcArgument = remainingArguments.SingleOrDefault(argument => argument == "npc");
-        if (npcArgument != null)
-        {
-            characterPlayability = CharacterPlayability.NPC;
-            remainingArguments.Remove(npcArgument);
-        }
+        //string npcArgument = remainingArguments.SingleOrDefault(argument => argument == "npc");
+        //if (npcArgument != null)
+        //{
+        //    characterPlayability = CharacterPlayability.NPC;
+        //    remainingArguments.Remove(npcArgument);
+        //}
 
         if(remainingArguments.Count > 0)
         {
@@ -124,9 +122,7 @@ public class BuildCommand : CommandProcedure
 
         await CharacterManager.Instance.GenerateCharacter(
             characterStats,
-            startingPosition,
-            characterPlayability
-            );
+            startingPosition);
 
         Character character = CharacterManager.Instance.Characters[CharacterManager.Instance.Characters.Count - 1];
         string characterName = CharacterNameGenerator.GetName(character.Name);
