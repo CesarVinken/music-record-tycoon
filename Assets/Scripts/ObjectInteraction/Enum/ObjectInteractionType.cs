@@ -1,4 +1,5 @@
 ﻿public enum ObjectInteractionType {
     Perform,
-    Practice
+    Practice,
+    Repair
 }

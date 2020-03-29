@@ -6,13 +6,15 @@ using UnityEngine;
 
 public struct CharacterStats
 {
-    public CharacterStats(int age, Gender gender)
+    public CharacterStats(Role role, int age, Gender gender)
     {
+        Role = role;
         Name = CharacterNameGenerator.Generate(gender);
         Age = age;
         Gender = gender;
         Image = CharacterImageGenerator.Generate(gender);
     }
+    public Role Role;
     public CharacterName Name;
     public int Age;
     public Gender Gender;
@@ -57,11 +59,13 @@ public class CharacterManager : MonoBehaviour
 
         await GenerateCharacter(
             new CharacterStats(
+                CharacterRoleGenerator.Generate(),
                 CharacterAgeGenerator.Generate(),
                 CharacterNameGenerator.PickGender()),
             new Vector2(0, 15));
         await GenerateCharacter(
             new CharacterStats(
+                CharacterRoleGenerator.Generate(),
                 CharacterAgeGenerator.Generate(),
                 CharacterNameGenerator.PickGender()),
             new Vector2(5, 10));
@@ -94,12 +98,28 @@ public class CharacterManager : MonoBehaviour
 
     public Character SetupCharacter(GameObject characterGO, CharacterStats characterStats)
     {
-        Character character = characterGO.AddComponent<Character>();
+
+        Character character = AddCharacterRole(characterGO, characterStats);
         character.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
 
         SelectCharacter(character);
         Characters.Add(character);
         return character;
+    }
+
+    public Character AddCharacterRole(GameObject characterGO, CharacterStats characterStats)
+    {
+        switch (characterStats.Role)
+        {
+            case Role.Musician:
+                return characterGO.AddComponent<Musician>();
+            case Role.Engineer:
+                return characterGO.AddComponent<Engineer>();
+            default:
+                Logger.Error("Character Role type {0} not yet implemented", characterStats.Role);
+                return null;
+        }
+
     }
 
     public void SelectCharacter(Character character)

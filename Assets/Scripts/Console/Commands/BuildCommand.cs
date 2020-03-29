@@ -115,6 +115,7 @@ public class BuildCommand : CommandProcedure
         }
 
         CharacterStats characterStats = new CharacterStats(
+                CharacterRoleGenerator.Generate(),
                 CharacterAgeGenerator.Generate(),
                 CharacterNameGenerator.PickGender());
 
@@ -127,6 +128,5 @@ public class BuildCommand : CommandProcedure
         Character character = CharacterManager.Instance.Characters[CharacterManager.Instance.Characters.Count - 1];
         string characterName = CharacterNameGenerator.GetName(character.Name);
         Console.Instance.PrintToReportText(characterName + " was just born");
-
     }
 }

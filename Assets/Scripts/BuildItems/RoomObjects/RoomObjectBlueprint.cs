@@ -29,7 +29,11 @@ public class RoomObjectBlueprint : BuildItemBlueprint
         RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Guitar, "Guitar", "A mean guitar");
 
         // add interaction specifics
-
+        ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
+            new ObjectInteraction(ObjectInteractionType.Perform, "Guitar plays itself", "It is a self-playing guitar"),
+            new ObjectInteraction(ObjectInteractionType.Perform, "Play guitar", "A mean guitar", ObjectInteractionCharacterRole.CharacterAtRoomObject),
+            new ObjectInteraction(ObjectInteractionType.Practice, "Learn playing the guitar", "Our hero hopes he will be as good Jimmy Hendrix one day.", ObjectInteractionCharacterRole.CharacterInRoom)
+        };
         return blueprint;
     }
 
@@ -39,8 +43,10 @@ public class RoomObjectBlueprint : BuildItemBlueprint
 
         // add interaction specifics
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Perform, "Play guitar", "A mean guitar"),
-            new ObjectInteraction(ObjectInteractionType.Practice, "Learn playing guitar", "Our hero hopes he will be as good Jimmy Hendrix one day.", ObjectInteractionLocationType.RoomWide)
+            new ObjectInteraction(ObjectInteractionType.Perform, "Self-play", "It is a self-playing piano"),
+            new ObjectInteraction(ObjectInteractionType.Perform, "Perform", "Our hero is playing the guitar", ObjectInteractionCharacterRole.CharacterAtRoomObject),
+            new ObjectInteraction(ObjectInteractionType.Practice, "Practice", "Our hero hopes he will play as Rachmaninov one day.", ObjectInteractionCharacterRole.CharacterInRoom),
+            new ObjectInteraction(ObjectInteractionType.Repair, "Repair", "The piano is no longer broken!", ObjectInteractionCharacterRole.CharacterAtRoomObject)
         };
         blueprint.ObjectInteractions = objectInteractions;
 

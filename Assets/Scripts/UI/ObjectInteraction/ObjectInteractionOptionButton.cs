@@ -66,7 +66,7 @@ public class ObjectInteractionOptionButton : MonoBehaviour
 
     public async Task MoveToInteractionLocation(Character character, Vector2 roomObjectLocation, Vector2 characterTarget)
     {
-        if(ObjectInteraction.ObjectInteractionLocationType == ObjectInteractionLocationType.AtRoomObject)
+        if(ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterAtRoomObject)
         {
             while (Vector2.Distance(character.transform.position, RoomObjectLocation) > 12)
             {
@@ -79,7 +79,7 @@ public class ObjectInteractionOptionButton : MonoBehaviour
                     return;
             }
         }
-        else
+        else if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterInRoom)
         {
             while (character.CurrentRoom != RoomObject.ParentRoom)
             {

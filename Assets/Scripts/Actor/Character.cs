@@ -40,7 +40,6 @@ public class Character : MonoBehaviour
         Image = image;
 
         SetCharacterActionState(CharacterActionState.Idle);
-
     }
 
     public void EnterRoom(Room newRoom)
