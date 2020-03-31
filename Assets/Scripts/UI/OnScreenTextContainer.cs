@@ -43,14 +43,38 @@ public class OnScreenTextContainer : MonoBehaviour
         }
     }
 
-    public void CreateObjectInteractionTextContainer(RoomObject roomObject)
+    public void CreateObjectInteractionTextContainer(RoomObject roomObject, ObjectInteractionOptionsMenuType optionsMenuType)
     {
         Vector2 textPosition = Camera.main.WorldToScreenPoint(roomObject.transform.position);
         GameObject objectInteractionTextContainerGO = GameManager.Instance.InstantiatePrefab(ObjectInteractionTextContainerPrefab, transform, textPosition);
         ObjectInteractionTextContainer = objectInteractionTextContainerGO;
-        ObjectInteractionTextContainer objectInteractionTextContainer = objectInteractionTextContainerGO.GetComponent<ObjectInteractionTextContainer>();
+
+        ObjectInteractionOptionsMenu objectInteractionTextContainer = AddOptionsMenuComponent(optionsMenuType, objectInteractionTextContainerGO);
         objectInteractionTextContainer.Initialise(roomObject);
     }
+
+    private ObjectInteractionOptionsMenu AddOptionsMenuComponent(ObjectInteractionOptionsMenuType optionsMenuType, GameObject optionsGO) { 
+        switch (optionsMenuType)
+        {
+            case ObjectInteractionOptionsMenuType.FirstOptionsMenu:
+                return optionsGO.AddComponent<ObjectInteractionFirstOptionsMenu>();
+            case ObjectInteractionOptionsMenuType.CharacterOptionsMenu:
+                return optionsGO.AddComponent<ObjectInteractionCharacterOptionsMenu>();
+            default:
+                Logger.Error("Options Menu Type {0} was not yet defined", optionsMenuType);
+                return null;
+        }
+    }
+
+    //// 
+    //public void CreateObjectInteractionTextContainer(RoomObject roomObject, ObjectInteraction objectInteraction)
+    //{
+    //    Vector2 textPosition = Camera.main.WorldToScreenPoint(roomObject.transform.position);
+    //    GameObject objectInteractionTextContainerGO = GameManager.Instance.InstantiatePrefab(ObjectInteractionTextContainerPrefab, transform, textPosition);
+    //    ObjectInteractionTextContainer = objectInteractionTextContainerGO;
+    //    ObjectInteractionFirstOptionsMenu objectInteractionTextContainer = objectInteractionTextContainerGO.AddComponent<ObjectInteractionFirstOptionsMenu>();
+    //    objectInteractionTextContainer.Initialise(roomObject);
+    //}
 
     public void DeleteObjectInteractionTextContainer()
     {
@@ -63,7 +87,19 @@ public class OnScreenTextContainer : MonoBehaviour
         Vector2 sequenceLinePosition = Camera.main.WorldToScreenPoint(interactingCharacter.transform.position);
         GameObject interactionSequenceLineGO = GameManager.Instance.InstantiatePrefab(InteractionSequenceLinePrefab, transform, sequenceLinePosition);
         InteractionSequenceLine interactionSequenceLine = interactionSequenceLineGO.GetComponent<InteractionSequenceLine>();
-        interactionSequenceLine.Initialise(objectInteraction.Reaction, interactingCharacter);
+        interactionSequenceLine.Initialise(objectInteraction.Reaction, interactingCharacter.transform.position, interactingCharacter);
+
+        return interactionSequenceLineGO;
+    }
+
+    public GameObject CreateInteractionSequenceLine(ObjectInteraction objectInteraction, Vector2 roomObjectLocation)
+    {
+        Logger.Log("roomObjectLocation {0},{1}", roomObjectLocation.x, roomObjectLocation.y);
+
+        Vector2 sequenceLinePosition = Camera.main.WorldToScreenPoint(roomObjectLocation);
+        GameObject interactionSequenceLineGO = GameManager.Instance.InstantiatePrefab(InteractionSequenceLinePrefab, transform, sequenceLinePosition);
+        InteractionSequenceLine interactionSequenceLine = interactionSequenceLineGO.GetComponent<InteractionSequenceLine>();
+        interactionSequenceLine.Initialise(objectInteraction.Reaction, roomObjectLocation, null);
 
         return interactionSequenceLineGO;
     }

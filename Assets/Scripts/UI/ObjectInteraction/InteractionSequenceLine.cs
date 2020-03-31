@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class InteractionSequenceLine : MonoBehaviour
 {
     public Text Text;
-    private Character _interactingCharacter;
+    private Character _interactingCharacter = null;
+    private Vector2 _fallbackPosition;
 
     public void Awake()
     {
@@ -16,14 +17,24 @@ public class InteractionSequenceLine : MonoBehaviour
 
     public void Update()
     {
-        Vector2 interactingCharacterPosition = _interactingCharacter ? _interactingCharacter.transform.position : transform.position;
+        Vector2 interactingCharacterPosition = _interactingCharacter != null ? _interactingCharacter.transform.position : new Vector3(_fallbackPosition.x, _fallbackPosition.y, 0);
         Vector2 textPosition = Camera.main.WorldToScreenPoint(interactingCharacterPosition);
         transform.position = textPosition;
     }
 
-    public void Initialise(string reaction, Character interactingCharacter)
+    public void Initialise(string reaction, Vector2 linePosition, Character interactingCharacter)
     {
         Text.text = reaction;
-        _interactingCharacter = interactingCharacter;
+        _fallbackPosition = linePosition;
+
+        if (interactingCharacter != null)
+        {
+            _interactingCharacter = interactingCharacter;
+            transform.position = interactingCharacter.transform.position;
+        }
+        else
+        {
+            transform.position = linePosition;
+        }
     }
 }

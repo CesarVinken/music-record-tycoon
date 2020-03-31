@@ -25,8 +25,8 @@ public class RoomObject : MonoBehaviour
         if (RoomObjectBlueprint.ObjectInteractions.Length == 0) return;
 
         Logger.Log("Show interaction options for objects");
-        //ObjectInteractionCollection objectInteractionCollection = new ObjectInteractionCollection(this)
-        OnScreenTextContainer.Instance.CreateObjectInteractionTextContainer(this);
+
+        OnScreenTextContainer.Instance.CreateObjectInteractionTextContainer(this, ObjectInteractionOptionsMenuType.FirstOptionsMenu);
     }
 
 }

@@ -1,26 +1,26 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class ObjectInteractionTextContainer : MonoBehaviour
+public abstract class ObjectInteractionOptionsMenu : MonoBehaviour
 {
     public GameObject InteractionOptionsContainer;
 
-    public GameObject InteractionOptionPrefab;
-
-    public Text Title;
-
     public ObjectInteraction[] ObjectInteractionOptions = new ObjectInteraction[] { };
+    public ObjectInteractionOptionsContainerGO ObjectInteractionOptionsContainerGO;
     public RoomObject RoomObject;
-    public Character InteractingCharacter;
+    public Character InteractingCharacter = null;
 
     void Awake()
     {
+        ObjectInteractionOptionsContainerGO = transform.GetComponentInChildren<ObjectInteractionOptionsContainerGO>();
+
+        Guard.CheckIsNull(ObjectInteractionOptionsContainerGO, "ObjectInteractionOptionsContainerGO");
+        
+        InteractionOptionsContainer = ObjectInteractionOptionsContainerGO.gameObject;
+
         Guard.CheckIsNull(InteractionOptionsContainer, "InteractionOptionsContainer");
-
-        Guard.CheckIsNull(InteractionOptionPrefab, "InteractionOptionPrefab");
-
-        if (Title == null)
-            Logger.Error(Logger.Initialisation, "could not find Title");
     }
 
     public void Update()
@@ -29,39 +29,40 @@ public class ObjectInteractionTextContainer : MonoBehaviour
         transform.position = textPosition;
     }
 
-    public void Initialise(RoomObject roomObject)
-    {
-        RoomObject = roomObject;
-        ObjectInteractionOptions = roomObject.RoomObjectBlueprint.ObjectInteractions;
-        InteractingCharacter = CharacterManager.Instance.SelectedCharacter;
+    public abstract void Initialise(RoomObject roomObject);
+    public abstract ObjectInteractionOptionButton CreateInteractionOptionButton(GameObject parent, int index, int optionsLength);
 
-        AddRoomObjectName(roomObject.RoomObjectBlueprint.Name);
-        for (int i = 0; i < ObjectInteractionOptions.Length; i++)
-        {
-            AddInteractionOption(ObjectInteractionOptions[i], i);
-        }
+    public void Destroy()
+    {
+        Destroy(gameObject);
+        Destroy(this);
     }
 
-    public void AddInteractionOption(ObjectInteraction objectInteraction, int index)
-    {
-        GameObject InteractionOptionGO = Instantiate(InteractionOptionPrefab, InteractionOptionsContainer.transform);
-        RectTransform rect = InteractionOptionGO.GetComponent<RectTransform>();
+    //public void CreateInteractionOptionButton(ObjectInteraction objectInteraction, int index, int optionsLength)
+    //{
+    //    GameObject InteractionOptionGO = Instantiate(InteractionOptionPrefab, InteractionOptionsContainer.transform);
+    //    RectTransform rect = InteractionOptionGO.GetComponent<RectTransform>();
 
-        Vector2 interactionOptionPosition = GetInteractionOptionPosition(index);
-        rect.anchoredPosition = interactionOptionPosition;
+    //    Vector2 interactionOptionPosition = GetInteractionOptionPosition(optionsLength, index);
+    //    rect.anchoredPosition = interactionOptionPosition;
 
-        ObjectInteractionOptionButton objectInteractionOptionButton = InteractionOptionGO.GetComponent<ObjectInteractionOptionButton>();
-        objectInteractionOptionButton.Initialise(objectInteraction, RoomObject, RoomObject.transform.position, InteractingCharacter);
-    }
+    //    ObjectInteractionOptionType optionType = ObjectInteractionOptionType.InteractionStarter;
+
+    //    if (objectInteraction.CharacterRole != ObjectInteractionCharacterRole.NoCharacter && ObjectInteractionRunner.InteractingCharacter == null)
+    //        optionType = ObjectInteractionOptionType.CharacterMenuTrigger;  //This means we first need to select a character before we can run the action, so the button should lead to a character menu
+
+    //    ObjectInteractionOptionButton objectInteractionOptionButton = InteractionOptionGO.GetComponent<ObjectInteractionOptionButton>();
+    //    objectInteractionOptionButton.Initialise(objectInteraction, RoomObject, optionType);
+    //}
 
     public void AddRoomObjectName(string objectName)
     {
-        Title.text = objectName;
+        ObjectInteractionOptionsContainerGO.Title.text = objectName;
     }
 
-    public Vector2 GetInteractionOptionPosition(int index)
+    public Vector2 GetInteractionOptionPosition(int optionsLength, int index)
     {
-        switch (ObjectInteractionOptions.Length)
+        switch (optionsLength)
         {
             case 1:
                 switch (index)

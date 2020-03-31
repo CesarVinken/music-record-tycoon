@@ -10,6 +10,7 @@ public class ObjectInteractionOptionButton : MonoBehaviour
     public Vector2 RoomObjectLocation;
     public RoomObject RoomObject;
     public Character InteractingCharacter;
+    public ObjectInteractionOptionType OptionType;
 
     public void Awake()
     {
@@ -17,84 +18,83 @@ public class ObjectInteractionOptionButton : MonoBehaviour
             Logger.Log(Logger.Initialisation, "Could not find InteractionOptionText component on ObjectInteractionOption");
     }
 
-    public void Initialise(ObjectInteraction objectInteraction, RoomObject roomObject, Vector2 roomObjectLocation, Character interactingCharacter)
+    public void Initialise(ObjectInteraction objectInteraction, RoomObject roomObject, ObjectInteractionOptionType optionType)
     {
         ObjectInteraction = objectInteraction;
-        RoomObjectLocation = roomObjectLocation;
+        RoomObjectLocation = roomObject.transform.position;
         RoomObject = roomObject;
-        InteractionOptionText.text = objectInteraction.Name;
-        InteractingCharacter = interactingCharacter;
+        OptionType = optionType;
     }
 
-    public async void Run()
+    public void SetInteractingCharacter(Character character)
     {
-        Character character = CharacterManager.Instance.SelectedCharacter;
+        InteractingCharacter = character;
+    }
+
+    public void SetInteractionOptionText(string text)
+    {
+        InteractionOptionText.text = text;
+    }
+
+    public void Run()
+    {
         OnScreenTextContainer.Instance.DeleteObjectInteractionTextContainer();
+        ObjectInteractionRunner.ObjectInteraction = ObjectInteraction;
+        ObjectInteractionRunner.InteractingCharacter = InteractingCharacter;
 
-        Vector2 roomObjectLocation = RoomObjectLocation;
-        character.PlayerLocomotion.SetLocomotionTarget(RoomObjectLocation);
-        Vector2 characterTarget = character.NavActor.Target;
-
-        await MoveToInteractionLocation(character, roomObjectLocation, characterTarget);
-
-        character.CharacterAnimationHandler.SetLocomotion(false);
-        character.SetCharacterActionState(CharacterActionState.Action);
-        character.PlayerLocomotion.SetLocomotionTarget(character.transform.position);
-
-        if (InteractingCharacter == null)
+        Logger.Log("OptionType: {0}", OptionType);
+        if (OptionType == ObjectInteractionOptionType.CharacterMenuTrigger)
         {
-            Logger.Log("Cannot run sequence line because the interacting character cannot be found");
+            // display new options menu to choose character for picked interaction
+            OnScreenTextContainer.Instance.CreateObjectInteractionTextContainer(RoomObject, ObjectInteractionOptionsMenuType.CharacterOptionsMenu);
             return;
         }
 
-        GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, InteractingCharacter);
-        await Task.Delay(3000);
+        //if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.NoCharacter)
+        //{
+        //    GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, RoomObjectLocation);
+        //    await Task.Delay(3000);
 
-        if(interactionSequenceLine != null)
-            OnScreenTextContainer.Instance.DeleteInteractionSequenceLine(interactionSequenceLine);
+        //    if (interactionSequenceLine != null)
+        //        OnScreenTextContainer.Instance.DeleteInteractionSequenceLine(interactionSequenceLine);
 
-        if(characterTarget != character.NavActor.Target)
-        {
-            character.CharacterAnimationHandler.SetLocomotion(true, character);
-        } else
-        {
-            character.SetCharacterActionState(CharacterActionState.Idle);
-        }
+        //    return;
+        //}
 
-        return;
+        ObjectInteractionRunner.Run();
     }
 
-    public async Task MoveToInteractionLocation(Character character, Vector2 roomObjectLocation, Vector2 characterTarget)
-    {
-        if(ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterAtRoomObject)
-        {
-            while (Vector2.Distance(character.transform.position, RoomObjectLocation) > 12)
-            {
-                await Task.Yield();
-                if (roomObjectLocation != RoomObjectLocation)
-                    return;
-                if (characterTarget != character.NavActor.Target)
-                    return;
-                if (RoomObject == null)
-                    return;
-            }
-        }
-        else if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterInRoom)
-        {
-            while (character.CurrentRoom != RoomObject.ParentRoom)
-            {
-                await Task.Yield();
-                if (roomObjectLocation != RoomObjectLocation)
-                    return;
-                if (characterTarget != character.NavActor.Target)
-                    return;
-                if (RoomObject == null)
-                    return;
-                if (RoomObject.ParentRoom == null)
-                    return;
-            }
-        }
+    //public async Task MoveToInteractionLocation(Character character, Vector2 roomObjectLocation, Vector2 characterTarget)
+    //{
+    //    if(ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterAtRoomObject)
+    //    {
+    //        while (Vector2.Distance(character.transform.position, RoomObjectLocation) > 12)
+    //        {
+    //            await Task.Yield();
+    //            if (roomObjectLocation != RoomObjectLocation)
+    //                return;
+    //            if (characterTarget != character.NavActor.Target)
+    //                return;
+    //            if (RoomObject == null)
+    //                return;
+    //        }
+    //    }
+    //    else if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterInRoom)
+    //    {
+    //        while (character.CurrentRoom != RoomObject.ParentRoom)
+    //        {
+    //            await Task.Yield();
+    //            if (roomObjectLocation != RoomObjectLocation)
+    //                return;
+    //            if (characterTarget != character.NavActor.Target)
+    //                return;
+    //            if (RoomObject == null)
+    //                return;
+    //            if (RoomObject.ParentRoom == null)
+    //                return;
+    //        }
+    //    }
 
-        return;
-    }
+    //    return;
+    //}
 }

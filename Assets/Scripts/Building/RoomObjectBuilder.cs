@@ -5,7 +5,7 @@ public class RoomObjectBuilder
 {
     public void BuildRoomObject(RoomObjectBlueprint roomObjectBlueprint, GridLocation roomObjectLocation, Room parentRoom)
     {
-        Logger.Log("Try to put a {0} in the room", roomObjectBlueprint.Name);
+        Logger.Log("Trying to put a {0} in the room", roomObjectBlueprint.Name);
         GridLocation rotationTranslatedObjectLocation = TranslateObjectLocationForRoomRotation(roomObjectLocation, parentRoom);
 
         Vector2 roomObjectLocalLocation = GridHelper.GridToVectorLocation(rotationTranslatedObjectLocation);

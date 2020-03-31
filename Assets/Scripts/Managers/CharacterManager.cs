@@ -90,19 +90,16 @@ public class CharacterManager : MonoBehaviour
 
         characterGO.name = CharacterNameGenerator.GetName(characterStats.Name);
 
-        Characters.Add(character);
-
         await UpdatePathfindingGrid();
         return;
     }
 
     public Character SetupCharacter(GameObject characterGO, CharacterStats characterStats)
     {
-
         Character character = AddCharacterRole(characterGO, characterStats);
         character.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
 
-        SelectCharacter(character);
+        //SelectCharacter(character);
         Characters.Add(character);
         return character;
     }
@@ -128,6 +125,13 @@ public class CharacterManager : MonoBehaviour
         SelectedCharacter = character;
 
         _avatarContainer.CreateAvatar(character);
+    }
+
+    public void DeselectCharacter()
+    {
+        Logger.Log("deselect character");
+        SelectedCharacter = null;
+        _avatarContainer.DeleteCurrentAvatar();
     }
 
     public async Task UpdatePathfindingGrid()

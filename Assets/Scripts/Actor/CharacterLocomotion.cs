@@ -53,6 +53,9 @@ public class CharacterLocomotion : MonoBehaviour
         if (!_listenForInput)
             return;
 
+        if (CharacterManager.Instance.SelectedCharacter == null)
+            return;
+
         if (Character.Id != CharacterManager.Instance.SelectedCharacter.Id)
             return;
 
