@@ -11,9 +11,21 @@ public static class ObjectInteractionRunner
 
     public static async void Run()
     {
-        if(ObjectInteraction == null)
+        if (ObjectInteraction == null)
         {
             Logger.Error("Object interaction should not be null at this point!");
+            return;
+        }
+
+        if (RoomObject == null)
+        {
+            Logger.Error("RoomObject should not be null at this point!");
+            return;
+        }
+
+        if (RoomObjectLocation == null)
+        {
+            Logger.Error("RoomObjectLocation should not be null at this point!");
             return;
         }
 
@@ -21,7 +33,13 @@ public static class ObjectInteractionRunner
         if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.NoCharacter)
         {
             CharacterManager.Instance.DeselectCharacter();
-            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, RoomObjectLocation);
+
+            InteractingCharacter = null;
+            RoomObject = null;
+            ObjectInteraction objectInteraction = ObjectInteraction;
+            ObjectInteraction = null;
+
+            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(objectInteraction, RoomObjectLocation);
             await Task.Delay(3000);
 
             if (interactionSequenceLine != null)
@@ -31,66 +49,65 @@ public static class ObjectInteractionRunner
         {
             CharacterManager.Instance.DeselectCharacter();
 
-            Character character = InteractingCharacter;
+            Character interactingCharacter = InteractingCharacter;
+            InteractingCharacter = null;
+            RoomObject roomObject = RoomObject;
+            RoomObject = null;
+            ObjectInteraction objectInteraction = ObjectInteraction;
+            ObjectInteraction = null;
 
             Vector2 roomObjectLocation = RoomObjectLocation;
-            character.PlayerLocomotion.SetLocomotionTarget(RoomObjectLocation);
-            Vector2 characterTarget = character.NavActor.Target;
+            interactingCharacter.PlayerLocomotion.SetLocomotionTarget(roomObjectLocation);
+            Vector2 characterTarget = interactingCharacter.NavActor.Target;
 
-            await MoveToInteractionLocation(character, roomObjectLocation, characterTarget);
+            await MoveToInteractionLocation(interactingCharacter, roomObjectLocation, characterTarget, objectInteraction, roomObject);
 
-            character.CharacterAnimationHandler.SetLocomotion(false);
-            character.SetCharacterActionState(CharacterActionState.Action);
-            character.PlayerLocomotion.SetLocomotionTarget(character.transform.position);
+            interactingCharacter.CharacterAnimationHandler.SetLocomotion(false);
+            interactingCharacter.SetCharacterActionState(CharacterActionState.Action);
+            interactingCharacter.PlayerLocomotion.SetLocomotionTarget(interactingCharacter.transform.position);
 
-            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, InteractingCharacter);
+            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(objectInteraction, interactingCharacter);
             await Task.Delay(3000);
 
             if (interactionSequenceLine != null)
                 OnScreenTextContainer.Instance.DeleteInteractionSequenceLine(interactionSequenceLine);
 
-            if (characterTarget != character.NavActor.Target)
+            if (characterTarget != interactingCharacter.NavActor.Target)
             {
-                character.CharacterAnimationHandler.SetLocomotion(true, character);
+                interactingCharacter.CharacterAnimationHandler.SetLocomotion(true, interactingCharacter);
             }
             else
             {
-                character.SetCharacterActionState(CharacterActionState.Idle);
+                interactingCharacter.SetCharacterActionState(CharacterActionState.Idle);
             }
         }
 
-        ObjectInteraction = null;
-        InteractingCharacter = null;
         return;
     }
 
-    public static async Task MoveToInteractionLocation(Character character, Vector2 roomObjectLocation, Vector2 characterTarget)
+    public static async Task MoveToInteractionLocation(Character character, Vector2 roomObjectLocation, Vector2 characterTarget, ObjectInteraction objectInteraction, RoomObject roomObject)
     {
-        if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterAtRoomObject)
+        if (objectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterAtRoomObject)
         {
-            while (Vector2.Distance(character.transform.position, RoomObjectLocation) > 12)
+            while (Vector2.Distance(character.transform.position, roomObjectLocation) > 12)
             {
                 await Task.Yield();
-                if (roomObjectLocation != RoomObjectLocation)
-                    return;
                 if (characterTarget != character.NavActor.Target)
                     return;
-                if (RoomObject == null)
+                if (roomObject == null)
                     return;
             }
         }
-        else if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterInRoom)
+        else if (objectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterInRoom)
         {
-            while (character.CurrentRoom != RoomObject.ParentRoom)
+            while (character.CurrentRoom != roomObject.ParentRoom)
             {
                 await Task.Yield();
-                if (roomObjectLocation != RoomObjectLocation)
-                    return;
                 if (characterTarget != character.NavActor.Target)
                     return;
-                if (RoomObject == null)
+                if (roomObject == null)
                     return;
-                if (RoomObject.ParentRoom == null)
+                if (roomObject.ParentRoom == null)
                     return;
             }
         }

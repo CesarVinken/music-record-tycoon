@@ -70,9 +70,10 @@ public class GameManager : MonoBehaviour
     {
         Logger.General.enableLogs = true;
         Logger.Locomotion.enableLogs = false;
-        Logger.Building.enableLogs = true;
+        Logger.Building.enableLogs = false;
         Logger.Pathfinding.enableLogs = false;
         Logger.Initialisation.enableLogs = true;
+        Logger.Character.enableLogs = false;
     }
 
     public GameObject InstantiatePrefab(GameObject prefab, Transform parent, Vector2 position)

@@ -6,7 +6,7 @@ public class BuildItem : MonoBehaviour
 {
     public string Id = "";
 
-    public void Awake()
+    public void Initialise()
     {
         Id = Guid.NewGuid().ToString();
     }

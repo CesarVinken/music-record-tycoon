@@ -18,8 +18,6 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void Awake()
     {
-        Logger.Log("animator handler awoken");
-
         if (Animator == null)
             Animator = GetComponent<Animator>();
     }

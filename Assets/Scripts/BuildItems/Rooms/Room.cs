@@ -21,9 +21,9 @@ public class Room : BuildItem
 
     private DeleteRoomTrigger _deleteRoomTrigger;
 
-    new public void Awake()
+    new public void Initialise()
     {
-        base.Awake();
+        base.Initialise();
         AdjacentRooms.Clear();
         CharactersInRoom.Clear();
 

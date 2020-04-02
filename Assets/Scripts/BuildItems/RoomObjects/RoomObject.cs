@@ -3,10 +3,8 @@
 public class RoomObject : MonoBehaviour
 {
     public RoomObjectBlueprint RoomObjectBlueprint;
-    //public PolygonCollider2D Collider;
     public ObjectRotation RoomObjectRotation;
     public Room ParentRoom;
-
 
     public void OnMouseDown()
     {
@@ -23,8 +21,6 @@ public class RoomObject : MonoBehaviour
     public void ShowInteractionMenu()
     {
         if (RoomObjectBlueprint.ObjectInteractions.Length == 0) return;
-
-        Logger.Log("Show interaction options for objects");
 
         OnScreenTextContainer.Instance.CreateObjectInteractionTextContainer(this, ObjectInteractionOptionsMenuType.FirstOptionsMenu);
     }

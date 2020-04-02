@@ -71,15 +71,8 @@ public class CharacterManager : MonoBehaviour
             new Vector2(5, 10));
     }
 
-    public void Update()
-    {
-        //Logger.Log("GENERATE NAME:::: {0}", CharacterNameGenerator.GetName(CharacterNameGenerator.Generate(CharacterNameGenerator.PickGender())));
-    }
-
     public async Task GenerateCharacter(CharacterStats characterStats, Vector2 position)
     {
-        Logger.Log(Logger.Initialisation, "Create character");
-
         GameObject characterGO = GameManager.Instance.InstantiatePrefab(CharacterPrefab, SceneObjectsGO.transform, position);
 
         Character character = SetupCharacter(characterGO, characterStats);
@@ -99,7 +92,6 @@ public class CharacterManager : MonoBehaviour
         Character character = AddCharacterRole(characterGO, characterStats);
         character.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
 
-        //SelectCharacter(character);
         Characters.Add(character);
         return character;
     }

@@ -9,7 +9,6 @@ public class ObjectInteractionFirstOptionsMenu : ObjectInteractionOptionsMenu
     {
         RoomObject = roomObject;
         ObjectInteractionOptions = roomObject.RoomObjectBlueprint.ObjectInteractions;
-        //InteractingCharacter = CharacterManager.Instance.SelectedCharacter;
 
         AddRoomObjectName(roomObject.RoomObjectBlueprint.Name);
         for (int i = 0; i < ObjectInteractionOptions.Length; i++)

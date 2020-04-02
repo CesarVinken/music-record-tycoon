@@ -17,7 +17,6 @@ public class OnScreenTextContainer : MonoBehaviour
         Instance = this;
     }
 
-
     public void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -26,6 +25,9 @@ public class OnScreenTextContainer : MonoBehaviour
             {
                 if (EventSystem.current.IsPointerOverGameObject())
                 {
+                    if (EventSystem.current.currentSelectedGameObject == null)
+                        return;
+
                     ObjectInteractionOptionButton objectInteractionOptionButton = EventSystem.current.currentSelectedGameObject.GetComponent<ObjectInteractionOptionButton>();
                     if (objectInteractionOptionButton == null)
                     {

@@ -38,23 +38,6 @@ public abstract class ObjectInteractionOptionsMenu : MonoBehaviour
         Destroy(this);
     }
 
-    //public void CreateInteractionOptionButton(ObjectInteraction objectInteraction, int index, int optionsLength)
-    //{
-    //    GameObject InteractionOptionGO = Instantiate(InteractionOptionPrefab, InteractionOptionsContainer.transform);
-    //    RectTransform rect = InteractionOptionGO.GetComponent<RectTransform>();
-
-    //    Vector2 interactionOptionPosition = GetInteractionOptionPosition(optionsLength, index);
-    //    rect.anchoredPosition = interactionOptionPosition;
-
-    //    ObjectInteractionOptionType optionType = ObjectInteractionOptionType.InteractionStarter;
-
-    //    if (objectInteraction.CharacterRole != ObjectInteractionCharacterRole.NoCharacter && ObjectInteractionRunner.InteractingCharacter == null)
-    //        optionType = ObjectInteractionOptionType.CharacterMenuTrigger;  //This means we first need to select a character before we can run the action, so the button should lead to a character menu
-
-    //    ObjectInteractionOptionButton objectInteractionOptionButton = InteractionOptionGO.GetComponent<ObjectInteractionOptionButton>();
-    //    objectInteractionOptionButton.Initialise(objectInteraction, RoomObject, optionType);
-    //}
-
     public void AddRoomObjectName(string objectName)
     {
         ObjectInteractionOptionsContainerGO.Title.text = objectName;
