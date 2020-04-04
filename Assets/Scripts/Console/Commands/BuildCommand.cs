@@ -97,20 +97,13 @@ public class BuildCommand : CommandProcedure
         Console.Instance.PrintToReportText("Built room");
     }
 
-    public async Task BuildCharacter(List<string> arguments)
+    public async Task BuildCharacter(List<string> allArguments)
     {
-        List<string> remainingArguments = arguments.Where((v, i) => i != 0).ToList();
+        List<string> arguments = allArguments.Where((v, i) => i != 0).ToList();
 
-        //string npcArgument = remainingArguments.SingleOrDefault(argument => argument == "npc");
-        //if (npcArgument != null)
-        //{
-        //    characterPlayability = CharacterPlayability.NPC;
-        //    remainingArguments.Remove(npcArgument);
-        //}
-
-        if(remainingArguments.Count > 0)
+        if(arguments.Count > 0)
         {
-            Console.Instance.PrintToReportText("Argument '" + remainingArguments[0] + "' was invalid. Could not create character");
+            Console.Instance.PrintToReportText("Argument '" + arguments[0] + "' was invalid. Could not create character");
             return;
         }
 

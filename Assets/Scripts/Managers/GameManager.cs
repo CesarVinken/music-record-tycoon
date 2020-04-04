@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
 
         if (BuilderManager.Instance != null)
         {
-            BuilderManager.Instance.DrawBuildingTilesGizmos();
+            //BuilderManager.Instance.DrawBuildingTilesGizmos();
 
             //BuilderManager.Instance.DrawDoorLocationGizmos();
         }

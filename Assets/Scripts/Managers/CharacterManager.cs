@@ -121,9 +121,16 @@ public class CharacterManager : MonoBehaviour
 
     public void DeselectCharacter()
     {
-        Logger.Log("deselect character");
         SelectedCharacter = null;
         _avatarContainer.DeleteCurrentAvatar();
+    }
+
+    public void DeleteCharacter(Character character)
+    {
+        Logger.Log(Logger.Character, "Deleted character {0}", CharacterNameGenerator.GetName(character.Name));
+        Characters.Remove(character);
+        Destroy(character.gameObject);
+        Destroy(character);
     }
 
     public async Task UpdatePathfindingGrid()
