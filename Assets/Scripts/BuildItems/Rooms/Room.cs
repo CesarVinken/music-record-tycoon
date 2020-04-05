@@ -38,7 +38,6 @@ public class Room : BuildItem
         Character character = collision.gameObject.GetComponent<Character>();
         if (character)
         {
-            // A character entered the room
             Logger.Log(Logger.Locomotion, "{0} entered room {1}", character.Id, Id);
             character.EnterRoom(this);
             CharactersInRoom.Add(character);
@@ -65,13 +64,16 @@ public class Room : BuildItem
                 {
                     Logger.Log(Logger.Locomotion, "Remove character {0} from room {1}", CharactersInRoom.Count, Id);
                     CharactersInRoom.Remove(c);
-                    Logger.Log(Logger.Locomotion, "Removed character {0} from room {1}", CharactersInRoom.Count, Id);
                     if (CharactersInRoom.Count == 0 && _deleteRoomTrigger)
                     {
                         _deleteRoomTrigger.ShowDeleteRoomTrigger();
                     }
-                    return;
+                    break;
                 }
+            }
+            if(CharactersInRoom.Count == 0)
+            {
+                RaiseWallPieces(character.CurrentRoom);
             }
         }
     }

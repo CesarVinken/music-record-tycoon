@@ -49,14 +49,8 @@ public class Character : MonoBehaviour
     {
         Room previousRoom = CurrentRoom;
 
-        if (previousRoom != null && previousRoom != newRoom)
-        {
-            Logger.Log("Raise the walls");
-            previousRoom.RaiseWallPieces(newRoom);
-        }
-
         CurrentRoom = newRoom;
-        Logger.Log("Lower the walls");
+        Logger.Log("Lower the walls in new room");
 
         newRoom.LowerWallPieces();
     }
