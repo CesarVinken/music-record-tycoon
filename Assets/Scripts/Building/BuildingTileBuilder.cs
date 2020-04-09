@@ -34,6 +34,8 @@ public class BuildingTileBuilder
 
         room.EnableDoors();
 
+        room.DisableOverlappingWallPieces();
+
         // All tiles in the square of the room + the distance up to the fourth rank of tilse
         List<BuildingTile> surroundingSquareTiles = _builderManager.BuildingTiles.FindAll(tile =>
             tile.StartingPoint.x >= room.RoomCorners[Direction.Left].x - 3 * 15 &&

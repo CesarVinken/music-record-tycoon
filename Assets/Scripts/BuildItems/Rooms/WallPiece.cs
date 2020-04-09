@@ -12,6 +12,8 @@ public class WallPiece : MonoBehaviour
     public SpriteRenderer ConnectionLeft;
     public SpriteRenderer ConnectionRight;
 
+    public Room Room;
+
     public void Awake()
     {
         Guard.CheckIsNull(SpriteRenderer, "SpriteRenderer");

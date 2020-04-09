@@ -58,11 +58,7 @@ public class RoomBlueprint : BuildItemBlueprint
         {
             new RoomObjectBlueprintForRoom(RoomObjectBlueprint.CreateBlueprint(RoomObjectName.Piano), new GridLocation(8, 4))       
         };
-        Logger.Log("blueprint.RoomObjects.Count: {0}", blueprint.RoomObjects.Length);
-        Logger.Log("blueprint.RoomObjects[0].RoomObjectBlueprint.ObjectInteractions.Length: {0}", blueprint.RoomObjects[0].RoomObjectBlueprint.ObjectInteractions.Length);
-        Logger.Log("0: {0}", blueprint.RoomObjects[0].RoomObjectBlueprint.ObjectInteractions[0].Name);
-        Logger.Log("1: {0}", blueprint.RoomObjects[0].RoomObjectBlueprint.ObjectInteractions[1].Name);
-        //Logger.Log("2: {0}", blueprint.RoomObjects[0].RoomObjectBlueprint.ObjectInteractions[2].Name);
+
         return blueprint;
     }
 
