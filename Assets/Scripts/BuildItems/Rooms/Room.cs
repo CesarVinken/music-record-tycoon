@@ -226,7 +226,6 @@ public class Room : BuildItem
                     // the tile in this room and the same tile in the other room. Now find the common wall pieces
                     if (otherRoomTile.StartingPoint.x == tileWithOverlap.StartingPoint.x)
                     {
-                        //Logger.Warning("we found the common tile!!  {0},{1}", tileWithOverlap.StartingPoint.x, tileWithOverlap.StartingPoint.y);
                         DisableWallpiece(tileWithOverlap.StartingPoint, this, otherRoom);
                         DisableWallpiece(new Vector2(tileWithOverlap.StartingPoint.x + 5, tileWithOverlap.StartingPoint.y + 2.5f), this, otherRoom);
                         DisableWallpiece(new Vector2(tileWithOverlap.StartingPoint.x + 10, tileWithOverlap.StartingPoint.y + 5f), this, otherRoom);
@@ -514,41 +513,42 @@ public class Room : BuildItem
 
     public void LowerWallPiece(Vector2 overlapPosition, Room thisRoom, Room otherRoom)
     {
-        Logger.Warning("we found the common tile!!  {0},{1}. Shall we make it transparent? This room is {2}", overlapPosition.x, overlapPosition.y, thisRoom.Id);
 
         List<WallPiece> overlappingWallPiecesThisRoom = GetWallpiecesByAnyBuildingTile(overlapPosition, thisRoom);
         List<WallPiece> overlappingWallPiecesOtherRoom = GetWallpiecesByAnyBuildingTile(overlapPosition, otherRoom);
 
         for (int i = 0; i < overlappingWallPiecesThisRoom.Count; i++)
         {
+
             WallPiece overlappingWallPieceThisRoom = overlappingWallPiecesThisRoom[i];
             for (int j = 0; j < overlappingWallPiecesOtherRoom.Count; j++)
             {
+
                 WallPiece overlappingWallPieceOtherRoom = overlappingWallPiecesOtherRoom[j];
                 if (overlappingWallPieceOtherRoom && overlappingWallPieceThisRoom)
                 {
-                    if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownRight || overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownRight) &&
                         overlappingWallPieceThisRoom.WallPieceType == WallPieceType.UpLeft)
                     {
                         if (otherRoom.CharactersInRoom.Count < 1) continue;
                         overlappingWallPieceThisRoom.SetWallSprite(WallPieceDisplayMode.Transparent);
                     }
 
-                    if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownRight || overlappingWallPieceThisRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownRight) &&
                         overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.UpLeft)
                     {
                         if (thisRoom.CharactersInRoom.Count < 1) continue;
                         overlappingWallPieceOtherRoom.SetWallSprite(WallPieceDisplayMode.Transparent);
                     }
 
-                    if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownLeft || overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownLeft) &&
                         overlappingWallPieceThisRoom.WallPieceType == WallPieceType.UpRight)
                     {
                         if (otherRoom.CharactersInRoom.Count < 1) continue;
                         overlappingWallPieceThisRoom.SetWallSprite(WallPieceDisplayMode.Transparent);
                     }
 
-                    if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownLeft || overlappingWallPieceThisRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownLeft) &&
                         overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.UpRight)
                     {
                         if (thisRoom.CharactersInRoom.Count < 1) continue;
@@ -561,7 +561,6 @@ public class Room : BuildItem
 
     public void LowerWallPieces()
     {
-        //Logger.Log("lower wall pieces. CharactersInRoom? {0}", CharactersInRoom.Count);
         // Make wall pieces transparent in this room
         if (CharactersInRoom.Count > 0)
         {
@@ -591,11 +590,9 @@ public class Room : BuildItem
                     // the tile in this room and the same tile in the other room. Now find the common wall pieces
                     if (otherRoomTile.StartingPoint.x == tileWithOverlap.StartingPoint.x)
                     {
-                        //Logger.Warning("we found the common tile!!  {0},{1}. Shall we make it transparent?", tileWithOverlap.StartingPoint.x, tileWithOverlap.StartingPoint.y);
                         LowerWallPiece(tileWithOverlap.StartingPoint, this, otherRoom);
                         LowerWallPiece(new Vector2(tileWithOverlap.StartingPoint.x + 5, tileWithOverlap.StartingPoint.y + 2.5f), this, otherRoom);
                         LowerWallPiece(new Vector2(tileWithOverlap.StartingPoint.x + 10, tileWithOverlap.StartingPoint.y + 5f), this, otherRoom);
-                        //LowerWallPiece(new Vector2(tileWithOverlap.StartingPoint.x + 15, tileWithOverlap.StartingPoint.y + 7.5f), this, otherRoom);
                         LowerWallPiece(new Vector2(tileWithOverlap.StartingPoint.x + 5, tileWithOverlap.StartingPoint.y - 2.5f), this, otherRoom);
                         LowerWallPiece(new Vector2(tileWithOverlap.StartingPoint.x + 10, tileWithOverlap.StartingPoint.y - 5f), this, otherRoom);
                     }
@@ -635,7 +632,6 @@ public class Room : BuildItem
                 else
                 {
                     //find the corresponding wall piece in the other room and activate that
-                    //Logger.Log("We need to find the corresponding wallpiece to wallpiece at {0},{1}", wallPiece.transform.position.x, wallPiece.transform.position.y);
                     List<WallPiece> overlappingOtherRoomWallPieces = new List<WallPiece>();
                     for (int j = 0; j < AdjacentRooms.Count; j++)
                     {
@@ -643,10 +639,41 @@ public class Room : BuildItem
                     }
                     for (int k = 0; k < overlappingOtherRoomWallPieces.Count; k++)
                     {
-                        //Logger.Log("try piece with name {0} at {1},{2}", overlappingOtherRoomWallPieces[k].gameObject.name, overlappingOtherRoomWallPieces[k].transform.position.x, overlappingOtherRoomWallPieces[k].transform.position.y);
-
                         if (overlappingOtherRoomWallPieces[k].gameObject.activeSelf)
                         {
+                            if (wallPiece.WallPieceType == WallPieceType.DownLeft)
+                            {
+                                if (overlappingOtherRoomWallPieces[k].WallPieceType == WallPieceType.UpLeft)
+                                {
+                                    if(overlappingOtherRoomWallPieces[k].Room.CharactersInRoom.Count > 0) continue;
+                                    WallPiece downRightWallPiece = overlappingOtherRoomWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownRight);
+                                    if (downRightWallPiece && downRightWallPiece.Room.CharactersInRoom.Count > 0) continue;
+                                }  
+                            }
+                            if (wallPiece.WallPieceType == WallPieceType.DownRight)
+                            {
+                                if (overlappingOtherRoomWallPieces[k].WallPieceType == WallPieceType.UpRight)
+                                {
+                                    if (overlappingOtherRoomWallPieces[k].Room.CharactersInRoom.Count > 0) continue;
+                                    WallPiece downLeftWallPiece = overlappingOtherRoomWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownLeft);
+                                    if (downLeftWallPiece && downLeftWallPiece.Room.CharactersInRoom.Count > 0) continue;
+                                }
+                            }
+                            if (wallPiece.WallPieceType == WallPieceType.CornerDown)
+                            {
+                                if (overlappingOtherRoomWallPieces[k].WallPieceType == WallPieceType.UpRight)
+                                {
+                                    // check if other wall piece is upright if there is an inhabited room to up right 
+                                    WallPiece downLeftWallPiece = overlappingOtherRoomWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownLeft);
+                                    if (downLeftWallPiece && downLeftWallPiece.Room.CharactersInRoom.Count > 0) continue;
+                                }
+                                if (overlappingOtherRoomWallPieces[k].WallPieceType == WallPieceType.UpLeft)
+                                {
+                                    // check if other wall piece is upleft if there is an inhabited room to up left
+                                    WallPiece downLeftWallPiece = overlappingOtherRoomWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownRight);
+                                    if (downLeftWallPiece && downLeftWallPiece.Room.CharactersInRoom.Count > 0) continue;
+                                }
+                            }
                             overlappingOtherRoomWallPieces[k].SetWallSprite(WallPieceDisplayMode.Visible);
                         }
                     }
@@ -658,7 +685,7 @@ public class Room : BuildItem
             if (overlappingTileClusters.Count == 0) continue;
 
             BuildingTile overlappingTile = overlappingTileClusters[0]; // take any tile, because the starting positions should be the same
-            Logger.Warning("go over tile with overlap  {0},{1}", overlappingTile.StartingPoint.x, overlappingTile.StartingPoint.y);
+
             List<WallPiece> overlappingWallPieces = new List<WallPiece>();
             for (int k = 0; k < overlappingTile.BuildingTileRooms.Count; k++)
             {
@@ -667,12 +694,8 @@ public class Room : BuildItem
                 overlappingWallPieces.AddRange(GetWallpiecesByAnyBuildingTile(overlappingTile.StartingPoint, otherRoom));
             }
 
-            Logger.Log("overlappingWallpieces Count: {0}", overlappingWallPieces.Count);
-
             for (int j = 0; j < overlappingWallPieces.Count; j++)
             {
-                Logger.Log("overlappingWallpieces {0} type {1} against wallPiece type {2} ", j, overlappingWallPieces[j].WallPieceType, wallPiece.WallPieceType);
-
                 if (overlappingWallPieces[j] == wallPiece) continue;
 
                 // it is a corner, intersecting downleft in a corner to the right
@@ -683,21 +706,26 @@ public class Room : BuildItem
                         && overlappingWallPieces[j].Room.CharactersInRoom.Count == 0
                         )
                     {
+                        // Corner + door case. Check if there is a up left in addition to down right. 
+                        WallPiece cornerDownWallPiece = overlappingWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.CornerDown);
+                        if (cornerDownWallPiece && cornerDownWallPiece.Room.CharactersInRoom.Count > 0) continue;
+
                         RaiseWallPiece(new Vector2(wallPiece.transform.position.x + 5, wallPiece.transform.position.y + 2.5f), this);
                         RaiseWallPiece(new Vector2(wallPiece.transform.position.x + 10, wallPiece.transform.position.y + 5f), this);
                     }
                 }
                 if (wallPiece.WallPieceType == WallPieceType.UpLeft)
                 {
-                    Logger.Log("wallPiece.WallPieceType == WallPieceType.UpLeft.. at {0},{1}", wallPiece.transform.position.x, wallPiece.transform.position.y);
-                    Logger.Log("overlappingWallpieces[j].WallPieceType? {0}. Name {1}", overlappingWallPieces[j].WallPieceType, overlappingWallPieces[j].transform.gameObject.name);
                     if ((overlappingWallPieces[j].WallPieceType == WallPieceType.DownRight || overlappingWallPieces[j].WallPieceType == WallPieceType.CornerDown)
                         && overlappingWallPieces[j].Room.CharactersInRoom.Count == 0
                         )
                     {
+                        WallPiece downRightWallPiece = overlappingWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownRight && overlappingWallPiece.Room.Id != overlappingWallPieces[j].Room.Id);
+                        if (downRightWallPiece && downRightWallPiece.Room.CharactersInRoom.Count > 0) continue;
                         wallPiece.SetWallSprite(WallPieceDisplayMode.Visible);
                         RaiseWallPiece(new Vector2(wallPiece.transform.position.x + 5, wallPiece.transform.position.y + 2.5f), this);
                         RaiseWallPiece(new Vector2(wallPiece.transform.position.x + 10, wallPiece.transform.position.y + 5f), this);
+
                         //if there is no cornering piece of type UpRight at same location
                         if(!WallPieces.Any(piece => piece.transform.position == wallPiece.transform.position && piece.WallPieceType == WallPieceType.UpRight))
                         {
@@ -708,7 +736,7 @@ public class Room : BuildItem
                 }
                 if (wallPiece.WallPieceType == WallPieceType.DownRight)
                 {
-                    Logger.Warning("we found the common tile!!  {0},{1}. Make it visible DownRight", wallPiece.transform.position.x, wallPiece.transform.position.y);
+                    //Logger.Warning("we found the common tile!!  {0},{1}. Make it visible DownRight", wallPiece.transform.position.x, wallPiece.transform.position.y);
                     if ((overlappingWallPieces[j].WallPieceType == WallPieceType.DownLeft || overlappingWallPieces[j].WallPieceType == WallPieceType.CornerDown)
                         && overlappingWallPieces[j].Room.CharactersInRoom.Count == 0
                         )
@@ -719,7 +747,7 @@ public class Room : BuildItem
                 }
                 if (wallPiece.WallPieceType == WallPieceType.UpRight)
                 {
-                    Logger.Warning("we found the common tile!!  {0},{1}. Make it visible UpRight!", wallPiece.transform.position.x, wallPiece.transform.position.y);
+                    //Logger.Warning("we found the common tile!!  {0},{1}. Make it visible UpRight!", wallPiece.transform.position.x, wallPiece.transform.position.y);
                     if ((overlappingWallPieces[j].WallPieceType == WallPieceType.DownLeft || overlappingWallPieces[j].WallPieceType == WallPieceType.CornerDown)
                         && overlappingWallPieces[j].Room.CharactersInRoom.Count == 0
                         )
