@@ -42,16 +42,6 @@ public class RoomBuilder
 
         buildingTileBuilder.UpdateBuildingTiles(room);
 
-        //for (int i = 0; i < room.AdjacentRooms.Count; i++)
-        //{
-        //    Room adjacentRoom = room.AdjacentRooms[i];
-        //    if (adjacentRoom.CharactersInRoom.Count > 0)
-        //    {
-        //        adjacentRoom.LowerWallPieces();
-        //    }
-        //}
-        room.LowerWallPieces();
-
         FollowUpRoomBuilding(roomBlueprint, roomCorners, buildingPlotBuilder);
         await CharacterManager.Instance.UpdatePathfindingGrid();
 

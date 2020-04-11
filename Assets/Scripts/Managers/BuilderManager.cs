@@ -351,12 +351,12 @@ public class BuilderManager : MonoBehaviour
     public void DeleteRoom(Room room)
     {
         Room tempRoomCopy = room;
+        room.ReenableWallpiecesFromAdjacentRooms();
         room.RemoveDoorConnectionFromAdjacentRooms();
         room.RemoveThisRoomFromAdjacentRooms();
         room.DeleteRoom();
         Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
         tempRoomCopy.CleanUpDeletedRoomTiles();
-
 
         for (int l = 0; l < RoomManager.Rooms.Count; l++)
         {
