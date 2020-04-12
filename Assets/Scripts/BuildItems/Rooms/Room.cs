@@ -179,33 +179,57 @@ public class Room : BuildItem
                 WallPiece overlappingWallPieceOtherRoom = overlappingWallPiecesOtherRoom[j];
                 if (overlappingWallPieceOtherRoom && overlappingWallPieceThisRoom)
                 {
-                    if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownRight || overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    //if (overlapPosition.x == 30 && overlapPosition.y == 0)
+                    //{
+                    //    Logger.Log("disable wall pieces for {0}, {1}", overlapPosition.x, overlapPosition.y);
+                    //    Logger.Log("overlappingWallPiecesThisRoom type {0}", overlappingWallPieceThisRoom.WallPieceType);
+                    //    Logger.Log("overlappingWallPieceOtherRoom type {0}", overlappingWallPieceOtherRoom.WallPieceType);
+                    //}
+                    if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownRight) &&
                         overlappingWallPieceThisRoom.WallPieceType == WallPieceType.UpLeft)
                     {
                         overlappingWallPieceOtherRoom.gameObject.SetActive(false);
                         overlappingWallPieceOtherRoom.SetWallSprite(WallPieceDisplayMode.Visible);
                     }
 
-                    if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownRight || overlappingWallPieceThisRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownRight) &&
                         overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.UpLeft)
                     {
                         overlappingWallPieceThisRoom.gameObject.SetActive(false);
                         overlappingWallPieceThisRoom.SetWallSprite(WallPieceDisplayMode.Visible);
                     }
 
-                    if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownLeft || overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownLeft) &&
                         overlappingWallPieceThisRoom.WallPieceType == WallPieceType.UpRight)
                     {
                         overlappingWallPieceOtherRoom.gameObject.SetActive(false);
                         overlappingWallPieceOtherRoom.SetWallSprite(WallPieceDisplayMode.Visible);
                     }
 
-                    if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownLeft || overlappingWallPieceThisRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownLeft) &&
                         overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.UpRight)
                     {
                         overlappingWallPieceThisRoom.gameObject.SetActive(false);
                         overlappingWallPieceThisRoom.SetWallSprite(WallPieceDisplayMode.Visible);
                     }
+
+                    //if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    //(overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownRight
+                    //|| overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownLeft))
+                    //{
+                    //    Logger.Warning("THIS WOULD BE A CASE AT {0},{1}", overlappingWallPieceOtherRoom.transform.position.x, overlappingWallPieceOtherRoom.transform.position.y);
+                    //    overlappingWallPieceOtherRoom.gameObject.SetActive(false);
+                    //    overlappingWallPieceOtherRoom.SetWallSprite(WallPieceDisplayMode.Visible);
+                    //}
+
+                    //if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.CornerDown) &&
+                    //(overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownRight
+                    //|| overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownLeft))
+                    //{
+                    //    Logger.Warning("THIS WOULD BE THE OTHER CASE AT {0},{1}", overlapPosition.x, overlapPosition.y);
+                    //    overlappingWallPieceThisRoom.gameObject.SetActive(false);
+                    //    overlappingWallPieceThisRoom.SetWallSprite(WallPieceDisplayMode.Visible);
+                    //}
                 }
             }
         }

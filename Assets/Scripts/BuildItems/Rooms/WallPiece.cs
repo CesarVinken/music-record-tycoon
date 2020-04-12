@@ -46,11 +46,7 @@ public enum WallPieceType
     DownRight,
     DownLeft,
     UpRight,
-    UpLeft,
-    CornerDown,
-    CornerUp,
-    CornerLeft,
-    CornerRight
+    UpLeft
 }
 
 public enum WallPieceDisplayMode

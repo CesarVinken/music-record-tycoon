@@ -29,7 +29,7 @@ public class WallPieceTransparencyHandler
 
                 if (activeWallPiece.WallPieceType == WallPieceType.UpLeft || activeWallPiece.WallPieceType == WallPieceType.DownLeft) // UpLeft for continuing wall parts, DownLeft at the bottom corner
                 {
-                    List<WallPiece> oppositeWallPieces = wallPiecesAllRooms.Where(wallPiece => wallPiece.WallPieceType == WallPieceType.DownRight || wallPiece.WallPieceType == WallPieceType.CornerDown).ToList();
+                    List<WallPiece> oppositeWallPieces = wallPiecesAllRooms.Where(wallPiece => wallPiece.WallPieceType == WallPieceType.DownRight).ToList();
 
                     for (int k = 0; k < oppositeWallPieces.Count; k++)
                     {
@@ -73,7 +73,7 @@ public class WallPieceTransparencyHandler
                 }
                 if (activeWallPiece.WallPieceType == WallPieceType.UpRight)
                 {
-                    List<WallPiece> oppositeWallPieces = wallPiecesAllRooms.Where(wallPiece => wallPiece.WallPieceType == WallPieceType.DownLeft || wallPiece.WallPieceType == WallPieceType.CornerDown).ToList();
+                    List<WallPiece> oppositeWallPieces = wallPiecesAllRooms.Where(wallPiece => wallPiece.WallPieceType == WallPieceType.DownLeft).ToList();
 
                     for (int k = 0; k < oppositeWallPieces.Count; k++)
                     {
@@ -129,8 +129,8 @@ public class WallPieceTransparencyHandler
             WallPiece overlappingWallPieceThisRoom = overlappingWallPiecesThisRoom[i];
             for (int j = 0; j < overlappingWallPiecesOtherRoom.Count; j++)
             {
-
                 WallPiece overlappingWallPieceOtherRoom = overlappingWallPiecesOtherRoom[j];
+
                 if (overlappingWallPieceOtherRoom && overlappingWallPieceThisRoom)
                 {
                     if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownRight) &&
@@ -176,7 +176,7 @@ public class WallPieceTransparencyHandler
         {
             for (int i = 0; i < room.WallPieces.Count; i++)
             {
-                if (room.WallPieces[i].WallPieceType == WallPieceType.DownLeft || room.WallPieces[i].WallPieceType == WallPieceType.DownRight || room.WallPieces[i].WallPieceType == WallPieceType.CornerDown)
+                if (room.WallPieces[i].WallPieceType == WallPieceType.DownLeft || room.WallPieces[i].WallPieceType == WallPieceType.DownRight)
                 {
                     if (!room.WallPieces[i].gameObject.activeSelf) continue;
                     room.WallPieces[i].SetWallSprite(WallPieceDisplayMode.Transparent);
@@ -219,8 +219,9 @@ public class WallPieceTransparencyHandler
         for (int i = 0; i < room.WallPieces.Count; i++)
         {
             WallPiece wallPiece = room.WallPieces[i];
-            if (wallPiece.WallPieceType == WallPieceType.DownLeft || wallPiece.WallPieceType == WallPieceType.DownRight || wallPiece.WallPieceType == WallPieceType.CornerDown)
+            if (wallPiece.WallPieceType == WallPieceType.DownLeft || wallPiece.WallPieceType == WallPieceType.DownRight)
             {
+
                 if (wallPiece.gameObject.activeSelf)
                     wallPiece.SetWallSprite(WallPieceDisplayMode.Visible);
                 else
@@ -233,42 +234,34 @@ public class WallPieceTransparencyHandler
                     }
                     for (int k = 0; k < overlappingOtherRoomWallPieces.Count; k++)
                     {
-                        if (overlappingOtherRoomWallPieces[k].gameObject.activeSelf)
+                        WallPiece overlappingOtherRoomWallPiece = overlappingOtherRoomWallPieces[k];
+                        if (wallPiece.transform.position.x == 30 && wallPiece.transform.position.y == 0)
+                        {
+                            Logger.Log("RAISE wall pieces for {0}, {1}", wallPiece.transform.position.x, wallPiece.transform.position.y);
+                            Logger.Log("wallPiece type {0}", wallPiece.WallPieceType);
+                            Logger.Log("overlappingOtherRoomWallPiece type {0}", overlappingOtherRoomWallPiece.WallPieceType);
+                        }
+                        if (overlappingOtherRoomWallPiece.gameObject.activeSelf)
                         {
                             if (wallPiece.WallPieceType == WallPieceType.DownLeft)
                             {
-                                if (overlappingOtherRoomWallPieces[k].WallPieceType == WallPieceType.UpLeft)
+                                if (overlappingOtherRoomWallPiece.WallPieceType == WallPieceType.UpLeft)
                                 {
-                                    if (overlappingOtherRoomWallPieces[k].Room.CharactersInRoom.Count > 0) continue;
+                                    if (overlappingOtherRoomWallPiece.Room.CharactersInRoom.Count > 0) continue;
                                     WallPiece downRightWallPiece = overlappingOtherRoomWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownRight);
                                     if (downRightWallPiece && downRightWallPiece.Room.CharactersInRoom.Count > 0) continue;
                                 }
                             }
                             if (wallPiece.WallPieceType == WallPieceType.DownRight)
                             {
-                                if (overlappingOtherRoomWallPieces[k].WallPieceType == WallPieceType.UpRight)
+                                if (overlappingOtherRoomWallPiece.WallPieceType == WallPieceType.UpRight)
                                 {
-                                    if (overlappingOtherRoomWallPieces[k].Room.CharactersInRoom.Count > 0) continue;
+                                    if (overlappingOtherRoomWallPiece.Room.CharactersInRoom.Count > 0) continue;
                                     WallPiece downLeftWallPiece = overlappingOtherRoomWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownLeft);
                                     if (downLeftWallPiece && downLeftWallPiece.Room.CharactersInRoom.Count > 0) continue;
                                 }
                             }
-                            if (wallPiece.WallPieceType == WallPieceType.CornerDown)
-                            {
-                                if (overlappingOtherRoomWallPieces[k].WallPieceType == WallPieceType.UpRight)
-                                {
-                                    // check if other wall piece is upright if there is an inhabited room to up right 
-                                    WallPiece downLeftWallPiece = overlappingOtherRoomWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownLeft);
-                                    if (downLeftWallPiece && downLeftWallPiece.Room.CharactersInRoom.Count > 0) continue;
-                                }
-                                if (overlappingOtherRoomWallPieces[k].WallPieceType == WallPieceType.UpLeft)
-                                {
-                                    // check if other wall piece is upleft if there is an inhabited room to up left
-                                    WallPiece downLeftWallPiece = overlappingOtherRoomWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownRight);
-                                    if (downLeftWallPiece && downLeftWallPiece.Room.CharactersInRoom.Count > 0) continue;
-                                }
-                            }
-                            overlappingOtherRoomWallPieces[k].SetWallSprite(WallPieceDisplayMode.Visible);
+                            overlappingOtherRoomWallPiece.SetWallSprite(WallPieceDisplayMode.Visible);
                         }
                     }
                 }
@@ -290,19 +283,20 @@ public class WallPieceTransparencyHandler
 
             for (int j = 0; j < overlappingWallPieces.Count; j++)
             {
-                if (overlappingWallPieces[j] == wallPiece) continue;
+                WallPiece overlappingWallPiece = overlappingWallPieces[j];
+                if (overlappingWallPiece == wallPiece) continue;
 
                 // it is a corner, intersecting downleft in a corner to the right
                 if (wallPiece.WallPieceType == WallPieceType.DownLeft)
                 {
                     //Logger.Warning("we found the common tile!!  {0},{1}. Make it visible DownLeft", wallPiece.transform.position.x, wallPiece.transform.position.y);
-                    if ((overlappingWallPieces[j].WallPieceType == WallPieceType.DownRight || overlappingWallPieces[j].WallPieceType == WallPieceType.CornerDown)
-                        && overlappingWallPieces[j].Room.CharactersInRoom.Count == 0
+                    if ((overlappingWallPiece.WallPieceType == WallPieceType.DownRight)
+                        && overlappingWallPiece.Room.CharactersInRoom.Count == 0
                         )
                     {
-                        // Corner + door case. Check if there is a up left in addition to down right. 
-                        WallPiece cornerDownWallPiece = overlappingWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.CornerDown);
-                        if (cornerDownWallPiece && cornerDownWallPiece.Room.CharactersInRoom.Count > 0) continue;
+                        //get wall pieces from 1 tile up right. Check if there is a DownRight wallpiece which more than 1 person in the room. If so, continuel
+                        Room corneringRoom = RoomManager.Rooms.FirstOrDefault(r => r.RoomCorners[Direction.Down].x == wallPiece.transform.position.x && r.RoomCorners[Direction.Down].y == wallPiece.transform.position.y);
+                        if (corneringRoom && corneringRoom.CharactersInRoom.Count > 0) continue;                           
 
                         RaiseWallPiece(new Vector2(wallPiece.transform.position.x + 5, wallPiece.transform.position.y + 2.5f), room);
                         RaiseWallPiece(new Vector2(wallPiece.transform.position.x + 10, wallPiece.transform.position.y + 5f), room);
@@ -310,12 +304,18 @@ public class WallPieceTransparencyHandler
                 }
                 if (wallPiece.WallPieceType == WallPieceType.UpLeft)
                 {
-                    if ((overlappingWallPieces[j].WallPieceType == WallPieceType.DownRight || overlappingWallPieces[j].WallPieceType == WallPieceType.CornerDown)
-                        && overlappingWallPieces[j].Room.CharactersInRoom.Count == 0
+                    if ((overlappingWallPiece.WallPieceType == WallPieceType.DownRight)
+                        && overlappingWallPiece.Room.CharactersInRoom.Count == 0
                         )
                     {
-                        WallPiece downRightWallPiece = overlappingWallPieces.FirstOrDefault(overlappingWallPiece => overlappingWallPiece.WallPieceType == WallPieceType.DownRight && overlappingWallPiece.Room.Id != overlappingWallPieces[j].Room.Id);
+                        WallPiece downRightWallPiece = overlappingWallPieces.FirstOrDefault(
+                            w => w.WallPieceType == WallPieceType.DownRight
+                            && w.Room.Id != overlappingWallPiece.Room.Id);
                         if (downRightWallPiece && downRightWallPiece.Room.CharactersInRoom.Count > 0) continue;
+
+                        Room corneringRoom = RoomManager.Rooms.FirstOrDefault(r => r.RoomCorners[Direction.Down].x == wallPiece.transform.position.x && r.RoomCorners[Direction.Down].y == wallPiece.transform.position.y);
+                        if (corneringRoom && corneringRoom.CharactersInRoom.Count > 0) continue;
+
                         wallPiece.SetWallSprite(WallPieceDisplayMode.Visible);
                         RaiseWallPiece(new Vector2(wallPiece.transform.position.x + 5, wallPiece.transform.position.y + 2.5f), room);
                         RaiseWallPiece(new Vector2(wallPiece.transform.position.x + 10, wallPiece.transform.position.y + 5f), room);
@@ -344,7 +344,6 @@ public class WallPieceTransparencyHandler
                     wallPieces[i].SetWallSprite(WallPieceDisplayMode.Visible);
                     Logger.Log("Raise {0} at {1},{2}", wallPieces[i].gameObject.name, wallPieces[i].transform.position.x, wallPieces[i].transform.position.y);
                 }
-
             }
         }
     }
