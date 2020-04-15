@@ -212,24 +212,6 @@ public class Room : BuildItem
                         overlappingWallPieceThisRoom.gameObject.SetActive(false);
                         overlappingWallPieceThisRoom.SetWallSprite(WallPieceDisplayMode.Visible);
                     }
-
-                    //if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.CornerDown) &&
-                    //(overlappingWallPieceThisRoom.WallPieceType == WallPieceType.DownRight
-                    //|| overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownLeft))
-                    //{
-                    //    Logger.Warning("THIS WOULD BE A CASE AT {0},{1}", overlappingWallPieceOtherRoom.transform.position.x, overlappingWallPieceOtherRoom.transform.position.y);
-                    //    overlappingWallPieceOtherRoom.gameObject.SetActive(false);
-                    //    overlappingWallPieceOtherRoom.SetWallSprite(WallPieceDisplayMode.Visible);
-                    //}
-
-                    //if ((overlappingWallPieceThisRoom.WallPieceType == WallPieceType.CornerDown) &&
-                    //(overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownRight
-                    //|| overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownLeft))
-                    //{
-                    //    Logger.Warning("THIS WOULD BE THE OTHER CASE AT {0},{1}", overlapPosition.x, overlapPosition.y);
-                    //    overlappingWallPieceThisRoom.gameObject.SetActive(false);
-                    //    overlappingWallPieceThisRoom.SetWallSprite(WallPieceDisplayMode.Visible);
-                    //}
                 }
             }
         }
@@ -237,6 +219,8 @@ public class Room : BuildItem
 
     public void DisableOverlappingWallPieces()
     {
+        Logger.Log("Disable double wall pieces");
+
         //get wall pieces with overlap. Then wall pieces against edge tiles of all other rooms
         List<BuildingTile> edgeTileClustersWithOverlap = RoomEdgeTilesPerCluster.Where(tile => tile.BuildingTileRooms.Count > 1).ToList();
 
@@ -263,6 +247,8 @@ public class Room : BuildItem
                 }
             }
         }
+
+
     }
 
     public void ReenableWallpiecesFromAdjacentRooms()
