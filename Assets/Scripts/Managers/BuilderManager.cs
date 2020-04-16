@@ -51,13 +51,23 @@ public class BuilderManager : MonoBehaviour
         BuildingPlots.Clear();
         BuildingPlotLocations.Clear();
 
+        //////////////////
         // Room prefabs
+        //////////////////
+
         Dictionary<ObjectRotation, GameObject> Room1Prefabs = new Dictionary<ObjectRotation, GameObject>();
         Room1Prefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation0", typeof(GameObject)));
         Room1Prefabs.Add(ObjectRotation.Rotation90, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation90", typeof(GameObject)));
         Room1Prefabs.Add(ObjectRotation.Rotation180, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation180", typeof(GameObject)));
         Room1Prefabs.Add(ObjectRotation.Rotation270, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation270", typeof(GameObject)));
         RoomPrefabs.Add(RoomName.Room1, Room1Prefabs);
+
+        Dictionary<ObjectRotation, GameObject> RecordingStudio1Prefabs = new Dictionary<ObjectRotation, GameObject>();
+        RecordingStudio1Prefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/RecordingStudio1/RecordingStudio1Rotation0", typeof(GameObject)));
+        RecordingStudio1Prefabs.Add(ObjectRotation.Rotation90, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/RecordingStudio1/RecordingStudio1Rotation90", typeof(GameObject)));
+        RecordingStudio1Prefabs.Add(ObjectRotation.Rotation180, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/RecordingStudio1/RecordingStudio1Rotation180", typeof(GameObject)));
+        RecordingStudio1Prefabs.Add(ObjectRotation.Rotation270, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/RecordingStudio1/RecordingStudio1Rotation270", typeof(GameObject)));
+        RoomPrefabs.Add(RoomName.RecordingStudio1, RecordingStudio1Prefabs);
 
         Dictionary<ObjectRotation, GameObject> HallwayPrefabs = new Dictionary<ObjectRotation, GameObject>();
         HallwayPrefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Hallway", typeof(GameObject)));
@@ -101,7 +111,7 @@ public class BuilderManager : MonoBehaviour
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        Logger.Warning("Let's build!");
+                        Logger.Warning("Let's build a {0}", SelectedRoom.Name);
                         BuildingPlot buildingPlot = BuildingPlot.FindBuildingPlot(BuildingPlot.AvailablePlotVectorPosition);
                         BuildRoom(SelectedRoom, buildingPlot);
 

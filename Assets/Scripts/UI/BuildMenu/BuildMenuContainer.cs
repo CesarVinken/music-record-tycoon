@@ -66,6 +66,9 @@ public class BuildMenuContainer : MonoBehaviour
 
             RoomBlueprint hallway = RoomBlueprint.CreateBlueprint(RoomName.Hallway);
             LoadBuildMenuItem(hallway);
+
+            RoomBlueprint recordingStudio1 = RoomBlueprint.CreateBlueprint(RoomName.RecordingStudio1);
+            LoadBuildMenuItem(recordingStudio1);
         }
     }
 

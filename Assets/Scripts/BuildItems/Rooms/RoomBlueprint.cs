@@ -23,8 +23,8 @@ public class RoomBlueprint : BuildItemBlueprint
                 return CreateHallwayBlueprint();
             case RoomName.Room1:
                 return CreateRoom1Blueprint();
-            case RoomName.Room2:
-                return CreateRoom2Blueprint();
+            case RoomName.RecordingStudio1:
+                return CreateRecordingStudio1Blueprint();
             default:
                 Logger.Error("Cannot find a creation function for blueprint {0}", roomName);
                 return null;
@@ -62,20 +62,17 @@ public class RoomBlueprint : BuildItemBlueprint
         return blueprint;
     }
 
-    // test room with multiple doors
-    private static RoomBlueprint CreateRoom2Blueprint()
+    // recording room 1, for testing
+    private static RoomBlueprint CreateRecordingStudio1Blueprint()
     {
-        RoomBlueprint blueprint = new RoomBlueprint(RoomName.Room2, "Room2", "This room is just for testing");
+        RoomBlueprint blueprint = new RoomBlueprint(RoomName.RecordingStudio1, "Recording Studio 1", "Your first recording studio! But this is only the control room part.");
 
-        blueprint.RightUpAxisLength = 9;
+        blueprint.RightUpAxisLength = 3;
         blueprint.LeftUpAxisLength = 6;
         blueprint.DoorLocations = new GridLocation[]
         {
-            new GridLocation(3, 0),
-            new GridLocation(3, 6),
-            new GridLocation(0, 3),
-            new GridLocation(9, 5),
-            new GridLocation(0, 2),
+            new GridLocation(1, 6),
+            new GridLocation(1, 0),
         };
 
         return blueprint;

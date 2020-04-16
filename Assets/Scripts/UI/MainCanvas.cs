@@ -267,6 +267,17 @@ public class MainCanvas : MonoBehaviour
                     offset.y = TileSizeInUnits.y * 1.5f;
                 }
                 break;
+            //case RoomName.RecordingStudio1:
+            //    offset.x = TileSizeInUnits.x / 4f;
+            //    if (_rotationRoomOnLastHover == ObjectRotation.Rotation0 || _rotationRoomOnLastHover == ObjectRotation.Rotation180)
+            //    {
+            //        offset.y = TileSizeInUnits.y;
+            //    }
+            //    else
+            //    {
+            //        offset.y = TileSizeInUnits.y * 1.5f;
+            //    }
+            //    break;
             default:
                 Logger.Warning("Image offset not implemented for {0}", blueprint.RoomName);
                 break;

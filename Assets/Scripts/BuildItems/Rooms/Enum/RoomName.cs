@@ -2,5 +2,5 @@
 {
     Hallway,
     Room1,
-    Room2
+    RecordingStudio1
 }
