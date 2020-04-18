@@ -9,6 +9,21 @@ public class WallPieceTransparencyHandler
         // after a neighbour room is deleted, go over all wallpieces in this room to check if any wallpieces now do not overlap but are disabled. Reenable these
         List<BuildingTile> edgeTileClustersWithOverlap = room.RoomEdgeTilesPerCluster.Where(tile => tile.BuildingTileRooms.Count > 1).ToList();
 
+        List<Room> roomsStartingOnEdgeTile = new List<Room>();
+        for (int j = 0; j < edgeTileClustersWithOverlap.Count; j++)
+        {
+            BuildingTile edgeTileClusterWithOverlap = edgeTileClustersWithOverlap[j];
+            for (int p = 0; p < edgeTileClusterWithOverlap.BuildingTileRooms.Count; p++)
+            {
+                Room overlappingRoom = edgeTileClusterWithOverlap.BuildingTileRooms[p];
+                if (overlappingRoom.RoomCorners[Direction.Down].x == edgeTileClusterWithOverlap.StartingPoint.x && overlappingRoom.RoomCorners[Direction.Down].y == edgeTileClusterWithOverlap.StartingPoint.y)
+                {
+                    roomsStartingOnEdgeTile.Add(overlappingRoom);
+                }
+            }
+        }
+
+        // rooms that have the down corner on along the edge of this room
         for (int i = 0; i < edgeTileClustersWithOverlap.Count; i++)
         {
             BuildingTile tileWithOverlap = edgeTileClustersWithOverlap[i];
@@ -19,7 +34,6 @@ public class WallPieceTransparencyHandler
                 Room otherRoom = tileWithOverlap.BuildingTileRooms[k];
                 wallPiecesAllRooms.AddRange(Room.GetWallpiecesByAnyBuildingTile(tileWithOverlap.StartingPoint, otherRoom));
             }
-
             List<WallPiece> activeWallPiecesFromThisRoom = wallPiecesAllRooms.Where(wallPiece => wallPiece.Room.Id == room.Id).ToList();
             if (activeWallPiecesFromThisRoom.Count == 0) continue;
 
@@ -29,12 +43,21 @@ public class WallPieceTransparencyHandler
 
                 if (activeWallPiece.WallPieceType == WallPieceType.UpLeft || activeWallPiece.WallPieceType == WallPieceType.DownLeft) // UpLeft for continuing wall parts, DownLeft at the bottom corner
                 {
+                    if (activeWallPiece.transform.position.x == 0)
+                    {
+                        Logger.Log("For this tile at {0},{1} the type is {2}", activeWallPiece.transform.position.x, activeWallPiece.transform.position.y, activeWallPiece.WallPieceType);
+                        Logger.Log("This room downside is {0},{1}, with the id {2}", room.RoomCorners[Direction.Down].x, room.RoomCorners[Direction.Down].y, room.Id);
+                    }
+
                     List<WallPiece> oppositeWallPieces = wallPiecesAllRooms.Where(wallPiece => wallPiece.WallPieceType == WallPieceType.DownRight).ToList();
 
                     for (int k = 0; k < oppositeWallPieces.Count; k++)
                     {
                         WallPiece oppositeWallPiece = oppositeWallPieces[k];
-
+                        if (activeWallPiece.transform.position.x == 0)
+                        {
+                            Logger.Log("oppositeWallPiece at {0},{1} the type is {2}", oppositeWallPiece.transform.position.x, oppositeWallPiece.transform.position.y, oppositeWallPiece.WallPieceType);
+                        }
                         // only if not corner piece
                         if (!wallPiecesAllRooms.Any(wallPiece => wallPiece.WallPieceType == WallPieceType.UpRight && wallPiece.Room.Id != room.Id))
                         {
@@ -70,6 +93,33 @@ public class WallPieceTransparencyHandler
                                 wallPiece.SetWallSprite(WallPieceDisplayMode.Transparent);
                         });
                     }
+
+                    //for dealing with corners
+                    for (int l = 0; l < roomsStartingOnEdgeTile.Count; l++)
+                    {
+                        Room roomStartingOnEdgeTile = roomsStartingOnEdgeTile[l];
+                        Vector2 roomStartingOnEdgeTileLocation = roomStartingOnEdgeTile.RoomCorners[Direction.Down];
+                        // check if there is a wallpiece intersecting the corner
+                        if (activeWallPiece.transform.position.x == roomStartingOnEdgeTileLocation.x
+                        && activeWallPiece.transform.position.y == roomStartingOnEdgeTileLocation.y)
+                        {
+                            for (int n = 0; n < roomStartingOnEdgeTile.WallPieces.Count; n++)
+                            {
+                                WallPiece wallPiece = roomStartingOnEdgeTile.WallPieces[n];
+                                if((wallPiece.transform.position.x == roomStartingOnEdgeTileLocation.x + 5
+                                    && wallPiece.transform.position.y == roomStartingOnEdgeTileLocation.y + 2.5f) ||
+                                    (wallPiece.transform.position.x == roomStartingOnEdgeTileLocation.x + 10
+                                    && wallPiece.transform.position.y == roomStartingOnEdgeTileLocation.y + 5f))
+                                {
+                                    wallPiece.gameObject.SetActive(true);
+                                    if (wallPiece.Room.CharactersInRoom.Count > 0)
+                                        wallPiece.SetWallSprite(WallPieceDisplayMode.Transparent);
+                                }
+
+                            }
+                            Logger.Log("There is something on the corner");
+                        }
+                    }
                 }
                 if (activeWallPiece.WallPieceType == WallPieceType.UpRight)
                 {
@@ -88,9 +138,6 @@ public class WallPieceTransparencyHandler
                             wallPiece => wallPiece.WallPieceType == WallPieceType.DownLeft
                             && wallPiece.transform.position.x == tileWithOverlap.StartingPoint.x + 5
                             && wallPiece.transform.position.y == tileWithOverlap.StartingPoint.y - 2.5f
-                            //&& WallPieces.Any(wallPieceThisRoom =>
-                            //    wallPieceThisRoom.transform.position.x == tileWithOverlap.StartingPoint.x + 5
-                            //    && wallPieceThisRoom.transform.position.y == tileWithOverlap.StartingPoint.y - 2.5f)
                             )
                             .ToList()
                             .ForEach(wallPiece => {
@@ -102,9 +149,6 @@ public class WallPieceTransparencyHandler
                             wallPiece => wallPiece.WallPieceType == WallPieceType.DownLeft
                             && wallPiece.transform.position.x == tileWithOverlap.StartingPoint.x + 10
                             && wallPiece.transform.position.y == tileWithOverlap.StartingPoint.y - 5f
-                            //&& WallPieces.Any(wallPieceThisRoom =>
-                            //    wallPieceThisRoom.transform.position.x == tileWithOverlap.StartingPoint.x + 10
-                            //    && wallPieceThisRoom.transform.position.y == tileWithOverlap.StartingPoint.y - 5f)
                             )
                             .ToList()
                             .ForEach(wallPiece => {
