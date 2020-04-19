@@ -221,9 +221,11 @@ public class MainCanvas : MonoBehaviour
 
     public static Sprite GetRoomIcon(string name, ObjectRotation rotation)
     {
+        string roomName = name.Replace(" ", "");
+
         if (rotation == ObjectRotation.Rotation0 || rotation == ObjectRotation.Rotation90)
         {
-            Sprite roomIcon = Resources.Load<Sprite>("Icons/Rooms/" + name + "Rotation0");
+            Sprite roomIcon = Resources.Load<Sprite>("Icons/Rooms/" + roomName + "Rotation0");
             if (roomIcon == null)
             {
                 Logger.Error(Logger.Building, "Could not find or load icon for {0}-{1}", name, rotation);
@@ -232,7 +234,7 @@ public class MainCanvas : MonoBehaviour
             return roomIcon;
         } else
         {
-            Sprite roomIcon = Resources.Load<Sprite>("Icons/Rooms/" + name + "Rotation180");
+            Sprite roomIcon = Resources.Load<Sprite>("Icons/Rooms/" + roomName + "Rotation180");
             if (roomIcon == null)
             {
                 Logger.Error(Logger.Building, "Could not find or load icon for {0}-{1}", name, rotation);
@@ -252,6 +254,7 @@ public class MainCanvas : MonoBehaviour
     private Vector2 getPointerImageOffset(RoomBlueprint blueprint)
     {
         Vector2 offset = new Vector2(0, 0);
+        Logger.Log("TileSizeInUnits.y {0}", TileSizeInUnits.y);
         switch (blueprint.RoomName)
         {
             case RoomName.Hallway:
@@ -267,17 +270,17 @@ public class MainCanvas : MonoBehaviour
                     offset.y = TileSizeInUnits.y * 1.5f;
                 }
                 break;
-            //case RoomName.RecordingStudio1:
-            //    offset.x = TileSizeInUnits.x / 4f;
-            //    if (_rotationRoomOnLastHover == ObjectRotation.Rotation0 || _rotationRoomOnLastHover == ObjectRotation.Rotation180)
-            //    {
-            //        offset.y = TileSizeInUnits.y;
-            //    }
-            //    else
-            //    {
-            //        offset.y = TileSizeInUnits.y * 1.5f;
-            //    }
-            //    break;
+            case RoomName.RecordingStudio1:
+                offset.x = TileSizeInUnits.x / 4f;
+                if (_rotationRoomOnLastHover == ObjectRotation.Rotation0 || _rotationRoomOnLastHover == ObjectRotation.Rotation180)
+                {
+                    offset.y = TileSizeInUnits.y * 0.5f;
+                }
+                else
+                {
+                    offset.y = TileSizeInUnits.y * 1f;
+                }
+                break;
             default:
                 Logger.Warning("Image offset not implemented for {0}", blueprint.RoomName);
                 break;

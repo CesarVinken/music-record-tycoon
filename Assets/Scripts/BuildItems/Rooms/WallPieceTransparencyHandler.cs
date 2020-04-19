@@ -101,7 +101,9 @@ public class WallPieceTransparencyHandler
                         Vector2 roomStartingOnEdgeTileLocation = roomStartingOnEdgeTile.RoomCorners[Direction.Down];
                         // check if there is a wallpiece intersecting the corner
                         if (activeWallPiece.transform.position.x == roomStartingOnEdgeTileLocation.x
-                        && activeWallPiece.transform.position.y == roomStartingOnEdgeTileLocation.y)
+                        && activeWallPiece.transform.position.y == roomStartingOnEdgeTileLocation.y
+                        && (activeWallPiece.transform.position.x != room.RoomCorners[Direction.Up].x
+                        && activeWallPiece.transform.position.y != room.RoomCorners[Direction.Up].y))
                         {
                             for (int n = 0; n < roomStartingOnEdgeTile.WallPieces.Count; n++)
                             {
