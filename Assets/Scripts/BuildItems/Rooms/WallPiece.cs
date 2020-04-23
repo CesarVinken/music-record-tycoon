@@ -7,8 +7,6 @@ public class WallPiece : MonoBehaviour
 
     public SpriteRenderer SpriteRenderer;
 
-    public Sprite TallSprite;
-
     public SpriteRenderer ConnectionLeft;
     public SpriteRenderer ConnectionRight;
 
@@ -17,7 +15,6 @@ public class WallPiece : MonoBehaviour
     public void Awake()
     {
         Guard.CheckIsNull(SpriteRenderer, "SpriteRenderer");
-        Guard.CheckIsNull(TallSprite, "TallSprite");
     }
 
     public void SetWallSprite(WallPieceDisplayMode wallPieceDisplayMode)

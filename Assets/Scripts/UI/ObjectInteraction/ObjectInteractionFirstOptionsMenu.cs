@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ObjectInteractionFirstOptionsMenu : ObjectInteractionOptionsMenu
 {
-    public override void Initialise(RoomObject roomObject)
+    public override void Initialise(RoomObjectGO roomObject)
     {
         RoomObject = roomObject;
         ObjectInteractionOptions = roomObject.RoomObjectBlueprint.ObjectInteractions;

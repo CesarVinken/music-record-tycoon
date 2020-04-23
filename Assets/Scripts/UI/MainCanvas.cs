@@ -254,7 +254,7 @@ public class MainCanvas : MonoBehaviour
     private Vector2 getPointerImageOffset(RoomBlueprint blueprint)
     {
         Vector2 offset = new Vector2(0, 0);
-        Logger.Log("TileSizeInUnits.y {0}", TileSizeInUnits.y);
+
         switch (blueprint.RoomName)
         {
             case RoomName.Hallway:

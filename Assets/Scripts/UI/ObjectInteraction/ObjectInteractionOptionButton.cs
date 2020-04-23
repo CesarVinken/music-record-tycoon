@@ -8,7 +8,7 @@ public class ObjectInteractionOptionButton : MonoBehaviour
 
     public ObjectInteraction ObjectInteraction;
     public Vector2 RoomObjectLocation;
-    public RoomObject RoomObject;
+    public RoomObjectGO RoomObject;
     public Character InteractingCharacter;
     public ObjectInteractionOptionType OptionType;
 
@@ -18,7 +18,7 @@ public class ObjectInteractionOptionButton : MonoBehaviour
             Logger.Log(Logger.Initialisation, "Could not find InteractionOptionText component on ObjectInteractionOption");
     }
 
-    public void Initialise(ObjectInteraction objectInteraction, RoomObject roomObject, ObjectInteractionOptionType optionType)
+    public void Initialise(ObjectInteraction objectInteraction, RoomObjectGO roomObject, ObjectInteractionOptionType optionType)
     {
         ObjectInteraction = objectInteraction;
         RoomObjectLocation = roomObject.transform.position;

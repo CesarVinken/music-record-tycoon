@@ -5,7 +5,7 @@ public static class ObjectInteractionRunner
 {
     public static ObjectInteraction ObjectInteraction;
     public static Vector2 RoomObjectLocation;
-    public static RoomObject RoomObject;
+    public static RoomObjectGO RoomObject;
     public static Character InteractingCharacter = null;
     public static ObjectInteractionOptionType OptionType;
 
@@ -51,7 +51,7 @@ public static class ObjectInteractionRunner
 
             Character interactingCharacter = InteractingCharacter;
             InteractingCharacter = null;
-            RoomObject roomObject = RoomObject;
+            RoomObjectGO roomObject = RoomObject;
             RoomObject = null;
             ObjectInteraction objectInteraction = ObjectInteraction;
             ObjectInteraction = null;
@@ -85,7 +85,7 @@ public static class ObjectInteractionRunner
         return;
     }
 
-    public static async Task MoveToInteractionLocation(Character character, Vector2 roomObjectLocation, Vector2 characterTarget, ObjectInteraction objectInteraction, RoomObject roomObject)
+    public static async Task MoveToInteractionLocation(Character character, Vector2 roomObjectLocation, Vector2 characterTarget, ObjectInteraction objectInteraction, RoomObjectGO roomObject)
     {
         if (objectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterAtRoomObject)
         {

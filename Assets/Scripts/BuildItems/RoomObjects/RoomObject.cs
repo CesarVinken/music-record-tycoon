@@ -1,28 +1,7 @@
 ﻿using UnityEngine;
 
-public class RoomObject : MonoBehaviour
+[CreateAssetMenu(fileName = "New Room Object", menuName = "Room Object")]
+public class RoomObject : ScriptableObject
 {
-    public RoomObjectBlueprint RoomObjectBlueprint;
-    public ObjectRotation RoomObjectRotation;
-    public Room ParentRoom;
-
-    public void OnMouseDown()
-    {
-        ShowInteractionMenu();
-    }
-
-    public void Initialise(RoomObjectBlueprint roomObjectBlueprint, ObjectRotation roomObjectRotation, Room parentRoom)
-    {
-        RoomObjectBlueprint = roomObjectBlueprint;
-        RoomObjectRotation = roomObjectRotation;
-        ParentRoom = parentRoom;
-    }
-
-    public void ShowInteractionMenu()
-    {
-        if (RoomObjectBlueprint.ObjectInteractions.Length == 0) return;
-
-        OnScreenTextContainer.Instance.CreateObjectInteractionTextContainer(this, ObjectInteractionOptionsMenuType.FirstOptionsMenu);
-    }
-
+    public RoomObjectName RoomObjectName;
 }

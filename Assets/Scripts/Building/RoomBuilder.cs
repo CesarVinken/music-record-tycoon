@@ -38,7 +38,9 @@ public class RoomBuilder
         room.RoomBlueprint = roomBlueprint;
         room.SetupCorners(roomCorners);
         room.SetupCollider();
-        room.SetupRoomObjects();
+
+        // the sprites should already be part of the room prefab. The scripts should be on the sprites. But on start() of the room, all scripts should be initalised and added to the room's []
+        //room.SetupRoomObjects();
 
         buildingTileBuilder.UpdateBuildingTiles(room);
 

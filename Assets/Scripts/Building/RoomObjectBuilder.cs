@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class RoomObjectBuilder
 {
+    // Used when player builds a new object. Not used for the default objects that already are part of the room, as they do not need a separate GO instantiation.
     public void BuildRoomObject(RoomObjectBlueprint roomObjectBlueprint, GridLocation roomObjectLocation, Room parentRoom)
     {
         Logger.Log("Trying to put a {0} in the room", roomObjectBlueprint.Name);
@@ -16,7 +17,7 @@ public class RoomObjectBuilder
             parentRoom.RoomObjectsContainer.transform,
             roomObjectWorldPosition);
 
-        RoomObject roomObject = roomObjectGO.GetComponent<RoomObject>();
+        RoomObjectGO roomObject = roomObjectGO.GetComponent<RoomObjectGO>();
         roomObject.Initialise(roomObjectBlueprint, parentRoom.RoomRotation, parentRoom);
         parentRoom.RoomObjectsContainer.AddRoomObject(roomObject);
     }

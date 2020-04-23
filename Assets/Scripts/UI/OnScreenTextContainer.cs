@@ -45,7 +45,7 @@ public class OnScreenTextContainer : MonoBehaviour
         }
     }
 
-    public void CreateObjectInteractionTextContainer(RoomObject roomObject, ObjectInteractionOptionsMenuType optionsMenuType)
+    public void CreateObjectInteractionTextContainer(RoomObjectGO roomObject, ObjectInteractionOptionsMenuType optionsMenuType)
     {
         Vector2 textPosition = Camera.main.WorldToScreenPoint(roomObject.transform.position);
         GameObject objectInteractionTextContainerGO = GameManager.Instance.InstantiatePrefab(ObjectInteractionTextContainerPrefab, transform, textPosition);

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ObjectInteractionCharacterOptionsMenu : ObjectInteractionOptionsMenu
 {
-    public override void Initialise(RoomObject roomObject)
+    public override void Initialise(RoomObjectGO roomObject)
     {
         RoomObject = roomObject;
         List<Character> possibleInteractionCharacters = CharacterManager.Instance.Characters;

@@ -4,9 +4,21 @@ public class RoomObjectBlueprint : BuildItemBlueprint
     public RoomObjectName RoomObjectName;
     public ObjectInteraction[] ObjectInteractions = new ObjectInteraction[] { };
 
-    protected RoomObjectBlueprint(RoomObjectName roomObjectName, string name, string description) : base(name, description)
+    protected RoomObjectBlueprint(RoomObjectName roomObjectName, string name = "tba", string description = "tba") : base(name, description)
     {
         RoomObjectName = roomObjectName;
+    }
+
+    public RoomObjectBlueprint WithName(string name)
+    {
+        Name = name;
+        return this;
+    }
+
+    public RoomObjectBlueprint WithMenuDescription(string description)
+    {
+        Description = description;
+        return this;
     }
 
     public static RoomObjectBlueprint CreateBlueprint(RoomObjectName roomObjectName)
@@ -17,16 +29,23 @@ public class RoomObjectBlueprint : BuildItemBlueprint
                 return CreateGuitarBlueprint();
             case RoomObjectName.Piano:
                 return CreatePianoBlueprint();
+            case RoomObjectName.ControlRoomMicrophone:
+                return CreateControlRoomMicrophoneBlueprint();
+            case RoomObjectName.MixPanel:
+                return CreateMixPanelBlueprint();
+            case RoomObjectName.Telephone:
+                return CreateTelephoneBlueprint();
             default:
                 Logger.Error("Cannot find a creation function for blueprint {0}", roomObjectName);
                 return null;
         }
     }
 
-    // test room with one door
     private static RoomObjectBlueprint CreateGuitarBlueprint()
     {
-        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Guitar, "Guitar", "A mean guitar");
+        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Guitar)
+            .WithName("Guitar")
+            .WithMenuDescription("A mean guitar");
 
         // add interaction specifics
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
@@ -39,7 +58,9 @@ public class RoomObjectBlueprint : BuildItemBlueprint
 
     private static RoomObjectBlueprint CreatePianoBlueprint()
     {
-        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Piano, "Piano", "Be more like Mozart");
+        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Piano, "Piano", "Be more like Mozart")
+            .WithName("Piano")
+            .WithMenuDescription("Be more like Mozart");
 
         // add interaction specifics
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
@@ -53,4 +74,45 @@ public class RoomObjectBlueprint : BuildItemBlueprint
         return blueprint;
     }
 
+    private static RoomObjectBlueprint CreateControlRoomMicrophoneBlueprint()
+    {
+        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.ControlRoomMicrophone)
+            .WithName("Microphone")
+            .WithMenuDescription("Test one, two");
+
+        ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
+            new ObjectInteraction(ObjectInteractionType.Perform, "Speak", "Everyone is listening to the instructions")
+        };
+        blueprint.ObjectInteractions = objectInteractions;
+
+        return blueprint;
+    }
+
+    private static RoomObjectBlueprint CreateMixPanelBlueprint()
+    {
+        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.MixPanel)
+            .WithName("Mix panel")
+            .WithMenuDescription("Turn everything up to 11");
+
+        ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
+            new ObjectInteraction(ObjectInteractionType.Record, "Record song", "A new song was recorded")
+        };
+        blueprint.ObjectInteractions = objectInteractions;
+
+        return blueprint;
+    }
+
+    private static RoomObjectBlueprint CreateTelephoneBlueprint()
+    {
+        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.ControlRoomMicrophone)
+            .WithName("Microphone")
+            .WithMenuDescription("Test one, two");
+
+        ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
+            new ObjectInteraction(ObjectInteractionType.Contact, "Call the police", "Is this the police? There is a bunch of hippies here disturbing me with their noise.")
+        };
+        blueprint.ObjectInteractions = objectInteractions;
+
+        return blueprint;
+    }
 }

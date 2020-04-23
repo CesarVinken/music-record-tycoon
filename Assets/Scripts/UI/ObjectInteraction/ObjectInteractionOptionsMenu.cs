@@ -9,7 +9,7 @@ public abstract class ObjectInteractionOptionsMenu : MonoBehaviour
 
     public ObjectInteraction[] ObjectInteractionOptions = new ObjectInteraction[] { };
     public ObjectInteractionOptionsContainerGO ObjectInteractionOptionsContainerGO;
-    public RoomObject RoomObject;
+    public RoomObjectGO RoomObject;
     public Character InteractingCharacter = null;
 
     void Awake()
@@ -29,7 +29,7 @@ public abstract class ObjectInteractionOptionsMenu : MonoBehaviour
         transform.position = textPosition;
     }
 
-    public abstract void Initialise(RoomObject roomObject);
+    public abstract void Initialise(RoomObjectGO roomObject);
     public abstract ObjectInteractionOptionButton CreateInteractionOptionButton(GameObject parent, int index, int optionsLength);
 
     public void Destroy()

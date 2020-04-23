@@ -18,6 +18,8 @@ public class Room : BuildItem
     public List<WallPiece> WallPieces;  // possible optimisation: already divide pieces into correct wall side: upleft, downleft etc.
     public List<BuildingTile> RoomEdgeTilesPerCluster = new List<BuildingTile>();    // every 3 tiles
 
+    public List<RoomObjectGO> RoomObjects = new List<RoomObjectGO>();
+
     private DeleteRoomTrigger _deleteRoomTrigger;
 
     new public void Initialise()
@@ -35,7 +37,14 @@ public class Room : BuildItem
         {
             WallPieces[i].Room = this;
         }
+
+        //InitialiseRoomObjects();
     }
+
+    //private void InitialiseRoomObjects()
+    //{
+    //    // get all RoomObject scripts under Objects GO and add to RoomObjects list. The RoomObject script only has the reference to the RoomObjectBlueprint, which contains all the interactions etc.
+    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -114,13 +123,13 @@ public class Room : BuildItem
         Collider.SetPath(0, positions);
     }
 
-    public void SetupRoomObjects()
-    {
-        for (int i = 0; i < RoomBlueprint.RoomObjects.Length; i++)
-        {
-            BuilderManager.Instance.BuildRoomObject(RoomBlueprint.RoomObjects[i].RoomObjectBlueprint, RoomBlueprint.RoomObjects[i].RoomObjectLocation, this);
-        }
-    }
+    //public void SetupRoomObjects()
+    //{
+    //    for (int i = 0; i < RoomBlueprint.RoomObjects.Length; i++)
+    //    {
+    //        BuilderManager.Instance.BuildRoomObject(RoomBlueprint.RoomObjects[i].RoomObjectBlueprint, RoomBlueprint.RoomObjects[i].RoomObjectLocation, this);
+    //    }
+    //}
 
     public void SetAdjacentRooms()
     {

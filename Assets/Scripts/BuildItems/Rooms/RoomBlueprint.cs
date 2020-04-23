@@ -8,7 +8,7 @@ public class RoomBlueprint : BuildItemBlueprint
     public int LeftUpAxisLength;
 
     public GridLocation[] DoorLocations;
-    public RoomObjectBlueprintForRoom[] RoomObjects = new RoomObjectBlueprintForRoom[] { };
+    //public RoomObjectBlueprintForRoom[] RoomObjects = new RoomObjectBlueprintForRoom[] { };
 
     protected RoomBlueprint(RoomName roomName, string name, string description) : base(name, description)
     {
@@ -54,10 +54,10 @@ public class RoomBlueprint : BuildItemBlueprint
         {
             new GridLocation(4, 0)
         };
-        blueprint.RoomObjects = new RoomObjectBlueprintForRoom[]
-        {
-            new RoomObjectBlueprintForRoom(RoomObjectBlueprint.CreateBlueprint(RoomObjectName.Piano), new GridLocation(8, 4))       
-        };
+        //blueprint.RoomObjects = new RoomObjectBlueprintForRoom[]
+        //{
+        //    new RoomObjectBlueprintForRoom(RoomObjectBlueprint.CreateBlueprint(RoomObjectName.Piano), new GridLocation(8, 4))       
+        //};
 
         return blueprint;
     }
@@ -74,6 +74,10 @@ public class RoomBlueprint : BuildItemBlueprint
             new GridLocation(1, 6),
             new GridLocation(1, 0),
         };
+        //blueprint.RoomObjects = new RoomObjectBlueprintForRoom[]
+        //{
+        //    new RoomObjectBlueprintForRoom(RoomObjectBlueprint.CreateBlueprint(RoomObjectName.MixPanel), new GridLocation(8, 4))
+        //};
 
         return blueprint;
     }
