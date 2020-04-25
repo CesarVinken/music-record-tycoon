@@ -81,7 +81,7 @@ public class RoomObjectBlueprint : BuildItemBlueprint
             .WithMenuDescription("Test one, two");
 
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Perform, "Speak", "Everyone is listening to the instructions")
+            new ObjectInteraction(ObjectInteractionType.Perform, "Speak", "Everyone is listening to the instructions", ObjectInteractionCharacterRole.CharacterAtRoomObject)
         };
         blueprint.ObjectInteractions = objectInteractions;
 
@@ -95,7 +95,8 @@ public class RoomObjectBlueprint : BuildItemBlueprint
             .WithMenuDescription("Turn everything up to 11");
 
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Record, "Record song", "A new song was recorded")
+            new ObjectInteraction(ObjectInteractionType.Record, "Remix", "The song now sounds even better", ObjectInteractionCharacterRole.CharacterAtRoomObject),
+            new ObjectInteraction(ObjectInteractionType.Record, "Record song", "A new song was recorded", ObjectInteractionCharacterRole.CharacterAtRoomObject)
         };
         blueprint.ObjectInteractions = objectInteractions;
 
@@ -109,7 +110,9 @@ public class RoomObjectBlueprint : BuildItemBlueprint
             .WithMenuDescription("Test one, two");
 
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Contact, "Call the police", "Is this the police? There is a bunch of hippies here disturbing me with their noise.")
+            new ObjectInteraction(ObjectInteractionType.Contact, "Call the police", "You asked the police to removed the loud, beared hippies from your studio"),
+            new ObjectInteraction(ObjectInteractionType.Contact, "Order a pizza", "You ordered a pizza for the whole band"),
+            new ObjectInteraction(ObjectInteractionType.Contact, "Organise a tour", "The band is going on tour again!"),
         };
         blueprint.ObjectInteractions = objectInteractions;
 
