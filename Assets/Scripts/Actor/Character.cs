@@ -21,6 +21,8 @@ public class Character : MonoBehaviour
 
     public List<ObjectInteractionType> PossibleObjectInteractions = new List<ObjectInteractionType>();
 
+    public List<Song> RecordedSongs = new List<Song>();  // TODO make visible in inspector
+
     void Awake()
     {
         PlayerLocomotion = gameObject.AddComponent<CharacterLocomotion>();

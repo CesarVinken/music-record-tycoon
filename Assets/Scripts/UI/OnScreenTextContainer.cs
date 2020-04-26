@@ -45,14 +45,14 @@ public class OnScreenTextContainer : MonoBehaviour
         }
     }
 
-    public void CreateObjectInteractionTextContainer(RoomObjectGO roomObject, ObjectInteractionOptionsMenuType optionsMenuType)
+    public void CreateObjectInteractionTextContainer(RoomObjectGO roomObject, ObjectInteractionOptionsMenuType optionsMenuType, ObjectInteraction objectInteraction = null)
     {
         Vector2 textPosition = Camera.main.WorldToScreenPoint(roomObject.transform.position);
         GameObject objectInteractionTextContainerGO = GameManager.Instance.InstantiatePrefab(ObjectInteractionTextContainerPrefab, transform, textPosition);
         ObjectInteractionTextContainer = objectInteractionTextContainerGO;
 
         ObjectInteractionOptionsMenu objectInteractionTextContainer = AddOptionsMenuComponent(optionsMenuType, objectInteractionTextContainerGO);
-        objectInteractionTextContainer.Initialise(roomObject);
+        objectInteractionTextContainer.Initialise(roomObject, objectInteraction);
     }
 
     private ObjectInteractionOptionsMenu AddOptionsMenuComponent(ObjectInteractionOptionsMenuType optionsMenuType, GameObject optionsGO) { 

@@ -6,6 +6,13 @@ public class RoomObjectGO : MonoBehaviour
     public RoomObjectBlueprint RoomObjectBlueprint;
     public ObjectRotation RoomObjectRotation;
     public Room ParentRoom;
+    public Vector2 RoomObjectLocation;
+
+    public void Awake()
+    {
+        if (transform.childCount == 0) RoomObjectLocation = transform.position;
+        else RoomObjectLocation = transform.GetChild(0).transform.position;
+    }
 
     public void OnMouseDown()
     {

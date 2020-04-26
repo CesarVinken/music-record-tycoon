@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Musician : Character, IPerform, IPractice
+﻿public class Musician : Character, IPerform, IPractice
 {
     public void PerformObjectInteraction()
     {

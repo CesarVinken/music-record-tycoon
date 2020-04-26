@@ -1,45 +1,59 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public static class ObjectInteractionRunner
+public class ObjectInteractionRunner
 {
-    public static ObjectInteraction ObjectInteraction;
-    public static Vector2 RoomObjectLocation;
-    public static RoomObjectGO RoomObject;
-    public static Character InteractingCharacter = null;
-    public static ObjectInteractionOptionType OptionType;
+    public ObjectInteraction ObjectInteraction;
+    public RoomObjectGO RoomObject;
+    public Character InteractingCharacter = null;
+    public ObjectInteractionOptionType OptionType;
 
-    public static async void Run()
+
+    public ObjectInteractionRunner(ObjectInteraction objectInteraction, RoomObjectGO roomObject, Character interactingCharacter)
     {
-        if (ObjectInteraction == null)
+        if (objectInteraction == null)
         {
             Logger.Error("Object interaction should not be null at this point!");
             return;
         }
 
-        if (RoomObject == null)
+        if (roomObject == null)
         {
             Logger.Error("RoomObject should not be null at this point!");
             return;
         }
 
-        if (RoomObjectLocation == null)
+        ObjectInteraction = objectInteraction;
+        RoomObject = roomObject;
+        InteractingCharacter = interactingCharacter;
+    }
+
+    public async void Run()
+    {
+        Logger.Log("Run interaction");
+        Logger.Log("role {0}", ObjectInteraction.CharacterRole);
+        CharacterManager.Instance.DeselectCharacter();
+
+        List<string> interactionSteps = ObjectInteraction.InteractionSteps;
+        interactionSteps = new List<string>();
+        interactionSteps.Add("temporary");
+        for (int i = 0; i < interactionSteps.Count; i++)
         {
-            Logger.Error("RoomObjectLocation should not be null at this point!");
-            return;
+            await MakeInteractionTransaction(interactionSteps[i]);
         }
 
-        // run
+        
+    }
+
+    public async Task MakeInteractionTransaction(string interactionStep)
+    {
+        Vector2 roomObjectLocation = RoomObject.RoomObjectLocation;
+
+        Logger.Log("Make interaction Transaction for {0}", ObjectInteraction.Name);
         if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.NoCharacter)
         {
-            CharacterManager.Instance.DeselectCharacter();
-
-            InteractingCharacter = null;
-            RoomObject = null;
-            ObjectInteraction objectInteraction = ObjectInteraction;
-            ObjectInteraction = null;
-
-            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(objectInteraction, RoomObjectLocation);
+            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, roomObjectLocation);
             await Task.Delay(3000);
 
             if (interactionSequenceLine != null)
@@ -47,38 +61,37 @@ public static class ObjectInteractionRunner
         }
         else
         {
-            CharacterManager.Instance.DeselectCharacter();
+            InteractingCharacter.PlayerLocomotion.SetLocomotionTarget(roomObjectLocation);
+            Vector2 characterTarget = InteractingCharacter.NavActor.Target;
+            Logger.Log("characterTarget for {0} is {1},{2}", InteractingCharacter.Name, characterTarget.x, characterTarget.y);
 
-            Character interactingCharacter = InteractingCharacter;
-            InteractingCharacter = null;
-            RoomObjectGO roomObject = RoomObject;
-            RoomObject = null;
-            ObjectInteraction objectInteraction = ObjectInteraction;
-            ObjectInteraction = null;
+            await MoveToInteractionLocation(InteractingCharacter, roomObjectLocation, characterTarget, ObjectInteraction, RoomObject);
 
-            Vector2 roomObjectLocation = RoomObjectLocation;
-            interactingCharacter.PlayerLocomotion.SetLocomotionTarget(roomObjectLocation);
-            Vector2 characterTarget = interactingCharacter.NavActor.Target;
+            InteractingCharacter.CharacterAnimationHandler.SetLocomotion(false);
+            InteractingCharacter.SetCharacterActionState(CharacterActionState.Action);
+            InteractingCharacter.PlayerLocomotion.SetLocomotionTarget(InteractingCharacter.transform.position);
 
-            await MoveToInteractionLocation(interactingCharacter, roomObjectLocation, characterTarget, objectInteraction, roomObject);
-
-            interactingCharacter.CharacterAnimationHandler.SetLocomotion(false);
-            interactingCharacter.SetCharacterActionState(CharacterActionState.Action);
-            interactingCharacter.PlayerLocomotion.SetLocomotionTarget(interactingCharacter.transform.position);
-
-            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(objectInteraction, interactingCharacter);
+            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, roomObjectLocation);
             await Task.Delay(3000);
 
             if (interactionSequenceLine != null)
                 OnScreenTextContainer.Instance.DeleteInteractionSequenceLine(interactionSequenceLine);
 
-            if (characterTarget != interactingCharacter.NavActor.Target)
+            //TEMPORARY
+            if(ObjectInteraction.ObjectInteractionType == ObjectInteractionType.Record )
             {
-                interactingCharacter.CharacterAnimationHandler.SetLocomotion(true, interactingCharacter);
+                // TODO externalise album record action into own class
+                RecordSong();
+            }
+            /////
+
+            if (characterTarget != InteractingCharacter.NavActor.Target)
+            {
+                InteractingCharacter.CharacterAnimationHandler.SetLocomotion(true, InteractingCharacter);
             }
             else
             {
-                interactingCharacter.SetCharacterActionState(CharacterActionState.Idle);
+                InteractingCharacter.SetCharacterActionState(CharacterActionState.Idle);
             }
         }
 
@@ -113,5 +126,14 @@ public static class ObjectInteractionRunner
         }
 
         return;
+    }
+
+    public void RecordSong()
+    {
+        Song song = new Song("Dancing in the Streets", InteractingCharacter);
+        for (int i = 0; i < MusicManager.Instance.Songs.Count; i++)
+        {
+            Logger.Log("{0}. a song by {1}", MusicManager.Instance.Songs[i].Name, MusicManager.Instance.Songs[i].Composer);
+        }
     }
 }

@@ -7,7 +7,6 @@ public class ObjectInteractionOptionButton : MonoBehaviour
     public Text InteractionOptionText;
 
     public ObjectInteraction ObjectInteraction;
-    public Vector2 RoomObjectLocation;
     public RoomObjectGO RoomObject;
     public Character InteractingCharacter;
     public ObjectInteractionOptionType OptionType;
@@ -21,7 +20,6 @@ public class ObjectInteractionOptionButton : MonoBehaviour
     public void Initialise(ObjectInteraction objectInteraction, RoomObjectGO roomObject, ObjectInteractionOptionType optionType)
     {
         ObjectInteraction = objectInteraction;
-        RoomObjectLocation = roomObject.transform.position;
         RoomObject = roomObject;
         OptionType = optionType;
     }
@@ -39,20 +37,23 @@ public class ObjectInteractionOptionButton : MonoBehaviour
     public void Run()
     {
         OnScreenTextContainer.Instance.DeleteObjectInteractionTextContainer();
-        ObjectInteractionRunner.ObjectInteraction = ObjectInteraction;
-        ObjectInteractionRunner.RoomObject = RoomObject;
-        ObjectInteractionRunner.RoomObjectLocation = RoomObjectLocation;
-        ObjectInteractionRunner.InteractingCharacter = InteractingCharacter;
+
+        //objectInteractionRunner.ObjectInteraction = ObjectInteraction;
+        //objectInteractionRunner.RoomObject = RoomObject;
+        //objectInteractionRunner.RoomObjectLocation = RoomObjectLocation;
+        //objectInteractionRunner.InteractingCharacter = InteractingCharacter;
+        ObjectInteractionRunner objectInteractionRunner = new ObjectInteractionRunner(ObjectInteraction, RoomObject, InteractingCharacter);
 
         if (OptionType == ObjectInteractionOptionType.CharacterMenuTrigger)
         {
             // display new options menu to choose character for picked interaction
-            OnScreenTextContainer.Instance.CreateObjectInteractionTextContainer(RoomObject, ObjectInteractionOptionsMenuType.CharacterOptionsMenu);
+            OnScreenTextContainer.Instance.CreateObjectInteractionTextContainer(RoomObject, ObjectInteractionOptionsMenuType.CharacterOptionsMenu, ObjectInteraction);
             return;
         }
 
-        Logger.Log("Run interaction");
+        objectInteractionRunner.Run();
 
-        ObjectInteractionRunner.Run();
+        //ObjectInteractionRunner objectInteractionRunner = new ObjectInteractionRunner();
+        //objectInteractionRunner.Initialise(ObjectInteraction, RoomObject, RoomObjectLocation, InteractingCharacter);
     }
 }

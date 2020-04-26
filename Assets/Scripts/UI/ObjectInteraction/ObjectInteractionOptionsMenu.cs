@@ -15,11 +15,9 @@ public abstract class ObjectInteractionOptionsMenu : MonoBehaviour
     void Awake()
     {
         ObjectInteractionOptionsContainerGO = transform.GetComponentInChildren<ObjectInteractionOptionsContainerGO>();
-
         Guard.CheckIsNull(ObjectInteractionOptionsContainerGO, "ObjectInteractionOptionsContainerGO");
         
         InteractionOptionsContainer = ObjectInteractionOptionsContainerGO.gameObject;
-
         Guard.CheckIsNull(InteractionOptionsContainer, "InteractionOptionsContainer");
     }
 
@@ -29,7 +27,7 @@ public abstract class ObjectInteractionOptionsMenu : MonoBehaviour
         transform.position = textPosition;
     }
 
-    public abstract void Initialise(RoomObjectGO roomObject);
+    public abstract void Initialise(RoomObjectGO roomObject, ObjectInteraction objectInteraction = null);
     public abstract ObjectInteractionOptionButton CreateInteractionOptionButton(GameObject parent, int index, int optionsLength);
 
     public void Destroy()
