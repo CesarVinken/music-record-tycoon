@@ -84,26 +84,26 @@ public class OnScreenTextContainer : MonoBehaviour
         ObjectInteractionTextContainer = null;
     }
 
-    public GameObject CreateInteractionSequenceLine(ObjectInteraction objectInteraction, Character interactingCharacter)
-    {
-        Vector2 sequenceLinePosition = Camera.main.WorldToScreenPoint(interactingCharacter.transform.position);
-        GameObject interactionSequenceLineGO = GameManager.Instance.InstantiatePrefab(InteractionSequenceLinePrefab, transform, sequenceLinePosition);
-        InteractionSequenceLine interactionSequenceLine = interactionSequenceLineGO.GetComponent<InteractionSequenceLine>();
-        interactionSequenceLine.Initialise(objectInteraction.Reaction, interactingCharacter.transform.position, interactingCharacter);
+    //public GameObject CreateInteractionSequenceLine(ObjectInteraction objectInteraction, Character interactingCharacter)
+    //{
+    //    Vector2 sequenceLinePosition = Camera.main.WorldToScreenPoint(interactingCharacter.transform.position);
+    //    GameObject interactionSequenceLineGO = GameManager.Instance.InstantiatePrefab(InteractionSequenceLinePrefab, transform, sequenceLinePosition);
+    //    InteractionSequenceLine interactionSequenceLine = interactionSequenceLineGO.GetComponent<InteractionSequenceLine>();
+    //    interactionSequenceLine.Initialise(objectInteraction.Reaction, interactingCharacter.transform.position, interactingCharacter);
 
-        return interactionSequenceLineGO;
-    }
+    //    return interactionSequenceLineGO;
+    //}
 
-    public GameObject CreateInteractionSequenceLine(ObjectInteraction objectInteraction, Vector2 roomObjectLocation)
+    public GameObject CreateInteractionSequenceLine(InteractionSequenceLine interactionSequenceLine, Vector2 roomObjectLocation)
     {
         Logger.Log("roomObjectLocation {0},{1}", roomObjectLocation.x, roomObjectLocation.y);
 
         Vector2 sequenceLinePosition = Camera.main.WorldToScreenPoint(roomObjectLocation);
-        GameObject interactionSequenceLineGO = GameManager.Instance.InstantiatePrefab(InteractionSequenceLinePrefab, transform, sequenceLinePosition);
-        InteractionSequenceLine interactionSequenceLine = interactionSequenceLineGO.GetComponent<InteractionSequenceLine>();
-        interactionSequenceLine.Initialise(objectInteraction.Reaction, roomObjectLocation, null);
+        GameObject lineGO = GameManager.Instance.InstantiatePrefab(InteractionSequenceLinePrefab, transform, sequenceLinePosition);
+        InteractionSequenceLineGO interactionSequenceLineGO = lineGO.GetComponent<InteractionSequenceLineGO>();
+        interactionSequenceLineGO.Initialise(interactionSequenceLine, roomObjectLocation, null);
 
-        return interactionSequenceLineGO;
+        return lineGO;
     }
 
     public void DeleteInteractionSequenceLine(GameObject InteractionSequenceLineGO)

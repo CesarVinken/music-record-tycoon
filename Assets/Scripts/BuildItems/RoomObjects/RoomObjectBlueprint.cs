@@ -49,9 +49,12 @@ public class RoomObjectBlueprint : BuildItemBlueprint
 
         // add interaction specifics
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Perform, "Guitar plays itself", "It is a self-playing guitar"),
-            new ObjectInteraction(ObjectInteractionType.Perform, "Play guitar", "A mean guitar", ObjectInteractionCharacterRole.CharacterAtRoomObject),
-            new ObjectInteraction(ObjectInteractionType.Practice, "Learn playing the guitar", "Our hero hopes he will be as good Jimmy Hendrix one day.", ObjectInteractionCharacterRole.CharacterInRoom)
+            new ObjectInteraction(ObjectInteractionType.Perform, "Guitar plays itself")
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("It is a self-playing guitar")),
+            new ObjectInteraction(ObjectInteractionType.Perform, "Play guitar", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("A mean guitar")),
+            new ObjectInteraction(ObjectInteractionType.Practice, "Learn playing the guitar", ObjectInteractionCharacterRole.CharacterInRoom)
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("Our hero hopes he will be as good Jimmy Hendrix one day."))
         };
         return blueprint;
     }
@@ -64,10 +67,14 @@ public class RoomObjectBlueprint : BuildItemBlueprint
 
         // add interaction specifics
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Perform, "Self-play", "It is a self-playing piano"),
-            new ObjectInteraction(ObjectInteractionType.Perform, "Perform", "Our hero is playing the guitar", ObjectInteractionCharacterRole.CharacterAtRoomObject),
-            new ObjectInteraction(ObjectInteractionType.Practice, "Practice", "Our hero hopes he will play as Rachmaninov one day.", ObjectInteractionCharacterRole.CharacterInRoom),
-            new ObjectInteraction(ObjectInteractionType.Repair, "Repair", "The piano is no longer broken!", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+            new ObjectInteraction(ObjectInteractionType.Perform, "Self-play")
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("It is a self-playing piano")),
+            new ObjectInteraction(ObjectInteractionType.Perform, "Perform", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("Our hero is playing the guitar")),
+            new ObjectInteraction(ObjectInteractionType.Practice, "Practice", ObjectInteractionCharacterRole.CharacterInRoom)
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("Our hero hopes he will play as Rachmaninov one day.")),
+            new ObjectInteraction(ObjectInteractionType.Repair, "Repair", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("The piano is no longer broken!"))
         };
         blueprint.ObjectInteractions = objectInteractions;
 
@@ -81,7 +88,8 @@ public class RoomObjectBlueprint : BuildItemBlueprint
             .WithMenuDescription("Test one, two");
 
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Perform, "Speak", "Everyone is listening to the instructions", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+            new ObjectInteraction(ObjectInteractionType.Perform, "Speak", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("Everyone is listening to the instructions")),
         };
         blueprint.ObjectInteractions = objectInteractions;
 
@@ -95,8 +103,10 @@ public class RoomObjectBlueprint : BuildItemBlueprint
             .WithMenuDescription("Turn everything up to 11");
 
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Record, "Remix", "The song now sounds even better", ObjectInteractionCharacterRole.CharacterAtRoomObject),
-            new ObjectInteraction(ObjectInteractionType.Record, "Record song", "A new song was recorded", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+            new ObjectInteraction(ObjectInteractionType.Record, "Remix", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("The song now sounds even better")),
+            new ObjectInteraction(ObjectInteractionType.Record, "Record song", ObjectInteractionCharacterRole.CharacterAtRoomObject)
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("A new song was recorded"))
         };
         blueprint.ObjectInteractions = objectInteractions;
 
@@ -110,9 +120,12 @@ public class RoomObjectBlueprint : BuildItemBlueprint
             .WithMenuDescription("Test one, two");
 
         ObjectInteraction[] objectInteractions = new ObjectInteraction[] {
-            new ObjectInteraction(ObjectInteractionType.Contact, "Call the police", "You asked the police to removed the loud, beared hippies from your studio"),
-            new ObjectInteraction(ObjectInteractionType.Contact, "Order a pizza", "You ordered a pizza for the whole band"),
-            new ObjectInteraction(ObjectInteractionType.Contact, "Organise a tour", "The band is going on tour again!"),
+            new ObjectInteraction(ObjectInteractionType.Contact, "Call the police")
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("You asked the police to removed the loud, beared hippies from your studio")),
+            new ObjectInteraction(ObjectInteractionType.Contact, "Order a pizza")
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("You ordered a pizza for the whole band")),
+            new ObjectInteraction(ObjectInteractionType.Contact, "Organise a tour")
+                .AddInteractionStep(new InteractionStep().WithSequenceLine("The band is going on tour again!"))
         };
         blueprint.ObjectInteractions = objectInteractions;
 

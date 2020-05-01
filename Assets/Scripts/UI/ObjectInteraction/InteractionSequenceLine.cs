@@ -1,40 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class InteractionSequenceLine : MonoBehaviour
+public class InteractionSequenceLine
 {
-    public Text Text;
-    private Character _interactingCharacter = null;
-    private Vector2 _fallbackPosition;
+    public string Line;
 
-    public void Awake()
+    public InteractionSequenceLine(string line)
     {
-        if (Text == null)
-            Logger.Error(Logger.Initialisation, "Cannot find text component on InteractionSequenceLine");
-    }
-
-    public void Update()
-    {
-        Vector2 interactingCharacterPosition = _interactingCharacter != null ? _interactingCharacter.transform.position : new Vector3(_fallbackPosition.x, _fallbackPosition.y, 0);
-        Vector2 textPosition = Camera.main.WorldToScreenPoint(interactingCharacterPosition);
-        transform.position = textPosition;
-    }
-
-    public void Initialise(string reaction, Vector2 linePosition, Character interactingCharacter)
-    {
-        Text.text = reaction;
-        _fallbackPosition = linePosition;
-
-        if (interactingCharacter != null)
-        {
-            _interactingCharacter = interactingCharacter;
-            transform.position = interactingCharacter.transform.position;
-        }
-        else
-        {
-            transform.position = linePosition;
-        }
+        Line = line;
     }
 }

@@ -35,29 +35,31 @@ public class ObjectInteractionRunner
         Logger.Log("role {0}", ObjectInteraction.CharacterRole);
         CharacterManager.Instance.DeselectCharacter();
 
-        List<string> interactionSteps = ObjectInteraction.InteractionSteps;
-        interactionSteps = new List<string>();
-        interactionSteps.Add("temporary");
+        List<InteractionStep> interactionSteps = ObjectInteraction.InteractionSteps;
+
         for (int i = 0; i < interactionSteps.Count; i++)
         {
-            await MakeInteractionTransaction(interactionSteps[i]);
+            await RunInteractionStep(interactionSteps[i]);
         }
 
         
     }
 
-    public async Task MakeInteractionTransaction(string interactionStep)
+    public async Task RunInteractionStep(InteractionStep interactionStep)
     {
         Vector2 roomObjectLocation = RoomObject.RoomObjectLocation;
 
         Logger.Log("Make interaction Transaction for {0}", ObjectInteraction.Name);
         if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.NoCharacter)
         {
-            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, roomObjectLocation);
-            await Task.Delay(3000);
+            if(interactionStep.HasSequenceLine())
+            {
+                GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(interactionStep.InteractionSequenceLine, roomObjectLocation);
+                interactionStep.InteractionSequenceLineGO = interactionSequenceLine;
 
-            if (interactionSequenceLine != null)
-                OnScreenTextContainer.Instance.DeleteInteractionSequenceLine(interactionSequenceLine);
+            }
+            await Task.Delay(interactionStep.Duration);
+            interactionStep.CleanUp();                
         }
         else
         {
@@ -71,14 +73,17 @@ public class ObjectInteractionRunner
             InteractingCharacter.SetCharacterActionState(CharacterActionState.Action);
             InteractingCharacter.PlayerLocomotion.SetLocomotionTarget(InteractingCharacter.transform.position);
 
-            GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(ObjectInteraction, roomObjectLocation);
-            await Task.Delay(3000);
+            if (interactionStep.HasSequenceLine())
+            {
+                GameObject interactionSequenceLine = OnScreenTextContainer.Instance.CreateInteractionSequenceLine(interactionStep.InteractionSequenceLine, roomObjectLocation);
+                interactionStep.InteractionSequenceLineGO = interactionSequenceLine;
 
-            if (interactionSequenceLine != null)
-                OnScreenTextContainer.Instance.DeleteInteractionSequenceLine(interactionSequenceLine);
+            }
+            await Task.Delay(interactionStep.Duration);
+            interactionStep.CleanUp();
 
             //TEMPORARY
-            if(ObjectInteraction.ObjectInteractionType == ObjectInteractionType.Record )
+            if (ObjectInteraction.ObjectInteractionType == ObjectInteractionType.Record )
             {
                 // TODO externalise album record action into own class
                 RecordSong();
