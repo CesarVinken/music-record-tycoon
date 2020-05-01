@@ -162,5 +162,6 @@ public class Console : MonoBehaviour
         Commands.Add(ConsoleCommand.AddCommand("build", 1, 2, new BuildCommand()));
         Commands.Add(ConsoleCommand.AddCommand("delete", 2, 3, new DeleteCommand()));
         Commands.Add(ConsoleCommand.AddCommand("confirm", 1, 1, new ConfirmCommand()));
+        Commands.Add(ConsoleCommand.AddCommand("show", 1, 3, new ShowCommand()));
     }
 }

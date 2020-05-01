@@ -5,6 +5,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public static bool MainMenuOpen;    //that should block interactivity of level ui elements
+    public static bool ShowPathfindingGridGizmos;
+    public static bool DrawCharacterPathGizmo;
+    public static bool DrawBuildingTilesGizmos;
+    public static bool DrawDoorLocationGizmos;
 
     public Platform CurrentPlatform;
     public IPlatformConfiguration Configuration;
@@ -36,6 +40,11 @@ public class GameManager : MonoBehaviour
         Guard.CheckIsNull(BuilderManager, "BuilderManager");
         Guard.CheckIsNull(BuilderManager, "RoomManager");
         Guard.CheckIsNull(BuilderManager, "PathfindingGrid");
+
+        ShowPathfindingGridGizmos = false;
+        DrawCharacterPathGizmo = false;
+        DrawBuildingTilesGizmos = false;
+        DrawDoorLocationGizmos = false;
     }
 
     public void Update()
@@ -53,16 +62,23 @@ public class GameManager : MonoBehaviour
     //Central function to turn on/off different gizmos
     public void OnDrawGizmos()
     {
-        //PathfindingGrid.DrawPathfindingGridGizmos();
+        if(ShowPathfindingGridGizmos)
+            PathfindingGrid.DrawPathfindingGridGizmos();
 
-        if (CharacterManager.Instance != null && CharacterManager.Instance.SelectedCharacter != null && CharacterManager.Instance.SelectedCharacter.NavActor != null)
-            CharacterManager.Instance.SelectedCharacter.NavActor.DrawPathGizmo();
+        if (DrawCharacterPathGizmo)
+        {
+            if (CharacterManager.Instance != null && CharacterManager.Instance.SelectedCharacter != null && CharacterManager.Instance.SelectedCharacter.NavActor != null)
+                CharacterManager.Instance.SelectedCharacter.NavActor.DrawPathGizmo();
+        }
+
 
         if (BuilderManager.Instance != null)
         {
-            //BuilderManager.Instance.DrawBuildingTilesGizmos();
+            if(DrawBuildingTilesGizmos)
+                BuilderManager.Instance.DrawBuildingTilesGizmos();
 
-            //BuilderManager.Instance.DrawDoorLocationGizmos();
+            if(DrawDoorLocationGizmos)
+                BuilderManager.Instance.DrawDoorLocationGizmos();
         }
     }
 
