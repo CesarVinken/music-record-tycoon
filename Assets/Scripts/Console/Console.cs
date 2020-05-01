@@ -10,10 +10,10 @@ public class Console : MonoBehaviour
     public Text InputText;
     public Text ReportText;
     public InputField InputField;
-    public int inputHistoryIndex = 99;
+    public int inputHistoryIndex = 0;
 
+    public List<ConsoleLine> ConsoleLines = new List<ConsoleLine>();
     public List<ConsoleCommand> Commands = new List<ConsoleCommand>();
-
     void Awake()
     {
         if (InputText == null)
@@ -59,7 +59,7 @@ public class Console : MonoBehaviour
 
         string inputText = InputText.text;
 
-        PrintToReportText(inputText);
+        PrintToReportText(inputText, true);
 
         InputField.text = "";
 
@@ -72,59 +72,102 @@ public class Console : MonoBehaviour
         }
     }
 
-    public void PrintToReportText(string text)
+    public void PrintToReportText(string text, bool isPlayerInput = false)
     {
-        string reportText = ReportText.text;
-        reportText += "\n";
-        reportText += text;
+        string consoleLine = "\n" + text;
+
+        if (ConsoleLines.Count > 30)
+        {
+            ConsoleLines.RemoveAt(0);
+        }
+
+        ConsoleLines.Add(new ConsoleLine(consoleLine, isPlayerInput));
+        inputHistoryIndex = ConsoleLines.Count;
+
+        string reportText = "";
+
+        for (int i = 0; i < ConsoleLines.Count; i++)
+        {
+            reportText = reportText + ConsoleLines[i].Text;
+        }
 
         ReportText.text = reportText;
     }
 
     public void GetPreviousInput()
     {
-        if (ReportText.text == "") return;
+        if (ConsoleLines.Count == 0) return;
 
-        string[] newLine = { "\n" };
-        string[] reportTextArray = ReportText.text.Split('\n');
+        int localInputHistoryIndex = inputHistoryIndex;
 
-        if (inputHistoryIndex == 99)
+        for (int i = localInputHistoryIndex - 1; i >= 0; i--)
         {
-            inputHistoryIndex = reportTextArray.Length - 1;
-        } else if(inputHistoryIndex > 1)
-        {
-            inputHistoryIndex--;
-        } else
-        {
-            inputHistoryIndex = reportTextArray.Length - 1;
+            if(ConsoleLines[i].IsPlayerInput)
+            {
+                inputHistoryIndex = i;
+                break;
+            }
         }
 
-        string previousReportText = reportTextArray[inputHistoryIndex];
-        InputField.text = previousReportText;
+        if(inputHistoryIndex == localInputHistoryIndex)
+        {
+            for (int j = ConsoleLines.Count - 1; j >= 0; j--)
+            {
+                if (ConsoleLines[j].IsPlayerInput)
+                {
+                    inputHistoryIndex = j;
+                    break;
+                }
+            }
+        }
+
+        if (inputHistoryIndex == localInputHistoryIndex)
+        {
+            InputField.text = "";
+        }
+        else
+        {
+            string previousReportText = ConsoleLines[inputHistoryIndex].Text;
+            InputField.text = previousReportText;
+        }
+
     }
 
     public void GetNextInput()
     {
-        if (ReportText.text == "") return;
+        if (ConsoleLines.Count == 0) return;
 
-        string[] newLine = { "\n" };
-        string[] reportTextArray = ReportText.text.Split('\n');
+        int localInputHistoryIndex = inputHistoryIndex;
 
-        if (inputHistoryIndex == 99)
+        for (int i = inputHistoryIndex + 1; i < ConsoleLines.Count; i++)
         {
-            inputHistoryIndex = 1;
+            if (ConsoleLines[i].IsPlayerInput)
+            {
+                inputHistoryIndex = i;
+                break;
+            }
         }
-        else if (inputHistoryIndex < reportTextArray.Length - 1)
+        if (inputHistoryIndex == localInputHistoryIndex)
         {
-            inputHistoryIndex++;
+            for (int j = 0; j < ConsoleLines.Count; j++)
+            {
+                if (ConsoleLines[j].IsPlayerInput)
+                {
+                    inputHistoryIndex = j;
+                    break;
+                }
+            }
+        }
+
+        if (inputHistoryIndex == localInputHistoryIndex)
+        {
+            InputField.text = "";
         }
         else
         {
-            inputHistoryIndex = 1;
+            string nextReportText = ConsoleLines[inputHistoryIndex].Text;
+            InputField.text = nextReportText;
         }
-
-        string nextReportText = reportTextArray[inputHistoryIndex];
-        InputField.text = nextReportText;
     }
 
     public void RunCommand(string line)
