@@ -21,6 +21,12 @@ public class ConfirmCommand : CommandProcedure
                 break;
         }
     }
+    public override void Help()
+    {
+        string printLine = "Use the confirm command to run certain tests and calculations in the game.";
+        printLine += "\nUse 'wallpieces' as a 2nd argument to check if all the wallpieces are positioned corerctly. If they are not lining up, this can break wall visibility.";
+        Console.Instance.PrintToReportText(printLine);
+    }
 
     // Make sure that wall pieces of all room prefabs are on the correct location. Because if they are not lining up, it can break the wall visibility.
     public void ConfirmWallPiecesAlign()

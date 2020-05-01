@@ -27,6 +27,14 @@ public class BuildCommand : CommandProcedure
         }
     }
 
+    public override void Help()
+    {
+        string printLine = "With the build command you can create assets in the level.";
+        printLine += "\nUse 'room' as a 2nd argument and a name as a 3rd argument to load a building scenario for the level.";
+        printLine += "\nUse 'character' as a 2nd argument to add a random character to the scene. There currently are no further specific options to create a character.";
+        Console.Instance.PrintToReportText(printLine);
+    }
+
     public async Task BuildRoom(List<string> arguments)
     {
         if(arguments.Count == 1)

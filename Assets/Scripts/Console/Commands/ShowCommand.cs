@@ -16,6 +16,18 @@ public class ShowCommand : CommandProcedure
         }
     }
 
+    public override void Help()
+    {
+        string printLine = "Use the show to turn parts of the ui or editor gizmos on or off.";
+        printLine += "\nUse 'gizmo' as a 2nd argument to toggle editor gizmos.";
+        printLine += "\nUse 'pathfinding-grid' as a 3rd argument to show in the pathfinding grid in the editor that shows accessible and inaccessible places";
+        printLine += "\nUse 'character-path' as a 3rd argument to show in the editor the path a character is planning to take.";
+        printLine += "\nUse 'building-tiles' as a 3rd argument to show in the editor what building tile locations are available or occupied";
+        printLine += "\nUse 'door-location' as a 3rd argument to show in the editor where possible doors of rooms could be located.";
+
+        Console.Instance.PrintToReportText(printLine);
+    }
+
     public void ShowGizmo(List<string> allArguments)
     {
         if (GameManager.Instance.CurrentPlatform == Platform.Android)

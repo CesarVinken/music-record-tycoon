@@ -31,4 +31,10 @@ public class AddCommand : CommandProcedure
         printLine = printLine + " = " + total;
         Console.Instance.PrintToReportText(printLine);
     }
+
+    public override void Help()
+    {
+        string printLine = "Add up numbers with an unlimited number of arguments. For example, the command 'add 1 2 3' will result in '1 + 2 + 3 = 6'";
+        Console.Instance.PrintToReportText(printLine);
+    }
 }

@@ -8,4 +8,10 @@ public class CloseConsoleCommand : CommandProcedure
 
         Console.Instance.PrintToReportText("Closed the console");
     }
+
+    public override void Help()
+    {
+        string printLine = "The close command closes the console.";
+        Console.Instance.PrintToReportText(printLine);
+    }
 }

@@ -27,6 +27,17 @@ public class DeleteCommand : CommandProcedure
         }
     }
 
+    public override void Help()
+    {
+        string printLine = "Use the delete command to delete assets from the running game.";
+        printLine += "\nUse 'character' as a 2nd argument for the deletion of characters. Looking up the character for deletion can in different ways.";
+        printLine += "\nUse 'name' as a 3rd argument to look up a character for deletion by full name. In this case you need to submit a full name with spaces replaced by dashes (eg. 'Michael-Jackson')";
+        printLine += "\nUse 'first-name' as a 3rd argument to look up a character for deletion by first name.";
+        printLine += "\nUse 'last-name' as a 3rd argument to look up a character for deletion by last name.";
+        printLine += "\nUse 'id' as a 3rd argument to look up a character by its in-game id.";
+        Console.Instance.PrintToReportText(printLine);
+    }
+
     public void DeleteCharacter(List<string> allArguments)
     {
         List<string> arguments = allArguments.Where((v, i) => i != 0).ToList();
