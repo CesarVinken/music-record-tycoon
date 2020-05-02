@@ -7,6 +7,7 @@ public class RoomObjectBlueprint : BuildItemBlueprint<RoomObjectBlueprint>
     protected RoomObjectBlueprint(RoomObjectName roomObjectName)
     {
         RoomObjectName = roomObjectName;
+        Price = -1;
     }
 
     public override RoomObjectBlueprint WithName(string name)
@@ -21,31 +22,50 @@ public class RoomObjectBlueprint : BuildItemBlueprint<RoomObjectBlueprint>
         return this;
     }
 
+    public override RoomObjectBlueprint WithPrice(int price)
+    {
+        Price = price;
+        return this;
+    }
+
     public static RoomObjectBlueprint CreateBlueprint(RoomObjectName roomObjectName)
     {
+        RoomObjectBlueprint blueprint;
+
         switch (roomObjectName)
         {
             case RoomObjectName.Guitar:
-                return CreateGuitarBlueprint();
+                blueprint = CreateGuitarBlueprint();
+                break;
             case RoomObjectName.Piano:
-                return CreatePianoBlueprint();
+                blueprint = CreatePianoBlueprint();
+                break;
             case RoomObjectName.ControlRoomMicrophone:
-                return CreateControlRoomMicrophoneBlueprint();
+                blueprint = CreateControlRoomMicrophoneBlueprint();
+                break;
             case RoomObjectName.MixPanel:
-                return CreateMixPanelBlueprint();
+                blueprint = CreateMixPanelBlueprint();
+                break;
             case RoomObjectName.Telephone:
-                return CreateTelephoneBlueprint();
+                blueprint = CreateTelephoneBlueprint();
+                break;
             default:
                 Logger.Error("Cannot find a creation function for blueprint {0}", roomObjectName);
                 return null;
         }
+        if (blueprint.Name == null) Logger.Error("Blueprint for {0} does not have a name", roomObjectName);
+        if (blueprint.Description == null) Logger.Error("Blueprint for {0} does not have a description", roomObjectName);
+        if (blueprint.Price == -1) Logger.Error("Blueprint for {0} does not have a price", roomObjectName);
+
+        return blueprint;
     }
 
     private static RoomObjectBlueprint CreateGuitarBlueprint()
     {
         RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Guitar)
             .WithName("Guitar")
-            .WithMenuDescription("A mean guitar");
+            .WithMenuDescription("A mean guitar")
+            .WithPrice(5);
 
         blueprint.ObjectInteractions = new ObjectInteraction[] {
             new ObjectInteraction(ObjectInteractionType.Perform, "Guitar plays itself")
@@ -62,7 +82,9 @@ public class RoomObjectBlueprint : BuildItemBlueprint<RoomObjectBlueprint>
     {
         RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Piano)
             .WithName("Piano")
-            .WithMenuDescription("Be more like Mozart");
+            .WithMenuDescription("Be more like Mozart")
+            .WithPrice(15);
+
 
         blueprint.ObjectInteractions = new ObjectInteraction[] {
             new ObjectInteraction(ObjectInteractionType.Perform, "Self-play")

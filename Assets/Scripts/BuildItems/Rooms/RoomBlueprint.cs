@@ -10,22 +10,33 @@
     protected RoomBlueprint(RoomName roomName)
     {
         RoomName = roomName;
+        Price = -1;
     }
 
     public static RoomBlueprint CreateBlueprint(RoomName roomName)
     {
+        RoomBlueprint blueprint;
         switch (roomName)
         {
             case RoomName.Hallway:
-                return CreateHallwayBlueprint();
+                blueprint = CreateHallwayBlueprint();
+                break;
             case RoomName.Room1:
-                return CreateRoom1Blueprint();
+                blueprint = CreateRoom1Blueprint();
+                break;
             case RoomName.RecordingStudio1:
-                return CreateRecordingStudio1Blueprint();
+                blueprint = CreateRecordingStudio1Blueprint();
+                break;
             default:
                 Logger.Error("Cannot find a creation function for blueprint {0}", roomName);
                 return null;
         }
+
+        if (blueprint.Name == null) Logger.Error("Blueprint for {0} does not have a name", roomName);
+        if (blueprint.Description == null) Logger.Error("Blueprint for {0} does not have a description", roomName);
+        if (blueprint.Price == -1) Logger.Error("Blueprint for {0} does not have a price", roomName);
+
+        return blueprint;
     }
 
     public override RoomBlueprint WithName(string name)
@@ -37,6 +48,12 @@
     public override RoomBlueprint WithMenuDescription(string description)
     {
         Description = description;
+        return this;
+    }
+
+    public override RoomBlueprint WithPrice(int price)
+    {
+        Price = price;
         return this;
     }
 
@@ -57,7 +74,8 @@
     {
         RoomBlueprint blueprint = new RoomBlueprint(RoomName.Room1)
         .WithName("Room1")
-        .WithMenuDescription("This room has only 1 door");
+        .WithMenuDescription("This room has only 1 door")
+        .WithPrice(10);
 
         blueprint.RightUpAxisLength = 9;
         blueprint.LeftUpAxisLength = 6;
@@ -74,7 +92,8 @@
     {
         RoomBlueprint blueprint = new RoomBlueprint(RoomName.RecordingStudio1)
             .WithName("Recording Studio 1")
-            .WithMenuDescription("Your first recording studio! But this is only the control room part.");
+            .WithMenuDescription("Your first recording studio! But this is only the control room part.")
+            .WithPrice(10);
 
         blueprint.RightUpAxisLength = 3;
         blueprint.LeftUpAxisLength = 6;
@@ -91,7 +110,9 @@
     {
         RoomBlueprint blueprint = new RoomBlueprint(RoomName.Hallway)
             .WithName("Hallway")
-            .WithMenuDescription("A nice hallway");
+            .WithMenuDescription("A nice hallway")
+            .WithPrice(5);
+
 
         blueprint.RightUpAxisLength = 3;
         blueprint.LeftUpAxisLength = 3;
