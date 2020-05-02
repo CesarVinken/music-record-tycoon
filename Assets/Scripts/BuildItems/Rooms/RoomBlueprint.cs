@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class RoomBlueprint : BuildItemBlueprint
+﻿public class RoomBlueprint : BuildItemBlueprint<RoomBlueprint>
 {
     public RoomName RoomName;
     
@@ -8,9 +6,8 @@ public class RoomBlueprint : BuildItemBlueprint
     public int LeftUpAxisLength;
 
     public GridLocation[] DoorLocations;
-    //public RoomObjectBlueprintForRoom[] RoomObjects = new RoomObjectBlueprintForRoom[] { };
 
-    protected RoomBlueprint(RoomName roomName, string name, string description) : base(name, description)
+    protected RoomBlueprint(RoomName roomName)
     {
         RoomName = roomName;
     }
@@ -31,6 +28,18 @@ public class RoomBlueprint : BuildItemBlueprint
         }
     }
 
+    public override RoomBlueprint WithName(string name)
+    {
+        Name = name;
+        return this;
+    }
+
+    public override RoomBlueprint WithMenuDescription(string description)
+    {
+        Description = description;
+        return this;
+    }
+
     public struct RoomObjectBlueprintForRoom
     {
         public RoomObjectBlueprint RoomObjectBlueprint;
@@ -46,7 +55,9 @@ public class RoomBlueprint : BuildItemBlueprint
     // test room with one door
     private static RoomBlueprint CreateRoom1Blueprint()
     {
-        RoomBlueprint blueprint = new RoomBlueprint(RoomName.Room1, "Room1", "This room has only 1 door");
+        RoomBlueprint blueprint = new RoomBlueprint(RoomName.Room1)
+        .WithName("Room1")
+        .WithMenuDescription("This room has only 1 door");
 
         blueprint.RightUpAxisLength = 9;
         blueprint.LeftUpAxisLength = 6;
@@ -54,10 +65,6 @@ public class RoomBlueprint : BuildItemBlueprint
         {
             new GridLocation(4, 0)
         };
-        //blueprint.RoomObjects = new RoomObjectBlueprintForRoom[]
-        //{
-        //    new RoomObjectBlueprintForRoom(RoomObjectBlueprint.CreateBlueprint(RoomObjectName.Piano), new GridLocation(8, 4))       
-        //};
 
         return blueprint;
     }
@@ -65,7 +72,9 @@ public class RoomBlueprint : BuildItemBlueprint
     // recording room 1, for testing
     private static RoomBlueprint CreateRecordingStudio1Blueprint()
     {
-        RoomBlueprint blueprint = new RoomBlueprint(RoomName.RecordingStudio1, "Recording Studio 1", "Your first recording studio! But this is only the control room part.");
+        RoomBlueprint blueprint = new RoomBlueprint(RoomName.RecordingStudio1)
+            .WithName("Recording Studio 1")
+            .WithMenuDescription("Your first recording studio! But this is only the control room part.");
 
         blueprint.RightUpAxisLength = 3;
         blueprint.LeftUpAxisLength = 6;
@@ -74,17 +83,15 @@ public class RoomBlueprint : BuildItemBlueprint
             new GridLocation(1, 6),
             new GridLocation(1, 0),
         };
-        //blueprint.RoomObjects = new RoomObjectBlueprintForRoom[]
-        //{
-        //    new RoomObjectBlueprintForRoom(RoomObjectBlueprint.CreateBlueprint(RoomObjectName.MixPanel), new GridLocation(8, 4))
-        //};
 
         return blueprint;
     }
 
     private static RoomBlueprint CreateHallwayBlueprint()
     {
-        RoomBlueprint blueprint = new RoomBlueprint(RoomName.Hallway, "Hallway", "A nice hallway");
+        RoomBlueprint blueprint = new RoomBlueprint(RoomName.Hallway)
+            .WithName("Hallway")
+            .WithMenuDescription("A nice hallway");
 
         blueprint.RightUpAxisLength = 3;
         blueprint.LeftUpAxisLength = 3;

@@ -72,14 +72,13 @@ public class BuildMenuContainer : MonoBehaviour
         }
     }
 
-    private void LoadBuildMenuItem(BuildItemBlueprint buildItemBlueprint)
+    private void LoadBuildMenuItem(IBuildItemBlueprint buildItemBlueprint)
     {
         GameObject item = Instantiate(BuildItemPrefab, BuildItemsContainer.transform);
         item.name = name;
         BuildItemTile buildItemTile = item.GetComponent<BuildItemTile>();
 
         buildItemTile.Setup(buildItemBlueprint);
-
     }
 
     public void CompletePanelActivation()

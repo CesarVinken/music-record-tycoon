@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class BuildItemTile : MonoBehaviour
 {
-    public BuildItemBlueprint BuildItemBlueprint;
+    public IBuildItemBlueprint BuildItemBlueprint;
     public string Image = "";
 
     public Text NameTextComponent;
     public Text DescriptionTextComponent;
 
-    public void Setup(BuildItemBlueprint buildItemBlueprint)
+    public void Setup(IBuildItemBlueprint buildItemBlueprint)
     {
         BuildItemBlueprint = buildItemBlueprint;
 

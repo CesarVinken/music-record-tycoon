@@ -1,21 +1,21 @@
 ﻿// The Blueprints and their info are used in the store. All room objects that can be created through the UI should have a blueprint version
-public class RoomObjectBlueprint : BuildItemBlueprint
+public class RoomObjectBlueprint : BuildItemBlueprint<RoomObjectBlueprint>
 {
     public RoomObjectName RoomObjectName;
     public ObjectInteraction[] ObjectInteractions = new ObjectInteraction[] { };
 
-    protected RoomObjectBlueprint(RoomObjectName roomObjectName, string name = "tba", string description = "tba") : base(name, description)
+    protected RoomObjectBlueprint(RoomObjectName roomObjectName)
     {
         RoomObjectName = roomObjectName;
     }
 
-    public RoomObjectBlueprint WithName(string name)
+    public override RoomObjectBlueprint WithName(string name)
     {
         Name = name;
         return this;
     }
 
-    public RoomObjectBlueprint WithMenuDescription(string description)
+    public override RoomObjectBlueprint WithMenuDescription(string description)
     {
         Description = description;
         return this;
@@ -61,7 +61,7 @@ public class RoomObjectBlueprint : BuildItemBlueprint
 
     private static RoomObjectBlueprint CreatePianoBlueprint()
     {
-        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Piano, "Piano", "Be more like Mozart")
+        RoomObjectBlueprint blueprint = new RoomObjectBlueprint(RoomObjectName.Piano)
             .WithName("Piano")
             .WithMenuDescription("Be more like Mozart");
 

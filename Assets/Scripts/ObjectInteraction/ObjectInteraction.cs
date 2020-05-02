@@ -1,13 +1,12 @@
-﻿
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class ObjectInteraction
 {
     public ObjectInteractionType ObjectInteractionType;
     public string Name; // the label that is displayed in game
     public ObjectInteractionCharacterRole CharacterRole;
-    public List<InteractionStep> InteractionSteps; // TODO turn into InteractionSteps object type instead of string, which can contain text or other actions that happen in each step
+    public List<InteractionStep> InteractionSteps = new List<InteractionStep>();
+
     public ObjectInteraction(
         ObjectInteractionType objectInteractionType,
         string name, 
