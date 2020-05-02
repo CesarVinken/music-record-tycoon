@@ -58,17 +58,14 @@ public class BuildMenuContainer : MonoBehaviour
         // TODO: add GOs for all items for the current build menu tab
         // TODO: Should also present an updated version of which items the player can actually build (based on level/money/tech)
 
-        // Currently just load test Room1 and Hallway
         if(buildMenuTabType == BuildMenuTabType.Rooms)
         {
-            RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
-            LoadBuildMenuItem(room1);
-
-            RoomBlueprint hallway = RoomBlueprint.CreateBlueprint(RoomName.Hallway);
-            LoadBuildMenuItem(hallway);
-
-            RoomBlueprint recordingStudio1 = RoomBlueprint.CreateBlueprint(RoomName.RecordingStudio1);
-            LoadBuildMenuItem(recordingStudio1);
+            for (int i = 0; i < BuilderManager.Instance.RegisteredRooms.Count; i++)
+            {
+                RoomName roomName = BuilderManager.Instance.RegisteredRooms[i];
+                RoomBlueprint room = RoomBlueprint.CreateBlueprint(roomName);
+                LoadBuildMenuItem(room);
+            }
         }
     }
 

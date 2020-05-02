@@ -12,7 +12,7 @@ public class RoomBuilder
 
     public async Task BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, Vector2 startingPoint, ObjectRotation roomRotation)
     {
-        GameObject roomGO = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.RoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform, startingPoint);
+        GameObject roomGO = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.RegisteredRoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform, startingPoint);
 
         Room room = roomGO.GetComponent<Room>();
         room.Initialise();
@@ -76,8 +76,6 @@ public class RoomBuilder
             default:
                 break;
         }
-
-        // Distract money, update stats etc?
     }
 
     public void CreateBuildHallwayTrigger(Vector2 startingPoint, ObjectDirection direction)

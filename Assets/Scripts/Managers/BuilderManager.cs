@@ -23,8 +23,8 @@ public class BuilderManager : MonoBehaviour
 
     public List<BuildingTile> BuildingTiles = new List<BuildingTile>();
     public Dictionary<Vector2, BuildingPlot> BuildingPlots = new Dictionary<Vector2, BuildingPlot>();
-    public Dictionary<RoomName, Dictionary<ObjectRotation, GameObject>> RoomPrefabs = new Dictionary<RoomName, Dictionary<ObjectRotation, GameObject>>();
-    public Dictionary<RoomObjectName, Dictionary<ObjectRotation, GameObject>> RoomObjectPrefabs = new Dictionary<RoomObjectName, Dictionary<ObjectRotation, GameObject>>();
+    public Dictionary<RoomName, Dictionary<ObjectRotation, GameObject>> RegisteredRoomPrefabs = new Dictionary<RoomName, Dictionary<ObjectRotation, GameObject>>();
+    public Dictionary<RoomObjectName, Dictionary<ObjectRotation, GameObject>> PlaceableRoomObjectPrefabs = new Dictionary<RoomObjectName, Dictionary<ObjectRotation, GameObject>>();
     public HashSet<Vector2> BuildingTileLocations = new HashSet<Vector2>();
     public Dictionary<Vector2, Vector2> BuildingPlotLocations = new Dictionary<Vector2, Vector2>();   // The middle position of the building plot, which is the location that triggers the build, AND the starting point location of the plot (bottom)
 
@@ -32,6 +32,9 @@ public class BuilderManager : MonoBehaviour
     private BuildingTileBuilder _buildingTileBuilder;
     private RoomBuilder _roomBuilder;
     private RoomObjectBuilder _roomObjectBuilder;
+
+    public List<RoomName> RegisteredRooms;
+    public List<RoomObjectName> RegisteredPlaceableRoomObjects;
 
     void Awake()
     {
@@ -55,33 +58,15 @@ public class BuilderManager : MonoBehaviour
         // Room prefabs
         //////////////////
 
-        Dictionary<ObjectRotation, GameObject> Room1Prefabs = new Dictionary<ObjectRotation, GameObject>();
-        Room1Prefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation0", typeof(GameObject)));
-        Room1Prefabs.Add(ObjectRotation.Rotation90, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation90", typeof(GameObject)));
-        Room1Prefabs.Add(ObjectRotation.Rotation180, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation180", typeof(GameObject)));
-        Room1Prefabs.Add(ObjectRotation.Rotation270, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Room1/Room1Rotation270", typeof(GameObject)));
-        RoomPrefabs.Add(RoomName.Room1, Room1Prefabs);
+        RegisterRooms();
+        LoadRoomPrefabs();
 
-        Dictionary<ObjectRotation, GameObject> RecordingStudio1Prefabs = new Dictionary<ObjectRotation, GameObject>();
-        RecordingStudio1Prefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/RecordingStudio1/RecordingStudio1Rotation0", typeof(GameObject)));
-        RecordingStudio1Prefabs.Add(ObjectRotation.Rotation90, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/RecordingStudio1/RecordingStudio1Rotation90", typeof(GameObject)));
-        RecordingStudio1Prefabs.Add(ObjectRotation.Rotation180, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/RecordingStudio1/RecordingStudio1Rotation180", typeof(GameObject)));
-        RecordingStudio1Prefabs.Add(ObjectRotation.Rotation270, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/RecordingStudio1/RecordingStudio1Rotation270", typeof(GameObject)));
-        RoomPrefabs.Add(RoomName.RecordingStudio1, RecordingStudio1Prefabs);
-
-        Dictionary<ObjectRotation, GameObject> HallwayPrefabs = new Dictionary<ObjectRotation, GameObject>();
-        HallwayPrefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/Rooms/Hallway", typeof(GameObject)));
-        RoomPrefabs.Add(RoomName.Hallway, HallwayPrefabs);
-
+        //////////////////
         // Room object prefabs
-        Dictionary<ObjectRotation, GameObject> PianoPrefabs = new Dictionary<ObjectRotation, GameObject>();
-        PianoPrefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/RoomObjects/Piano/PianoRotation0", typeof(GameObject)));
-        RoomObjectPrefabs.Add(RoomObjectName.Piano, PianoPrefabs);
+        //////////////////
 
-        Dictionary<ObjectRotation, GameObject> GuitarPrefabs = new Dictionary<ObjectRotation, GameObject>();
-        GuitarPrefabs.Add(ObjectRotation.Rotation0, (GameObject)Resources.Load("Prefabs/Scenery/RoomObjects/Guitar/GuitarRotation0", typeof(GameObject)));
-        RoomObjectPrefabs.Add(RoomObjectName.Guitar, GuitarPrefabs);
-
+        RegisterPlaceableRoomObjects();
+        LoadPlaceableRoomObjects();
 
 
 
@@ -99,6 +84,57 @@ public class BuilderManager : MonoBehaviour
         _buildingTileBuilder.SetupInitialBuildingTiles();    // Temporary, should only happen for empty map!
 
         await SetupInitialRoom();
+    }
+
+    private void RegisterRooms()
+    {
+        RegisteredRooms = new List<RoomName>();
+
+        RegisteredRooms.Add(RoomName.Room1);
+        RegisteredRooms.Add(RoomName.Hallway);
+        RegisteredRooms.Add(RoomName.RecordingStudio1);
+    }
+    
+    private void LoadRoomPrefabs()
+    {
+        for (int i = 0; i < RegisteredRooms.Count; i++)
+        {
+            RoomName roomName = RegisteredRooms[i];
+            Dictionary<ObjectRotation, GameObject> RoomPrefabs = new Dictionary<ObjectRotation, GameObject>();
+
+            foreach (ObjectRotation rotation in ObjectRotation.GetValues(typeof(ObjectRotation)))
+            {
+                GameObject roomPrefab = (GameObject)Resources.Load("Prefabs/Scenery/Rooms/" + roomName + "/" + roomName + rotation, typeof(GameObject));
+                if (roomPrefab != null) RoomPrefabs.Add(rotation, roomPrefab);
+            }
+
+            RegisteredRoomPrefabs.Add(roomName, RoomPrefabs);
+        }
+    }
+
+    private void RegisterPlaceableRoomObjects()
+    {
+        RegisteredPlaceableRoomObjects = new List<RoomObjectName>();
+
+        RegisteredPlaceableRoomObjects.Add(RoomObjectName.Guitar);
+        RegisteredPlaceableRoomObjects.Add(RoomObjectName.Piano);
+    }
+
+    private void LoadPlaceableRoomObjects()
+    {
+        for (int i = 0; i < RegisteredPlaceableRoomObjects.Count; i++)
+        {
+            RoomObjectName roomObjectName = RegisteredPlaceableRoomObjects[i];
+            Dictionary<ObjectRotation, GameObject> RoomObjectPrefabs = new Dictionary<ObjectRotation, GameObject>();
+
+            foreach (ObjectRotation rotation in ObjectRotation.GetValues(typeof(ObjectRotation)))
+            {
+                GameObject roomObjectPrefab = (GameObject)Resources.Load("Prefabs/Scenery/RoomObjects/" + roomObjectName + "/" + roomObjectName + rotation, typeof(GameObject));
+                if (roomObjectPrefab != null) RoomObjectPrefabs.Add(rotation, roomObjectPrefab);
+            }
+
+            PlaceableRoomObjectPrefabs.Add(roomObjectName, RoomObjectPrefabs);
+        }
     }
 
     void Update()

@@ -36,7 +36,7 @@ public class ConfirmCommand : CommandProcedure
 
         GameObject testRoomContainer = GameObject.Instantiate(new GameObject());
         int problemCount = 0;
-        foreach (KeyValuePair<RoomName, Dictionary<ObjectRotation, GameObject>> prefabGroup in BuilderManager.Instance.RoomPrefabs)
+        foreach (KeyValuePair<RoomName, Dictionary<ObjectRotation, GameObject>> prefabGroup in BuilderManager.Instance.RegisteredRoomPrefabs)
         {
             RoomName roomName = prefabGroup.Key;
             GameObject prefabGO = prefabGroup.Value[ObjectRotation.Rotation0];
