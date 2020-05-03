@@ -47,9 +47,6 @@ public class CharacterLocomotion : MonoBehaviour
 
     private void CheckPointerInput()
     {
-        //if (!(Character is IPlayable))
-        //    return;
-
         if (!_listenForInput)
             return;
 
@@ -101,12 +98,7 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void SetLocomotionTarget(Vector3 newTarget)
     {
-        Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
-        if (Character.CharacterActionState != CharacterActionState.PlayerAction)
-        {
-            _characterAnimationHandler.SetLocomotion(true, Character);
-        }
-
+        // Set target, check if target is reachable, then in the nav actor the state is changed. This should be reworked and put in other class.
         Character.NavActor.Target = new Vector3(newTarget.x, newTarget.y, transform.position.z);
     }
 
@@ -129,14 +121,11 @@ public class CharacterLocomotion : MonoBehaviour
         else if(Character.NavActor.FollowingPath)
         {
             if(!Character.CharacterAnimationHandler.InLocomotion)
+            {
                 _characterAnimationHandler.SetLocomotion(true, Character);
+            }
         }
         CalculateCharacterDirection();
-        if (!Character.NavActor.FollowingPath && _characterAnimationHandler.InLocomotion)
-        {
-            // Because of the NavActor looks for updated paths every .2 seconds, we only set InLocomotion to False and do not also change the Character State here
-            _characterAnimationHandler.SetLocomotion(false);
-        }
     }
 
     public void CalculateCharacterDirection()

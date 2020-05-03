@@ -38,11 +38,17 @@ public class NavActor : MonoBehaviour
             Path = new NavPath(waypoints, transform.position, TurnDst);
             StopCoroutine("FollowPath");
             StartCoroutine("FollowPath");
+
+            if (Character.CharacterActionState != CharacterActionState.PlayerAction)
+            {
+                Character.CharacterAnimationHandler.SetLocomotion(true, Character);
+            }
         }
         else
         {
+            Logger.Log("we decided the path is not valid");
             StopCoroutine("FollowPath");
-            FollowingPath = false;
+            SetFollowingPath(false);
         }
     }
 
@@ -73,12 +79,12 @@ public class NavActor : MonoBehaviour
     {
         if (Path.LookPoints.Length == 0)
         {
-            FollowingPath = false;
+            SetFollowingPath(false);
             yield return null;
         }
         else
         {
-            FollowingPath = true;
+            SetFollowingPath(true);
             int pathIndex = 0;
             transform.LookAt(Path.LookPoints[0]);
 
@@ -95,7 +101,7 @@ public class NavActor : MonoBehaviour
                 {
                     if (pathIndex == Path.FinishLineIndex)
                     {
-                        FollowingPath = false;
+                        SetFollowingPath(false);
                         break;
                     }
                     else
@@ -122,6 +128,17 @@ public class NavActor : MonoBehaviour
         if(Path != null)
         {
             Path.DrawWithGizmos();
+        }
+    }
+
+    private void SetFollowingPath(bool followingPath)
+    {
+        FollowingPath = followingPath;
+
+        if (!followingPath && Character.CharacterActionState == CharacterActionState.Moving)
+        {
+            Character.CharacterAnimationHandler.SetLocomotion(false);
+            Character.SetCharacterActionState(CharacterActionState.Idle);
         }
     }
 }

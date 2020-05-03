@@ -55,7 +55,6 @@ public class RoomObjectBlueprint : BuildItemBlueprint<RoomObjectBlueprint>
         }
         if (blueprint.Name == null) Logger.Error("Blueprint for {0} does not have a name", roomObjectName);
         if (blueprint.Description == null) Logger.Error("Blueprint for {0} does not have a description", roomObjectName);
-        if (blueprint.Price == -1) Logger.Error("Blueprint for {0} does not have a price", roomObjectName);
 
         return blueprint;
     }

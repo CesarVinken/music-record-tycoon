@@ -17,7 +17,9 @@ public class Character : MonoBehaviour
     public CharacterLocomotion PlayerLocomotion;
     public CharacterAnimationHandler CharacterAnimationHandler;
 
+    [SerializeField]
     public CharacterActionState CharacterActionState;
+    //public CharacterActionState CharacterActionState { get; private set; }
 
     public List<ObjectInteractionType> PossibleObjectInteractions = new List<ObjectInteractionType>();
 
@@ -36,7 +38,7 @@ public class Character : MonoBehaviour
         if (CharacterAnimationHandler == null)
             Logger.Log(Logger.Initialisation, "Could not find CharacterAnimationHandler component on character");
 
-        PlannedRoutine = new CharacterRoutine();
+        PlannedRoutine = new CharacterRoutine(this);
     }
 
     public void Start()
@@ -52,13 +54,21 @@ public class Character : MonoBehaviour
 
         if (PlannedRoutine.RoutineTasks.Count == 0)
         {
-            PlannedRoutine.TryGetNewRoutineTask(this);
+            PlannedRoutine.TryGetNewRoutineTask();
             if (PlannedRoutine.RoutineTasks.Count == 0) return;
         }
 
+        PlannedRoutine.InRoutine = true;
         await PlannedRoutine.RoutineTasks[0].Execute();
-        CharacterActionState = CharacterActionState.Idle;
-        PlannedRoutine.RoutineTasks.RemoveAt(0);
+        if(PlannedRoutine.InRoutine)
+        {
+            CharacterActionState = CharacterActionState.Idle;
+            if(PlannedRoutine.RoutineTasks.Count > 0)
+            {
+                PlannedRoutine.RoutineTasks.RemoveAt(0);
+            }
+        }
+
     }
 
     public void Setup(CharacterName name, int age, Gender gender, string image)
@@ -89,7 +99,13 @@ public class Character : MonoBehaviour
 
     public void SetCharacterActionState(CharacterActionState newState)
     {
-        Logger.Log(Logger.Character, "CharacterActionState of {0}({1}) set to {2}", CharacterName, Id, newState);
+        if (CharacterActionState == newState) 
+            return;
+
+        if (CharacterActionState == CharacterActionState.RoutineAction) 
+            PlannedRoutine.InterruptRoutine();
+
+        Logger.Log(Logger.Character, "CharacterActionState of {0}({1}) set from {2} to {3}", FullName(), Id, CharacterActionState, newState);
         CharacterActionState = newState;
     }
     

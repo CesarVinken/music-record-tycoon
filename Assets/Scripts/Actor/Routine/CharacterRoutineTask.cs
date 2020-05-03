@@ -29,7 +29,7 @@ public class CharacterRoutineTask
         return characterRoutineTask;
     }
 
-    private CharacterRoutineTask WithDuration(int duration = 1000)
+    private CharacterRoutineTask WithDuration(int duration = 3000)
     {
         Duration = duration;
         return this;
@@ -47,7 +47,6 @@ public class CharacterRoutineTask
     {
         Array values = Enum.GetValues(typeof(CharacterRoutineType));
         int randomValue = Util.InitRandomNumber().Next(values.Length);
-        Logger.Log("{0} randomValue {1}", randomValue, values.Length);
 
         CharacterRoutineType randomCharacterRoutineType = (CharacterRoutineType)values.GetValue(randomValue);
 
