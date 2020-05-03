@@ -17,16 +17,16 @@ public class ObjectInteractionCharacterOptionsMenu : ObjectInteractionOptionsMen
         {
             if (!possibleInteractionCharacters[i].PossibleObjectInteractions.Contains(_objectInteraction.ObjectInteractionType))
             {
-                Logger.Log("{0} can not be done by {1}", _objectInteraction.ObjectInteractionType, CharacterNameGenerator.GetName(possibleInteractionCharacters[i].Name));
+                Logger.Log("{0} can not be done by {1}", _objectInteraction.ObjectInteractionType, possibleInteractionCharacters[i].FullName());
                 continue;
             }
 
             GameObject InteractionOptionGO = Instantiate(ObjectInteractionOptionsContainerGO.InteractionOptionPrefab, InteractionOptionsContainer.transform);
-            InteractionOptionGO.name = CharacterNameGenerator.GetName(possibleInteractionCharacters[i].Name);
+            InteractionOptionGO.name = CharacterNameGenerator.GetName(possibleInteractionCharacters[i].CharacterName);
 
             ObjectInteractionOptionButton objectInteractionOptionButton = CreateInteractionOptionButton(InteractionOptionGO, i, possibleInteractionCharacters.Count);
             objectInteractionOptionButton.SetInteractingCharacter(possibleInteractionCharacters[i]);
-            objectInteractionOptionButton.SetInteractionOptionText(CharacterNameGenerator.GetName(possibleInteractionCharacters[i].Name));
+            objectInteractionOptionButton.SetInteractionOptionText(possibleInteractionCharacters[i].FullName());
         }
     }
 

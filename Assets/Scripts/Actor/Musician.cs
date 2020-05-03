@@ -10,9 +10,11 @@
         PossibleObjectInteractions.Add(ObjectInteractionType.Practice);
     }
 
-    public void Start()
+    public new void Start()
     {
         PerformObjectInteraction();
         PracticeObjectInteraction();
+
+        base.Start();
     }
 }

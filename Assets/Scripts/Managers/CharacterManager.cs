@@ -127,7 +127,7 @@ public class CharacterManager : MonoBehaviour
 
     public void DeleteCharacter(Character character)
     {
-        Logger.Log(Logger.Character, "Deleted character {0}", CharacterNameGenerator.GetName(character.Name));
+        Logger.Log(Logger.Character, "Deleted character {0}", character.FullName());
         Characters.Remove(character);
         Destroy(character.gameObject);
         Destroy(character);

@@ -127,7 +127,7 @@ public class BuildCommand : CommandProcedure
             startingPosition);
 
         Character character = CharacterManager.Instance.Characters[CharacterManager.Instance.Characters.Count - 1];
-        string characterName = CharacterNameGenerator.GetName(character.Name);
+        string characterName = CharacterNameGenerator.GetName(character.CharacterName);
         Console.Instance.PrintToReportText(characterName + " was just born");
     }
 }

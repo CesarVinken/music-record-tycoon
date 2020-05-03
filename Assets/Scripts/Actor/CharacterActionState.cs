@@ -2,5 +2,6 @@
 {
     Idle,
     Moving,
-    Action
+    PlayerAction,
+    RoutineAction
 }

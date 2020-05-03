@@ -102,7 +102,7 @@ public class CharacterLocomotion : MonoBehaviour
     public void SetLocomotionTarget(Vector3 newTarget)
     {
         Logger.Warning(Logger.Locomotion, "New location target set for player: {0}", newTarget);
-        if (Character.CharacterActionState != CharacterActionState.Action)
+        if (Character.CharacterActionState != CharacterActionState.PlayerAction)
         {
             _characterAnimationHandler.SetLocomotion(true, Character);
         }

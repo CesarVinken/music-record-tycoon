@@ -39,19 +39,19 @@
         return blueprint;
     }
 
-    public override RoomBlueprint WithName(string name)
+    protected override RoomBlueprint WithName(string name)
     {
         Name = name;
         return this;
     }
 
-    public override RoomBlueprint WithMenuDescription(string description)
+    protected override RoomBlueprint WithMenuDescription(string description)
     {
         Description = description;
         return this;
     }
 
-    public override RoomBlueprint WithPrice(int price)
+    protected override RoomBlueprint WithPrice(int price)
     {
         Price = price;
         return this;
@@ -69,7 +69,6 @@
         }
     }
 
-    // test room with one door
     private static RoomBlueprint CreateRoom1Blueprint()
     {
         RoomBlueprint blueprint = new RoomBlueprint(RoomName.Room1)
@@ -87,7 +86,6 @@
         return blueprint;
     }
 
-    // recording room 1, for testing
     private static RoomBlueprint CreateRecordingStudio1Blueprint()
     {
         RoomBlueprint blueprint = new RoomBlueprint(RoomName.RecordingStudio1)

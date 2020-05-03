@@ -10,10 +10,12 @@
         PossibleObjectInteractions.Add(ObjectInteractionType.Repair);
     }
 
-    public void Start()
+    public new void Start()
     {
         RecordObjectInteraction();
         RepairObjectInteraction();
+
+        base.Start();
     }
 }
 

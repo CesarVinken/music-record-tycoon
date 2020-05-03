@@ -10,19 +10,19 @@ public class RoomObjectBlueprint : BuildItemBlueprint<RoomObjectBlueprint>
         Price = -1;
     }
 
-    public override RoomObjectBlueprint WithName(string name)
+    protected override RoomObjectBlueprint WithName(string name)
     {
         Name = name;
         return this;
     }
 
-    public override RoomObjectBlueprint WithMenuDescription(string description)
+    protected override RoomObjectBlueprint WithMenuDescription(string description)
     {
         Description = description;
         return this;
     }
 
-    public override RoomObjectBlueprint WithPrice(int price)
+    protected override RoomObjectBlueprint WithPrice(int price)
     {
         Price = price;
         return this;

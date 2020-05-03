@@ -131,11 +131,11 @@ public class DeleteCommand : CommandProcedure
         Character characterToDelete = null;
         Logger.Log("Trying to find {0}", satanisedName);
         if(nameType == NameType.FullName)
-            characterToDelete = charactersInGame.Find(i => CharacterNameGenerator.GetName(i.Name).ToLower() == satanisedName);
+            characterToDelete = charactersInGame.Find(i => CharacterNameGenerator.GetName(i.CharacterName).ToLower() == satanisedName);
         if (characterToDelete == null && (nameType == NameType.FirstName || nameType == NameType.FullName))
-            characterToDelete = charactersInGame.Find(i => i.Name.FirstName.ToLower() == satanisedName);
+            characterToDelete = charactersInGame.Find(i => i.CharacterName.FirstName.ToLower() == satanisedName);
         if (characterToDelete == null && (nameType == NameType.LastName || nameType == NameType.FullName))
-            characterToDelete = charactersInGame.Find(i => i.Name.LastName.ToLower() == satanisedName);
+            characterToDelete = charactersInGame.Find(i => i.CharacterName.LastName.ToLower() == satanisedName);
 
         return characterToDelete;
     }

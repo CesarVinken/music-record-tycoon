@@ -10,4 +10,10 @@ public class Util
             return values[rand.Next(values.Length)];
         }
     }
+
+    public static Random InitRandomNumber()
+    {
+        Random random = new Random(DateTime.Now.Millisecond);
+        return random;
+    }
 }

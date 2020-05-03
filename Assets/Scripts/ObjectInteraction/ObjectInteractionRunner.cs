@@ -65,12 +65,12 @@ public class ObjectInteractionRunner
         {
             InteractingCharacter.PlayerLocomotion.SetLocomotionTarget(roomObjectLocation);
             Vector2 characterTarget = InteractingCharacter.NavActor.Target;
-            Logger.Log("characterTarget for {0} is {1},{2}", InteractingCharacter.Name, characterTarget.x, characterTarget.y);
+            Logger.Log("characterTarget for {0} is {1},{2}", InteractingCharacter.CharacterName, characterTarget.x, characterTarget.y);
 
             await MoveToInteractionLocation(InteractingCharacter, roomObjectLocation, characterTarget, ObjectInteraction, RoomObject);
 
             InteractingCharacter.CharacterAnimationHandler.SetLocomotion(false);
-            InteractingCharacter.SetCharacterActionState(CharacterActionState.Action);
+            InteractingCharacter.SetCharacterActionState(CharacterActionState.PlayerAction);
             InteractingCharacter.PlayerLocomotion.SetLocomotionTarget(InteractingCharacter.transform.position);
 
             if (interactionStep.HasSequenceLine())

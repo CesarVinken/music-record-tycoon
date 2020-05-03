@@ -34,7 +34,7 @@ public class AvatarTile : MonoBehaviour, IPointerClickHandler
         if (Character.Gender == Gender.Female)
             AvatarImage.sprite = CharacterManager.Instance.AvatarsFemale.Single(s => s.name == character.Image);
 
-        Name.text = CharacterNameGenerator.GetName(character.Name);
+        Name.text = CharacterNameGenerator.GetName(character.CharacterName);
         Profession.text = character.GetType().ToString();
     }
 
