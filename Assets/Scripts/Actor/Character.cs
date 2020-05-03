@@ -17,9 +17,9 @@ public class Character : MonoBehaviour
     public CharacterLocomotion PlayerLocomotion;
     public CharacterAnimationHandler CharacterAnimationHandler;
 
+    public CharacterActionState CharacterActionState { get { return _characterActionState; } private set { _characterActionState = value; } }
     [SerializeField]
-    public CharacterActionState CharacterActionState;
-    //public CharacterActionState CharacterActionState { get; private set; }
+    private CharacterActionState _characterActionState = 0;
 
     public List<ObjectInteractionType> PossibleObjectInteractions = new List<ObjectInteractionType>();
 
@@ -46,7 +46,6 @@ public class Character : MonoBehaviour
         InvokeRepeating("UpdatePlannedRoutine", .0001f, 1.3f);
     }
 
-
     public async void UpdatePlannedRoutine()
     {
         if (CharacterActionState != CharacterActionState.Idle)
@@ -68,7 +67,6 @@ public class Character : MonoBehaviour
                 PlannedRoutine.RoutineTasks.RemoveAt(0);
             }
         }
-
     }
 
     public void Setup(CharacterName name, int age, Gender gender, string image)

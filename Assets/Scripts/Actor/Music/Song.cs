@@ -1,4 +1,5 @@
-﻿public class Song
+﻿[System.Serializable]
+public class Song
 {
     public string Name;
     public Character Composer;

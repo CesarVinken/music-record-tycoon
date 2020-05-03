@@ -113,7 +113,6 @@ public class CharacterManager : MonoBehaviour
 
     public void SelectCharacter(Character character)
     {
-        Character previouslySelectedCharacter = SelectedCharacter;
         SelectedCharacter = character;
 
         _avatarContainer.CreateAvatar(character);
@@ -154,10 +153,9 @@ public class CharacterManager : MonoBehaviour
 
     public IEnumerator WaitAndRetryReachLocomotionTarget(Character character)
     {
-        character.NavActor.IsReevaluating = true;
+        character.NavActor.SetIsReevaluating(true);
         yield return new WaitForSeconds(0.08f);
 
         character.PlayerLocomotion.RetryReachLocomotionTarget();
     }
-
 }

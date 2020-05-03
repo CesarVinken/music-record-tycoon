@@ -9,8 +9,14 @@ public class NavActor : MonoBehaviour
     public Vector2 Target;
     public float TurnSpeed = 3;
     public float TurnDst = 5;
-    public bool FollowingPath;
-    public bool IsReevaluating;
+
+    public bool IsReevaluating { get { return _isReevaluating; } private set { _isReevaluating = value; } }
+    public bool FollowingPath { get { return _followingPath; } private set { _followingPath = value; } }
+
+    [SerializeField]
+    private bool _isReevaluating;
+    [SerializeField]
+    private bool _followingPath;
 
     public NavPath Path;
     public Character Character;
@@ -140,5 +146,10 @@ public class NavActor : MonoBehaviour
             Character.CharacterAnimationHandler.SetLocomotion(false);
             Character.SetCharacterActionState(CharacterActionState.Idle);
         }
+    }
+
+    public void SetIsReevaluating(bool isReevaluating)
+    {
+        IsReevaluating = isReevaluating;
     }
 }

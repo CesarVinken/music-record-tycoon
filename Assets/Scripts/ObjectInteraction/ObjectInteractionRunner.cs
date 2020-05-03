@@ -9,7 +9,6 @@ public class ObjectInteractionRunner
     public Character InteractingCharacter = null;
     public ObjectInteractionOptionType OptionType;
 
-
     public ObjectInteractionRunner(ObjectInteraction objectInteraction, RoomObjectGO roomObject, Character interactingCharacter)
     {
         if (objectInteraction == null)
@@ -40,9 +39,7 @@ public class ObjectInteractionRunner
         for (int i = 0; i < interactionSteps.Count; i++)
         {
             await RunInteractionStep(interactionSteps[i]);
-        }
-
-        
+        }        
     }
 
     public async Task RunInteractionStep(InteractionStep interactionStep)

@@ -29,7 +29,5 @@ public class CharacterRoutine
     {
         InRoutine = false;
         RoutineTasks.Clear();
-
-        Logger.Log("Routine interrupted");
     }
 }
