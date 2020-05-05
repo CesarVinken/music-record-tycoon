@@ -6,7 +6,7 @@ public class MusicManager : MonoBehaviour
     public static MusicManager Instance;
 
     [SerializeField]
-    public List<Song> Songs = new List<Song>(); // TODO make visible in inspector
+    public List<Song> Songs = new List<Song>();
 
     public void Awake()
     {

@@ -43,7 +43,7 @@ public class Character : MonoBehaviour
 
     public void Start()
     {
-        InvokeRepeating("UpdatePlannedRoutine", .0001f, 1.3f);
+        InvokeRepeating("UpdatePlannedRoutine", .0001f, 6.0f);
     }
 
     public async void UpdatePlannedRoutine()
