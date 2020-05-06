@@ -207,5 +207,6 @@ public class Console : MonoBehaviour
         Commands.Add(ConsoleCommand.AddCommand("delete", 2, 3, new DeleteCommand()));
         Commands.Add(ConsoleCommand.AddCommand("help", 0, 1, new HelpCommand()));
         Commands.Add(ConsoleCommand.AddCommand("show", 1, 3, new ShowCommand()));
+        Commands.Add(ConsoleCommand.AddCommand("time", 1, 3, new TimeCommand()));
     }
 }

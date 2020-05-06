@@ -13,10 +13,10 @@ public class HelpCommand : CommandProcedure
 
         if(arguments.Count == 1)
         {
-            ConsoleCommand consoleCommand = Console.Instance.Commands.Single(command => command.Name == arguments[1]);
+            ConsoleCommand consoleCommand = Console.Instance.Commands.FirstOrDefault(command => command.Name == arguments[0]);
             if(consoleCommand == null)
             {
-                Console.Instance.PrintToReportText(arguments[1] + " is not a known command.\n");
+                Console.Instance.PrintToReportText(arguments[0] + " is not a known command.\n");
                 Console.Instance.PrintToReportText(defaultResponse());
                 return;
             }

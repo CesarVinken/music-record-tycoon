@@ -22,11 +22,14 @@ public class TimeManager : MonoBehaviour
 
     private int _daysPerYearThreshold = 1;
 
+    public const int MinYear = 1950;
+    public const int MaxYear = 2020;
+
     public void Awake()
     {
         Instance = this;
 
-        SetYear(1952);
+        SetYear(MinYear);
         SetTime(12);
     }
 
