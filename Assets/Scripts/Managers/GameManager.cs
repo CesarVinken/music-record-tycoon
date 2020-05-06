@@ -4,11 +4,23 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public static bool MainMenuOpen;    //that should block interactivity of level ui elements
+    public static bool GamePaused { get { return MainMenuOpen; } }
+    public static bool MainMenuOpen { 
+        get { return _mainMenuOpen; } 
+        set {
+            _mainMenuOpen = value; 
+            if(_mainMenuOpen == false && TimeManager.Instance != null)
+            {
+                TimeManager.Instance.StartTime();
+            }
+        } 
+    }    //that should block interactivity of level ui elements
+
     public static bool ShowPathfindingGridGizmos;
     public static bool DrawCharacterPathGizmo;
     public static bool DrawBuildingTilesGizmos;
     public static bool DrawDoorLocationGizmos;
+
 
     public Platform CurrentPlatform;
     public IPlatformConfiguration Configuration;
@@ -17,6 +29,8 @@ public class GameManager : MonoBehaviour
     public BuilderManager BuilderManager;
     public RoomManager RoomManager;
     public GridLayout WorldGrid;
+
+    private static bool _mainMenuOpen;
 
     public void Awake()
     {

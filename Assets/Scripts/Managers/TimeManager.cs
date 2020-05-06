@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
@@ -25,22 +26,40 @@ public class TimeManager : MonoBehaviour
     public const int MinYear = 1950;
     public const int MaxYear = 2020;
 
+    private float _timeIncreaseInterval = 1.0f;
+    private float _timeUntilNextTimeIncrease = 0;
     public void Awake()
     {
         Instance = this;
 
         SetYear(MinYear);
         SetTime(12);
+
+        _timeUntilNextTimeIncrease = _timeIncreaseInterval;
     }
 
     public void Start()
     {
-        StartTime();
+        StartCoroutine(IncreaseTime());
     }
 
-    public void StartTime()
+
+    private IEnumerator IncreaseTime()
     {
-        InvokeRepeating("TriggerTimeIncrease", .0001f, 1.0f);
+        Logger.Log(Logger.Time, "Start the time");
+        while (!GameManager.GamePaused)
+        {
+            yield return new WaitForSeconds(0.5f);
+            _timeUntilNextTimeIncrease = _timeUntilNextTimeIncrease - 0.5f;
+
+            if(_timeUntilNextTimeIncrease <= 0)
+            {
+                TriggerTimeIncrease();
+                _timeUntilNextTimeIncrease = _timeIncreaseInterval;
+            }
+        }
+        Logger.Log(Logger.Time, "Stop the time");
+        PauseTime();
     }
 
     public void SetYear(int currentYear)
@@ -91,6 +110,15 @@ public class TimeManager : MonoBehaviour
         }
         Logger.Log(Logger.Time, "The time is now {0}", CurrentTimeInHours);
 
+    }
+
+    public void PauseTime()
+    {
+        StopCoroutine(IncreaseTime());
+    }
+    public void StartTime()
+    {
+        //StartCoroutine(IncreaseTime());
     }
 
     public void IncreaseYear(int years)

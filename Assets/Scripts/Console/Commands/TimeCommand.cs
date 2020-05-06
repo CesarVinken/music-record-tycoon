@@ -53,7 +53,6 @@ public class TimeCommand : CommandProcedure
         {
             Console.Instance.PrintToReportText("Given argument for time " + arguments[0] + " is not a number. Please give a number between 0 and 23 to set the time");
         }
-
     }
 
     private void SetYear(List<string> arguments)
