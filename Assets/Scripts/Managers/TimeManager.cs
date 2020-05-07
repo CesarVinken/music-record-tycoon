@@ -43,7 +43,6 @@ public class TimeManager : MonoBehaviour
         StartCoroutine(IncreaseTime());
     }
 
-
     private IEnumerator IncreaseTime()
     {
         Logger.Log(Logger.Time, "Start the time");
@@ -66,6 +65,8 @@ public class TimeManager : MonoBehaviour
     {
         CurrentYear = currentYear;
         CurrentDayInYear = 0;
+
+        TimeDisplayContainer.Instance.UpdateYearUI(CurrentYear);
     }
 
     public void SetTime(int timeInHours)
@@ -78,6 +79,8 @@ public class TimeManager : MonoBehaviour
         CurrentTimeInHours = timeInHours;
 
         SetDayPart();
+
+        TimeDisplayContainer.Instance.UpdateTimeUI(CurrentTimeInHours);
     }
 
     public void TriggerTimeIncrease()
@@ -109,16 +112,12 @@ public class TimeManager : MonoBehaviour
             }
         }
         Logger.Log(Logger.Time, "The time is now {0}", CurrentTimeInHours);
-
+        TimeDisplayContainer.Instance.UpdateTimeUI(CurrentTimeInHours);
     }
 
     public void PauseTime()
     {
         StopCoroutine(IncreaseTime());
-    }
-    public void StartTime()
-    {
-        //StartCoroutine(IncreaseTime());
     }
 
     public void IncreaseYear(int years)
@@ -126,6 +125,7 @@ public class TimeManager : MonoBehaviour
         CurrentYear = CurrentYear + years;
         CurrentDayInYear = 0;
         Logger.Log(Logger.Time, "The year is now {0}", CurrentYear);
+        TimeDisplayContainer.Instance.UpdateYearUI(CurrentYear);
     }
 
     private void SetDayPart()

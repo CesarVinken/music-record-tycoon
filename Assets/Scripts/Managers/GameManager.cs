@@ -8,11 +8,7 @@ public class GameManager : MonoBehaviour
     public static bool MainMenuOpen { 
         get { return _mainMenuOpen; } 
         set {
-            _mainMenuOpen = value; 
-            if(_mainMenuOpen == false && TimeManager.Instance != null)
-            {
-                TimeManager.Instance.StartTime();
-            }
+            _mainMenuOpen = value;
         } 
     }    //that should block interactivity of level ui elements
 
