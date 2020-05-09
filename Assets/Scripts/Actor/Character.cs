@@ -58,9 +58,10 @@ public class Character : MonoBehaviour
         }
 
         PlannedRoutine.InRoutine = true;
-        await PlannedRoutine.RoutineTasks[0].Execute();
+        await PlannedRoutine.RoutineTasks[0].Run();
         if(PlannedRoutine.InRoutine)
         {
+            PlannedRoutine.InRoutine = false;
             CharacterActionState = CharacterActionState.Idle;
             if(PlannedRoutine.RoutineTasks.Count > 0)
             {
@@ -82,10 +83,8 @@ public class Character : MonoBehaviour
 
     public void EnterRoom(Room newRoom)
     {
-        Room previousRoom = CurrentRoom;
-
         CurrentRoom = newRoom;
-        Logger.Log("Lower the walls in new room");
+        Logger.Log(Logger.Locomotion, "Lower the walls in new room");
 
         newRoom.LowerWallPieces();
     }
@@ -103,7 +102,7 @@ public class Character : MonoBehaviour
         if (CharacterActionState == CharacterActionState.RoutineAction) 
             PlannedRoutine.InterruptRoutine();
 
-        Logger.Log(Logger.Character, "CharacterActionState of {0}({1}) set from {2} to {3}", FullName(), Id, CharacterActionState, newState);
+        Logger.Log(Logger.Character, "CharacterActionState of {0} set from {1} to {2}", FullName(), CharacterActionState, newState);
         CharacterActionState = newState;
     }
     

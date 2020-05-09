@@ -16,8 +16,6 @@ public class RoomObjectsContainer : MonoBehaviour
         {
             Room.RoomObjects.Add(RoomObjects[i]);
         }
-
-        InitialiseRoomObjects();
     }
 
     public void InitialiseRoomObjects()

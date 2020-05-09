@@ -15,7 +15,10 @@ public class RoomBuilder
         GameObject roomGO = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.RegisteredRoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform, startingPoint);
 
         Room room = roomGO.GetComponent<Room>();
+        room.RoomRotation = roomRotation;
+        room.RoomBlueprint = roomBlueprint;
         room.Initialise();
+        room.RoomObjectsContainer.InitialiseRoomObjects();
         RoomManager.Instance.AddRoom(room);
 
         int rightUpAxisLength = roomRotation == ObjectRotation.Rotation0 || roomRotation == ObjectRotation.Rotation180 ?
@@ -34,8 +37,7 @@ public class RoomBuilder
             { Direction.Up, point2 },
             { Direction.Left, point3 },
         };
-        room.RoomRotation = roomRotation;
-        room.RoomBlueprint = roomBlueprint;
+
         room.SetupCorners(roomCorners);
         room.SetupCollider();
 

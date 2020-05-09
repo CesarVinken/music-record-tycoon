@@ -6,9 +6,9 @@ public class TimeDisplayContainer : MonoBehaviour
     public static TimeDisplayContainer Instance;
 
     [SerializeField]
-    private Text _yearText;
+    private Text _yearText = null;
     [SerializeField]
-    private Text _timeText;
+    private Text _timeText = null;
 
     public void Awake()
     {

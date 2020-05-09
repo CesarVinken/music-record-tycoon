@@ -34,4 +34,14 @@ public class RoomObjectGO : MonoBehaviour
         OnScreenTextContainer.Instance.CreateObjectInteractionTextContainer(this, ObjectInteractionOptionsMenuType.FirstOptionsMenu);
     }
 
+    public void Register()
+    {
+        Logger.Log("Registered a {0} in {1}", RoomObject.RoomObjectName, ParentRoom.RoomBlueprint.RoomName);
+        RoomManager.RoomObjectGOs.Add(this);
+    }
+
+    public void Deregister()
+    {
+        RoomManager.RoomObjectGOs.Remove(this);
+    }
 }

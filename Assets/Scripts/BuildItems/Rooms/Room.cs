@@ -37,14 +37,7 @@ public class Room : BuildItem
         {
             WallPieces[i].Room = this;
         }
-
-        //InitialiseRoomObjects();
     }
-
-    //private void InitialiseRoomObjects()
-    //{
-    //    // get all RoomObject scripts under Objects GO and add to RoomObjects list. The RoomObject script only has the reference to the RoomObjectBlueprint, which contains all the interactions etc.
-    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -86,7 +79,7 @@ public class Room : BuildItem
             }
             if (CharactersInRoom.Count == 0)
             {
-                Logger.Log("Raise wall pieces of room {0}", Id);
+                Logger.Log(Logger.Locomotion, "Raise wall pieces of room {0}", Id);
                 RaiseWallPieces();
             }
         }
@@ -122,14 +115,6 @@ public class Room : BuildItem
         Vector2[] positions = new Vector2[] { new Vector2(0, 0), colliderPoint1, colliderPoint2, colliderPoint3, new Vector2(0, 0) };
         Collider.SetPath(0, positions);
     }
-
-    //public void SetupRoomObjects()
-    //{
-    //    for (int i = 0; i < RoomBlueprint.RoomObjects.Length; i++)
-    //    {
-    //        BuilderManager.Instance.BuildRoomObject(RoomBlueprint.RoomObjects[i].RoomObjectBlueprint, RoomBlueprint.RoomObjects[i].RoomObjectLocation, this);
-    //    }
-    //}
 
     public void SetAdjacentRooms()
     {
@@ -188,12 +173,6 @@ public class Room : BuildItem
                 WallPiece overlappingWallPieceOtherRoom = overlappingWallPiecesOtherRoom[j];
                 if (overlappingWallPieceOtherRoom && overlappingWallPieceThisRoom)
                 {
-                    //if (overlapPosition.x == 30 && overlapPosition.y == 0)
-                    //{
-                    //    Logger.Log("disable wall pieces for {0}, {1}", overlapPosition.x, overlapPosition.y);
-                    //    Logger.Log("overlappingWallPiecesThisRoom type {0}", overlappingWallPieceThisRoom.WallPieceType);
-                    //    Logger.Log("overlappingWallPieceOtherRoom type {0}", overlappingWallPieceOtherRoom.WallPieceType);
-                    //}
                     if ((overlappingWallPieceOtherRoom.WallPieceType == WallPieceType.DownRight) &&
                         overlappingWallPieceThisRoom.WallPieceType == WallPieceType.UpLeft)
                     {
@@ -228,7 +207,7 @@ public class Room : BuildItem
 
     public void DisableOverlappingWallPieces()
     {
-        Logger.Log("Disable double wall pieces");
+        Logger.Log(Logger.Locomotion, "Disable double wall pieces");
 
         //get wall pieces with overlap. Then wall pieces against edge tiles of all other rooms
         List<BuildingTile> edgeTileClustersWithOverlap = RoomEdgeTilesPerCluster.Where(tile => tile.BuildingTileRooms.Count > 1).ToList();
@@ -256,8 +235,6 @@ public class Room : BuildItem
                 }
             }
         }
-
-
     }
 
     public void ReenableWallpiecesFromAdjacentRooms()

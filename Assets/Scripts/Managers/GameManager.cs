@@ -95,12 +95,12 @@ public class GameManager : MonoBehaviour
     public void InitialiseLoggers()
     {
         Logger.General.enableLogs = true;
-        Logger.Time.enableLogs = true;
+        Logger.Time.enableLogs = false;
         Logger.Locomotion.enableLogs = false;
         Logger.Building.enableLogs = false;
         Logger.Pathfinding.enableLogs = false;
         Logger.Initialisation.enableLogs = true;
-        Logger.Character.enableLogs = false;
+        Logger.Character.enableLogs = true;
     }
 
     public GameObject InstantiatePrefab(GameObject prefab, Transform parent, Vector2 position)

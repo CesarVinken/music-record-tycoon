@@ -388,7 +388,7 @@ public class WallPieceTransparencyHandler
                 if (wallPieces[i].gameObject.activeSelf)
                 {
                     wallPieces[i].SetWallSprite(WallPieceDisplayMode.Visible);
-                    Logger.Log("Raise {0} at {1},{2}", wallPieces[i].gameObject.name, wallPieces[i].transform.position.x, wallPieces[i].transform.position.y);
+                    Logger.Log(Logger.Locomotion, "Raise {0} at {1},{2}", wallPieces[i].gameObject.name, wallPieces[i].transform.position.x, wallPieces[i].transform.position.y);
                 }
             }
         }

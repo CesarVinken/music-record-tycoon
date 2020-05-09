@@ -32,14 +32,18 @@ public class TimeManager : MonoBehaviour
     {
         Instance = this;
 
-        SetYear(MinYear);
-        SetTime(12);
+
 
         _timeUntilNextTimeIncrease = _timeIncreaseInterval;
     }
 
     public void Start()
     {
+        MainCanvas.Instance.TimeDisplayContainer.SetActive(true);
+
+        SetYear(MinYear);
+        SetTime(12);
+
         StartCoroutine(IncreaseTime());
     }
 
