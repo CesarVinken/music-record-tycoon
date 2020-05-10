@@ -7,8 +7,9 @@ public class NavActor : MonoBehaviour
     const float PATH_UPDATE_MOVE_THRESHOLD = .5f;
 
     public Vector2 Target;
-    public float TurnSpeed = 3;
-    public float TurnDst = 5;
+    public float TurnSpeed = 10f;  // higher speed results in more abrupt turning
+    public float TurnDst = 3f;
+    public float StoppingDst = 1f;
 
     public bool IsReevaluating { get { return _isReevaluating; } private set { _isReevaluating = value; } }
     public bool FollowingPath { get { return _followingPath; } private set { _followingPath = value; } }
@@ -41,18 +42,19 @@ public class NavActor : MonoBehaviour
     {
         if(pathSuccessful)
         {
-            Path = new NavPath(waypoints, transform.position, TurnDst);
+            Path = new NavPath(waypoints, transform.position, TurnDst, StoppingDst);
             StopCoroutine("FollowPath");
             StartCoroutine("FollowPath");
 
-            if (Character.CharacterActionState != CharacterActionState.PlayerAction)
+            if (Character.CharacterActionState != CharacterActionState.PlayerAction && Character.CharacterActionState != CharacterActionState.RoutineAction)
             {
-                Character.CharacterAnimationHandler.SetLocomotion(true, Character);
+                Character.CharacterAnimationHandler.SetLocomotion(true);
+                Character.SetCharacterActionState(CharacterActionState.Moving);
             }
         }
         else
         {
-            Logger.Log("we decided the path is not valid");
+            Logger.Log("we decided the path to {0},{1} is not valid", Target.x, Target.y);
             StopCoroutine("FollowPath");
             SetFollowingPath(false);
         }
@@ -93,6 +95,7 @@ public class NavActor : MonoBehaviour
             SetFollowingPath(true);
             int pathIndex = 0;
             transform.LookAt(Path.LookPoints[0]);
+            float speedPercent = 1;
 
             while (FollowingPath)
             {
@@ -117,6 +120,15 @@ public class NavActor : MonoBehaviour
                 }
                 if (FollowingPath)
                 {
+                    if (pathIndex >= Path.SlowDownIndex && StoppingDst > 0)
+                    {
+                        speedPercent = Mathf.Clamp01(Path.TurnBoundaries[Path.FinishLineIndex].DistanceFromPoint(pos2D) / StoppingDst);
+                        if (speedPercent < 0.01f)
+                        {
+                            FollowingPath = false;
+                        }
+                    }
+
                     Quaternion targetRotation = Quaternion.LookRotation(Path.LookPoints[pathIndex] - transform.position);
                     transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * TurnSpeed);
                     transform.Translate(Vector3.forward * Time.deltaTime * Character.PlayerLocomotion.Speed, Space.Self);

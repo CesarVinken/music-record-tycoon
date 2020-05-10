@@ -44,7 +44,6 @@ public class CharacterLocomotion : MonoBehaviour
         }
     }
 
-
     private void CheckPointerInput()
     {
         if (!_listenForInput)
@@ -110,6 +109,12 @@ public class CharacterLocomotion : MonoBehaviour
         Character.NavActor.Target = target;
     }
 
+    //public void StopLocomotion()
+    //{
+    //    //SetLocomotionTarget(transform.position);
+        //    _characterAnimationHandler.SetLocomotion(false);
+    //}
+
     private void HandleMovement()
     {
         if (!Character.NavActor.FollowingPath && _characterAnimationHandler.InLocomotion)
@@ -120,9 +125,11 @@ public class CharacterLocomotion : MonoBehaviour
         }
         else if(Character.NavActor.FollowingPath)
         {
-            if(!Character.CharacterAnimationHandler.InLocomotion)
+            if(!_characterAnimationHandler.InLocomotion)
             {
-                _characterAnimationHandler.SetLocomotion(true, Character);
+                _characterAnimationHandler.SetLocomotion(true);
+                Character.SetCharacterActionState(CharacterActionState.Moving);
+
             }
         }
         CalculateCharacterDirection();

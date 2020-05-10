@@ -44,7 +44,7 @@ public class ObjectInteractionRunner
 
     public async Task RunInteractionStep(InteractionStep interactionStep)
     {
-        Vector2 roomObjectLocation = RoomObject.RoomObjectLocation;
+        Vector2 roomObjectLocation = RoomObject.RoomObjectInteractionLocation.transform.position;
 
         Logger.Log("Make interaction Transaction for {0}", ObjectInteraction.Name);
         if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.NoCharacter)
@@ -89,7 +89,8 @@ public class ObjectInteractionRunner
 
             if (characterTarget != InteractingCharacter.NavActor.Target)
             {
-                InteractingCharacter.CharacterAnimationHandler.SetLocomotion(true, InteractingCharacter);
+                InteractingCharacter.CharacterAnimationHandler.SetLocomotion(true);
+                InteractingCharacter.SetCharacterActionState(CharacterActionState.Moving);
             }
             else
             {
@@ -104,7 +105,7 @@ public class ObjectInteractionRunner
     {
         if (objectInteraction.CharacterRole == ObjectInteractionCharacterRole.CharacterAtRoomObject)
         {
-            while (Vector2.Distance(character.transform.position, roomObjectLocation) > 12)
+            while (Vector2.Distance(character.transform.position, roomObjectLocation) > CharacterManager.MinDistanceForInteraction)
             {
                 await Task.Yield();
                 if (characterTarget != character.NavActor.Target)

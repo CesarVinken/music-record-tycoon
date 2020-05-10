@@ -51,8 +51,8 @@ public class GameManager : MonoBehaviour
         Guard.CheckIsNull(BuilderManager, "RoomManager");
         Guard.CheckIsNull(BuilderManager, "PathfindingGrid");
 
-        ShowPathfindingGridGizmos = false;
-        DrawCharacterPathGizmo = false;
+        ShowPathfindingGridGizmos = true;
+        DrawCharacterPathGizmo = true;
         DrawBuildingTilesGizmos = false;
         DrawDoorLocationGizmos = false;
     }

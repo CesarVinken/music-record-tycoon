@@ -39,6 +39,8 @@ public class CharacterManager : MonoBehaviour
     public Sprite[] AvatarsMale;
     public Sprite[] AvatarsFemale;
 
+    public static float MinDistanceForInteraction = 0.4f; // how much distance between character and room object to 'reach' target location;
+
     void Awake()
     {
         Guard.CheckIsNull(CharacterPrefab, "CharacterPrefab");

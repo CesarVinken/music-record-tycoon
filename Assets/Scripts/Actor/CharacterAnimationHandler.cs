@@ -36,11 +36,4 @@ public class CharacterAnimationHandler : MonoBehaviour
     {
         InLocomotion = value;
     }
-
-    public void SetLocomotion(bool inLocomotion, Character character)
-    {
-        InLocomotion = inLocomotion;
-        if(inLocomotion)
-            character.SetCharacterActionState(CharacterActionState.Moving);
-    }
 }

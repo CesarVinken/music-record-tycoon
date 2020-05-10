@@ -27,6 +27,7 @@ public class CharacterRoutine
 
     public void InterruptRoutine()
     {
+        Logger.Log("Interupted routine of {0}", Character.FullName());
         InRoutine = false;
         RoutineTasks.Clear();
     }

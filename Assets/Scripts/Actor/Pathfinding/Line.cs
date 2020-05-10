@@ -4,14 +4,14 @@ using UnityEngine;
 
 public struct Line
 {
-    const float VerticalLineGradient = 1e5f;
-    float Gradient;
-    float Y_intercept;
-    Vector2 PointOnLine_1;
-    Vector2 PointOnLine_2;
+    public const float VerticalLineGradient = 1e5f;
+    public float Gradient;
+    public float Y_intercept;
+    public Vector2 PointOnLine_1;
+    public Vector2 PointOnLine_2;
 
-    float GradientPerpendicular;
-    bool ApproachSide;
+    public float GradientPerpendicular;
+    public bool ApproachSide;
 
     public Line(Vector2 pointOnLine, Vector2 pointPerpendicularToLine)
     {
@@ -54,6 +54,14 @@ public struct Line
     public bool HasCrossedLine(Vector2 p)
     {
         return GetSide(p) != ApproachSide;
+    }
+
+    public float DistanceFromPoint(Vector2 p)
+    {
+        float yInterceptPerpendicular = p.y - GradientPerpendicular * p.x;
+        float intersectX = (yInterceptPerpendicular - Y_intercept) / (Gradient - GradientPerpendicular);
+        float intersectY = Gradient * intersectX + Y_intercept;
+        return Vector2.Distance(p, new Vector2(intersectX, intersectY));
     }
 
     public void DrawWithGizmos(float length)

@@ -63,15 +63,19 @@ public class CharacterRoutineTask
     {
         if(TaskLocationRoomObject != null)
         {
-            bool travellingToLocation = true;
-            Vector2 targetLocation = TaskLocationRoomObject.transform.position;
-            Character.PlayerLocomotion.SetLocomotionTarget(targetLocation);
+            bool travellingToLocation = false;
+            Vector2 targetLocation = TaskLocationRoomObject.RoomObjectInteractionLocation.transform.position;
+            if (Vector2.Distance(Character.transform.position, targetLocation) > CharacterManager.MinDistanceForInteraction)
+            {
+                Character.PlayerLocomotion.SetLocomotionTarget(targetLocation);
+                travellingToLocation = true;
+            }
 
             // go to location
             while (travellingToLocation)
             {
-                //Logger.Log("{0} is travelling to location", Character.FullName());
                 await Task.Delay(250);
+
                 if (TaskLocationRoomObject == null)
                 {
                     Logger.Warning("The room object targetted for routine does not exist anymore.");
@@ -79,12 +83,23 @@ public class CharacterRoutineTask
                     Character.PlannedRoutine.InterruptRoutine();
                     return;
                 }
-                if (Character.NavActor.Target != targetLocation || Character.CharacterActionState != CharacterActionState.Moving)
+                if (Character.NavActor.Target != targetLocation || Vector2.Distance(Character.transform.position, targetLocation) < CharacterManager.MinDistanceForInteraction)
                 {
+                    Character.SetCharacterActionState(CharacterActionState.Idle);
+                    Character.NavActor.Target = new Vector2(Character.transform.position.x, Character.transform.position.y);
                     travellingToLocation = false;
+                }
+                if (!Character.NavActor.FollowingPath)
+                 {
+                    Character.PlannedRoutine.InterruptRoutine();
+                    travellingToLocation = false;
+                    return;
                 }
             }
         }
+
+        //Character.PlayerLocomotion.StopLocomotion();
+        Character.CharacterAnimationHandler.SetLocomotion(false);
 
         Character.SetCharacterActionState(CharacterActionState.RoutineAction);
         Logger.Log(Logger.Character, "{0} is now doing {1}", Character.FullName(), CharacterRoutineType);

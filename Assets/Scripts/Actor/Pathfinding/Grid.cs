@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
-using System.Threading.Tasks;
 
 public class Grid : MonoBehaviour
 {
@@ -11,7 +10,7 @@ public class Grid : MonoBehaviour
     public int GridWorldSizeY;   //this should be based on the size of the background image
     public float NodeRadius;
     public TerrainType[] WalkableRegions;
-    public int ObstacleProximityPenalty = 40;
+    public int ObstacleProximityPenalty = 100;
     private LayerMask _walkableMask;
     private Dictionary<int, int> _walkableRegionsDictionary = new Dictionary<int, int>();
     private Node[,] _myGrid;
@@ -40,8 +39,6 @@ public class Grid : MonoBehaviour
             _walkableMask.value |= region.TerrainMask.value;
             _walkableRegionsDictionary.Add((int)Mathf.Log(region.TerrainMask.value, 2), region.TerrainPenalty);
         }
-
-        //CreateGrid();
     }
 
     public int MaxSize
@@ -111,7 +108,9 @@ public class Grid : MonoBehaviour
                 _myGrid[x, y] = new Node(walkable, worldPoint, x, y, movementPenalty);
             }
         }
-        BlurPenaltyMap(3);
+
+        int blurSize = 4;
+        BlurPenaltyMap(blurSize);
     }
 
     public void BlurPenaltyMap(int blurSize)
