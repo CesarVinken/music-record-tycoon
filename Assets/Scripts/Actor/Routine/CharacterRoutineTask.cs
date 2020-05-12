@@ -76,29 +76,26 @@ public class CharacterRoutineTask
             {
                 await Task.Delay(250);
 
-                if (TaskLocationRoomObject == null)
+                if (TaskLocationRoomObject == null) // EG the room object targetted for routine does not exist anymore
                 {
                     Logger.Warning("The room object targetted for routine does not exist anymore.");
                     travellingToLocation = false;
                     Character.PlannedRoutine.InterruptRoutine();
                     return;
                 }
-                if (Character.NavActor.Target != targetLocation || Vector2.Distance(Character.transform.position, targetLocation) < CharacterManager.MinDistanceForInteraction)
+                if (Character.PlayerLocomotion.Target != targetLocation)
                 {
-                    Character.SetCharacterActionState(CharacterActionState.Idle);
-                    Character.NavActor.Target = new Vector2(Character.transform.position.x, Character.transform.position.y);
-                    travellingToLocation = false;
-                }
-                if (!Character.NavActor.FollowingPath)
-                 {
                     Character.PlannedRoutine.InterruptRoutine();
                     travellingToLocation = false;
                     return;
                 }
+                if (Character.CharacterActionState != CharacterActionState.Moving)
+                {
+                    travellingToLocation = false;
+                }
             }
         }
 
-        //Character.PlayerLocomotion.StopLocomotion();
         Character.CharacterAnimationHandler.SetLocomotion(false);
 
         Character.SetCharacterActionState(CharacterActionState.RoutineAction);

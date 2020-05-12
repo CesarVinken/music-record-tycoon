@@ -19,6 +19,7 @@ Assets/Scenes/
 Assets/Scenes.meta
 Assets/Tilemaps/
 Assets/Tilemaps.meta
+Assets/Scripts/Actor/Pathfinding/AstarPathfindingProject
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*

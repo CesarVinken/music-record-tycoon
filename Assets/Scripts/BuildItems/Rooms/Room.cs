@@ -41,9 +41,10 @@ public class Room : BuildItem
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Character character = collision.gameObject.GetComponent<Character>();
-        if (character)
+        CharacterPath characterPath = collision.gameObject.GetComponent<CharacterPath>();
+        if (characterPath)
         {
+            Character character = characterPath.CharacterLocomotion.Character;
             Logger.Log(Logger.Locomotion, "{0} entered room {1}", character.Id, Id);
             CharactersInRoom.Add(character);
             character.EnterRoom(this);
@@ -56,9 +57,10 @@ public class Room : BuildItem
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        Character character = collision.gameObject.GetComponent<Character>();
-        if (character)
+        CharacterPath characterPath = collision.gameObject.GetComponent<CharacterPath>();
+        if (characterPath)
         {
+            Character character = characterPath.CharacterLocomotion.Character;
             Logger.Log(Logger.Locomotion, "{0} left room {1}", character.Id, Id);
             if (character.CurrentRoom == this)
             {

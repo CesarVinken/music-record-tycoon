@@ -12,8 +12,6 @@ public class Character : MonoBehaviour
     public Gender Gender;
     public string Image;
 
-    public NavActor NavActor;
-
     public CharacterLocomotion PlayerLocomotion;
     public CharacterAnimationHandler CharacterAnimationHandler;
 
@@ -28,7 +26,7 @@ public class Character : MonoBehaviour
 
     public void Awake()
     {
-        PlayerLocomotion = gameObject.AddComponent<CharacterLocomotion>();
+        PlayerLocomotion = gameObject.GetComponent<CharacterLocomotion>();
         PlayerLocomotion.Character = this;
 
         CharacterAnimationHandler = gameObject.AddComponent<CharacterAnimationHandler>();
@@ -110,4 +108,5 @@ public class Character : MonoBehaviour
     {
         return CharacterNameGenerator.GetName(CharacterName);
     }
+
 }
