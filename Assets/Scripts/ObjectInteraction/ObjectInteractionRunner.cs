@@ -35,17 +35,28 @@ public class ObjectInteractionRunner
         CharacterManager.Instance.DeselectCharacter();
 
         List<InteractionStep> interactionSteps = ObjectInteraction.InteractionSteps;
+        Vector2 roomObjectLocation = RoomObject.RoomObjectInteractionLocation.transform.position;
 
         for (int i = 0; i < interactionSteps.Count; i++)
         {
-            await RunInteractionStep(interactionSteps[i]);
-        }        
+            await RunInteractionStep(interactionSteps[i], roomObjectLocation);
+        }
+
+        RoomObject.UnsetInteractingCharacter(InteractingCharacter);
+
+        if (roomObjectLocation != InteractingCharacter.PlayerLocomotion.Target && Vector2.Distance(roomObjectLocation, InteractingCharacter.PlayerLocomotion.Target) > 1f)
+        {
+            InteractingCharacter.CharacterAnimationHandler.SetLocomotion(true);
+            InteractingCharacter.SetCharacterActionState(CharacterActionState.Moving);
+        }
+        else
+        {
+            InteractingCharacter.SetCharacterActionState(CharacterActionState.Idle);
+        }
     }
 
-    public async Task RunInteractionStep(InteractionStep interactionStep)
+    public async Task RunInteractionStep(InteractionStep interactionStep, Vector2 roomObjectLocation)
     {
-        Vector2 roomObjectLocation = RoomObject.RoomObjectInteractionLocation.transform.position;
-
         Logger.Log("Make interaction Transaction for {0}", ObjectInteraction.Name);
         if (ObjectInteraction.CharacterRole == ObjectInteractionCharacterRole.NoCharacter)
         {
@@ -69,6 +80,8 @@ public class ObjectInteractionRunner
             {
                 return;
             }
+            RoomObject.SetInteractingCharacter(InteractingCharacter);
+
             InteractingCharacter.CharacterAnimationHandler.SetLocomotion(false);
             InteractingCharacter.SetCharacterActionState(CharacterActionState.PlayerAction);
             InteractingCharacter.PlayerLocomotion.SetLocomotionTarget(InteractingCharacter.transform.position);
@@ -89,16 +102,6 @@ public class ObjectInteractionRunner
                 RecordSong();
             }
             /////
-
-            if (characterTarget != InteractingCharacter.PlayerLocomotion.Target && Vector2.Distance(characterTarget, InteractingCharacter.PlayerLocomotion.Target) > 1f)
-            {
-                InteractingCharacter.CharacterAnimationHandler.SetLocomotion(true);
-                InteractingCharacter.SetCharacterActionState(CharacterActionState.Moving);
-            }
-            else
-            {
-                InteractingCharacter.SetCharacterActionState(CharacterActionState.Idle);
-            }
         }
 
         return;

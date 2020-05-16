@@ -6,9 +6,14 @@ public class InteractionStep
     public GameObject InteractionSequenceLineGO;
     public int Duration;
 
-    public InteractionStep(int duration = 3000)
+    private InteractionStep(int duration)
     {
         Duration = duration;
+    }
+
+    public static InteractionStep Create(int duration = 3000)
+    {
+        return new InteractionStep(duration);
     }
 
     public InteractionStep WithSequenceLine(string line)

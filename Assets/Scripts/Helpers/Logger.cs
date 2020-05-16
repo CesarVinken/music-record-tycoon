@@ -10,6 +10,7 @@ public static class Logger
     public static LogCategory General = new LogCategory("General");
     public static LogCategory Time = new LogCategory("Time");
     public static LogCategory Character = new LogCategory("Character");
+    public static LogCategory Interaction = new LogCategory("Interaction");
     public static LogCategory Locomotion = new LogCategory("Locomotion");
     public static LogCategory Building = new LogCategory("Building");
     public static LogCategory Pathfinding = new LogCategory("Pathfinding");

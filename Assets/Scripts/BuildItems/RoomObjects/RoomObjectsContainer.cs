@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class RoomObjectsContainer : MonoBehaviour
@@ -32,7 +31,7 @@ public class RoomObjectsContainer : MonoBehaviour
                 Logger.Warning("Could not find a scriptable room object for the object {0}", RoomObjects[i].gameObject.name );
                 continue;
             }
-            RoomObjectBlueprint roomObjectBlueprint = RoomObjectBlueprint.CreateBlueprint(RoomObjects[i].RoomObject.RoomObjectName);
+            RoomObjectBlueprint roomObjectBlueprint = RoomObjectBlueprint.Create(RoomObjects[i].RoomObject.RoomObjectName);
             RoomObjects[i].Initialise(roomObjectBlueprint, Room.RoomRotation, Room);
         }
     }

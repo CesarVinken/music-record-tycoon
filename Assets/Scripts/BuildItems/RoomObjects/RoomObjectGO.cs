@@ -6,20 +6,16 @@ public class RoomObjectGO : MonoBehaviour
     public RoomObjectBlueprint RoomObjectBlueprint;
     public ObjectRotation RoomObjectRotation;
     public Room ParentRoom;
-    //public Vector2 RoomObjectLocation;
+    public Character InteractingCharacter; // for either character interactions or routines
     public GameObject RoomObjectInteractionLocation;
 
     public void Awake()
     {
         Guard.CheckIsNull(RoomObjectInteractionLocation, "RoomObjectInteractionLocation");
-
-        //if (transform.childCount == 0) RoomObjectLocation = transform.position;
-        //else RoomObjectLocation = transform.GetChild(0).transform.position;
     }
 
     public void OnMouseDown()
     {
-        Logger.Log("mouse down");
         ShowInteractionMenu();
     }
 
@@ -39,12 +35,26 @@ public class RoomObjectGO : MonoBehaviour
 
     public void Register()
     {
-        Logger.Log("Registered a {0} in {1}", RoomObject.RoomObjectName, ParentRoom.RoomBlueprint.RoomName);
-        RoomManager.RoomObjectGOs.Add(this);
+        RoomManager.Instance.RegisterRoomObjectGO(this);
     }
 
     public void Deregister()
     {
-        RoomManager.RoomObjectGOs.Remove(this);
+        RoomManager.Instance.DeregisterRoomObjectGO(this);
+    }
+
+    public void SetInteractingCharacter(Character character)
+    {
+        Logger.Log(Logger.Interaction, "Register {0} at {1}", character.FullName(), RoomObjectBlueprint.RoomObjectName);
+        InteractingCharacter = character;
+    }
+
+    public  void UnsetInteractingCharacter(Character character = null)
+    {
+        if(InteractingCharacter == character || character == null)
+        {
+            Logger.Log(Logger.Interaction, "Deregister {0} from {1}", character.FullName(), RoomObjectBlueprint.RoomObjectName);
+            InteractingCharacter = null;
+        }
     }
 }

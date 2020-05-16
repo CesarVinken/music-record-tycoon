@@ -8,46 +8,55 @@ using UnityEngine;
 public class CharacterRoutineTask
 {
     public Character Character;
-    public CharacterRoutineType CharacterRoutineType;
+    public CharacterRoutineTypeName CharacterRoutineTypeName;
     public int Duration;
     public RoomObjectGO TaskLocationRoomObject = null;
 
-    public CharacterRoutineTask(CharacterRoutineType routineType, Character character)
+    public CharacterRoutineTask(CharacterRoutineTypeName routineTypeName, Character character)
     {
-        CharacterRoutineType = routineType;
+        CharacterRoutineTypeName = routineTypeName;
         Character = character;
 
-        // get room object type for routineType
-        List<RoomObjectName> roomObjectNames = GetRoomObjectsForTask(routineType);
+        // get all possible room object types for routineTypeName
+        List<RoomObjectName> roomObjectNames = GetRoomObjectsForTask(routineTypeName);
 
-        // get all room objects of that type on the map
+        if(roomObjectNames.Count == 0) // routines that do not require an object to interact with, such as Idle animations
+        {
+            Logger.Log(Logger.Interaction, "This character routine does not have an task location room object: {0}", routineTypeName);
+            return;
+        }
+
+        // get all room objects of that possible types that are on the map
         List<RoomObjectGO> roomObjectsGOs = new List<RoomObjectGO>();
         for (int i = 0; i < roomObjectNames.Count; i++)
         {
-            roomObjectsGOs = RoomManager.RoomObjectGOs.Where(roomObjectGO => roomObjectGO.RoomObject.RoomObjectName == roomObjectNames[i]).ToList();
+            roomObjectsGOs = RoomManager.RoomObjectGOs.Where(
+                roomObjectGO => 
+                {
+                    return roomObjectGO.RoomObject.RoomObjectName == roomObjectNames[i] && // find all room objects of correct type of task
+                    roomObjectGO.InteractingCharacter == null;  // only pick room objects that are available
+                }
+                ).ToList();
         }
-        Logger.Warning("We found {0} of suitable room objects for {1}", roomObjectsGOs.Count, routineType);
 
         if (roomObjectsGOs.Count > 0)
         {
-
             int random = UnityEngine.Random.Range(0, roomObjectsGOs.Count);
-            Logger.Log("Random that we found: {0}", random);
             TaskLocationRoomObject = roomObjectsGOs[random];
         }
     }
 
-    public static CharacterRoutineTask CreateCharacterRoutineTask(CharacterRoutineType routineType, Character character)
+    public static CharacterRoutineTask CreateCharacterRoutineTask(CharacterRoutineTypeName routineTypeName, Character character)
     {
-        CharacterRoutineTask characterRoutineTask = new CharacterRoutineTask(routineType, character)
+        CharacterRoutineTask characterRoutineTask = new CharacterRoutineTask(routineTypeName, character)
             .WithDuration();
         return characterRoutineTask;
     }
 
     public static CharacterRoutineTask CreateCharacterRoutineTask(Character character)
     {
-        CharacterRoutineType routineType = GetRandomRoutineType();
-        CharacterRoutineTask characterRoutineTask = new CharacterRoutineTask(routineType, character)
+        CharacterRoutineTypeName routineTypeName = GetRandomRoutineType();
+        CharacterRoutineTask characterRoutineTask = new CharacterRoutineTask(routineTypeName, character)
             .WithDuration();
             
         return characterRoutineTask;
@@ -76,7 +85,7 @@ public class CharacterRoutineTask
             {
                 await Task.Delay(250);
 
-                if (TaskLocationRoomObject == null) // EG the room object targetted for routine does not exist anymore
+                if (TaskLocationRoomObject == null || TaskLocationRoomObject.InteractingCharacter != null) // EG the room object targetted for routine does not exist anymore or is in use
                 {
                     Logger.Warning("The room object targetted for routine does not exist anymore.");
                     travellingToLocation = false;
@@ -94,44 +103,40 @@ public class CharacterRoutineTask
                     travellingToLocation = false;
                 }
             }
+
+            TaskLocationRoomObject.SetInteractingCharacter(Character);
         }
 
         Character.CharacterAnimationHandler.SetLocomotion(false);
 
         Character.SetCharacterActionState(CharacterActionState.RoutineAction);
-        Logger.Log(Logger.Character, "{0} is now doing {1}", Character.FullName(), CharacterRoutineType);
-        await Task.Delay(Duration);
+        Logger.Log(Logger.Character, "{0} is now doing {1}", Character.FullName(), CharacterRoutineTypeName);
+        await Task.Delay(Duration); // it should be possible to interrupt a routine to start an object interaction or to just walk to another place
+
+        if (TaskLocationRoomObject != null)
+        {
+            TaskLocationRoomObject.UnsetInteractingCharacter(Character);
+        }
         return;
     }
 
-    private static CharacterRoutineType GetRandomRoutineType()
+    private static CharacterRoutineTypeName GetRandomRoutineType()
     {
-        Array values = Enum.GetValues(typeof(CharacterRoutineType));
-        int randomValue = Util.InitRandomNumber().Next(values.Length);
-
-        CharacterRoutineType randomCharacterRoutineType = (CharacterRoutineType)values.GetValue(randomValue);
+        // get value from only the possible routine types for character based on what rooms are on the map
+        int randomValue = Util.InitRandomNumber().Next(RoutineManager.AvailableRoutineTypes.Count);
+        CharacterRoutineTypeName randomCharacterRoutineType = RoutineManager.AvailableRoutineTypes[randomValue].Name;
 
         return randomCharacterRoutineType;
     }
 
-    private List<RoomObjectName> GetRoomObjectsForTask(CharacterRoutineType routineType)
+    private List<RoomObjectName> GetRoomObjectsForTask(CharacterRoutineTypeName routineTypeName)
     {
-        List<RoomObjectName> roomObjectNames = new List<RoomObjectName>();
-        switch (CharacterRoutineType)
-        {
-            case CharacterRoutineType.Idle:
-                break;
-            case CharacterRoutineType.Sing:
-                roomObjectNames.Add(RoomObjectName.ControlRoomMicrophone);
-                break;
-            case CharacterRoutineType.MakePhoneCall:
-                roomObjectNames.Add(RoomObjectName.Telephone);
-                break;
-            default:
-                Logger.Error("No room objects were assigned for the routine {0}", routineType);
-                return null;
-        }
+        CharacterRoutineType characterRoutineType = RoutineManager.AvailableRoutineTypes.FirstOrDefault(routine => routine.Name == routineTypeName);
 
-        return roomObjectNames;
+        if (characterRoutineType == null)
+        {
+            Logger.Error("Could not find routine {0} among the available routine tasks", routineTypeName);
+        }
+        return characterRoutineType.RoomObjects;
     }
 }

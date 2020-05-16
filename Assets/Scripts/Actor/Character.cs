@@ -49,6 +49,12 @@ public class Character : MonoBehaviour
         if (CharacterActionState != CharacterActionState.Idle)
             return;
 
+        if (RoutineManager.AvailableRoutineTypes.Count == 0)
+        {
+            Logger.Warning("Available routine types is 0!");
+            return;
+        }
+
         if (PlannedRoutine.RoutineTasks.Count == 0)
         {
             PlannedRoutine.TryGetNewRoutineTask();

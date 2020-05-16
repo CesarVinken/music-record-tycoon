@@ -7,15 +7,22 @@ public class ObjectInteraction
     public ObjectInteractionCharacterRole CharacterRole;
     public List<InteractionStep> InteractionSteps = new List<InteractionStep>();
 
-    public ObjectInteraction(
+    private ObjectInteraction(
         ObjectInteractionType objectInteractionType,
         string name, 
-        ObjectInteractionCharacterRole characterRole = ObjectInteractionCharacterRole.NoCharacter
+        ObjectInteractionCharacterRole characterRole
     )
     {
         ObjectInteractionType = objectInteractionType;
         Name = name;
         CharacterRole = characterRole;
+    }
+
+    public static ObjectInteraction Create(ObjectInteractionType objectInteractionType,
+        string name,
+        ObjectInteractionCharacterRole characterRole = ObjectInteractionCharacterRole.NoCharacter)
+    {
+        return new ObjectInteraction(objectInteractionType, name, characterRole);
     }
 
     public ObjectInteraction AddInteractionStep(InteractionStep interactionStep)
