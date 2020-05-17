@@ -109,9 +109,12 @@ public class CharacterRoutineTask
 
         Character.CharacterAnimationHandler.SetLocomotion(false);
 
+        //Execution starts
         Character.SetCharacterActionState(CharacterActionState.RoutineAction);
+        CharacterTextDisplayContainer.Instance.EnableCharacterRoutineText(Character, CharacterRoutineTypeName.ToString());
         Logger.Log(Logger.Character, "{0} is now doing {1}", Character.FullName(), CharacterRoutineTypeName);
         await Task.Delay(Duration); // it should be possible to interrupt a routine to start an object interaction or to just walk to another place
+        CharacterTextDisplayContainer.Instance.DisableCharacterRoutineText(Character);
 
         if (TaskLocationRoomObject != null)
         {

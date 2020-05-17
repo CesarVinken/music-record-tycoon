@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
     
-
 public struct CharacterStats
 {
     public CharacterStats(Role role, int age, Gender gender)
@@ -26,10 +24,8 @@ public class CharacterManager : MonoBehaviour
     public static CharacterManager Instance;
 
     public GameObject CharacterPrefab;
-    //public GameObject NavActorPrefab;
 
     public GameObject SceneObjectsGO;
-    //public GameObject PathfindingGO;
 
     public Character SelectedCharacter;
     public List<Character> Characters = new List<Character>();
@@ -44,10 +40,7 @@ public class CharacterManager : MonoBehaviour
     void Awake()
     {
         Guard.CheckIsNull(CharacterPrefab, "CharacterPrefab");
-        //Guard.CheckIsNull(NavActorPrefab, "NavActorPrefab");
-
         Guard.CheckIsNull(SceneObjectsGO, "SceneObjectsGO");
-        //Guard.CheckIsNull(PathfindingGO, "PathfindingGO");
 
         Instance = this;
 
@@ -78,11 +71,6 @@ public class CharacterManager : MonoBehaviour
         GameObject characterGO = GameManager.Instance.InstantiatePrefab(CharacterPrefab, SceneObjectsGO.transform, position);
 
         Character character = SetupCharacter(characterGO, characterStats);
-
-        //GameObject navActorGO = GameManager.Instance.InstantiatePrefab(NavActorPrefab, PathfindingGO.transform, characterGO.transform.position);
-        //NavActor navActor = navActorGO.GetComponent<NavActor>();
-        //navActor.SetCharacter(character);
-
         characterGO.name = CharacterNameGenerator.GetName(characterStats.Name);
 
         await UpdatePathfindingGrid();
@@ -139,25 +127,7 @@ public class CharacterManager : MonoBehaviour
         await Task.Yield();
         GameManager.Instance.AstarPath.Scan();
 
-
-        //for (int i = 0; i < Characters.Count; i++)
-        //{
-        //    if (Characters[i].NavActor.Target.x == Characters[i].transform.position.x &&
-        //        Characters[i].NavActor.Target.y == Characters[i].transform.position.y ||
-        //        Characters[i].NavActor.Target == new Vector2(0, 0))
-        //        continue;
-
-        //    IEnumerator retryReachLocomotionTarget = WaitAndRetryReachLocomotionTarget(Characters[i]);
-        //    StartCoroutine(retryReachLocomotionTarget);
-        //}
         Logger.Log("Updated pathfinding grid");
     }
 
-    //public IEnumerator WaitAndRetryReachLocomotionTarget(Character character)
-    //{
-    //    //character.NavActor.SetIsReevaluating(true);
-    //    yield return new WaitForSeconds(0.08f);
-
-    //    character.PlayerLocomotion.RetryReachLocomotionTarget();
-    //}
 }

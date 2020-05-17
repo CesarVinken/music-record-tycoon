@@ -6,6 +6,7 @@ public class OnScreenTextContainer : MonoBehaviour
     public static OnScreenTextContainer Instance;
 
     public GameObject ObjectInteractionTextContainer;
+    public GameObject CharacterTextDisplayContainer;
 
     public GameObject ObjectInteractionTextContainerPrefab;
     public GameObject InteractionSequenceLinePrefab;
@@ -13,6 +14,8 @@ public class OnScreenTextContainer : MonoBehaviour
     {
         Guard.CheckIsNull(ObjectInteractionTextContainerPrefab, "ObjectInteractionTextContainerPrefab");
         Guard.CheckIsNull(InteractionSequenceLinePrefab, "InteractionSequenceLinePrefab");
+
+        Guard.CheckIsNull(CharacterTextDisplayContainer, "CharacterTextDisplayContainer");
 
         Instance = this;
     }
