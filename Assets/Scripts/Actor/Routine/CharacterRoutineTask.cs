@@ -127,19 +127,18 @@ public class CharacterRoutineTask
     {
         // get value from only the possible routine types for character based on what rooms are on the map
         int randomValue = Util.InitRandomNumber().Next(RoutineManager.AvailableRoutineTypes.Count);
-        CharacterRoutineTypeName randomCharacterRoutineType = RoutineManager.AvailableRoutineTypes[randomValue].Name;
+        CharacterRoutineTypeName randomCharacterRoutineType = RoutineManager.AvailableRoutineTypes.ElementAt(randomValue).Key;
 
         return randomCharacterRoutineType;
     }
 
     private List<RoomObjectName> GetRoomObjectsForTask(CharacterRoutineTypeName routineTypeName)
     {
-        CharacterRoutineType characterRoutineType = RoutineManager.AvailableRoutineTypes.FirstOrDefault(routine => routine.Name == routineTypeName);
-
-        if (characterRoutineType == null)
-        {
+        if(!RoutineManager.AvailableRoutineTypes.ContainsKey(routineTypeName)) {
             Logger.Error("Could not find routine {0} among the available routine tasks", routineTypeName);
         }
+        CharacterRoutineType characterRoutineType = RoutineManager.AvailableRoutineTypes[routineTypeName];
+
         return characterRoutineType.RoomObjects;
     }
 }

@@ -59,12 +59,12 @@ public class RoomManager : MonoBehaviour
             {
                 CharacterRoutineType routineType = roomObjectGO.RoomObjectBlueprint.CharacterRoutines[i];
                 Logger.Warning("routine type in object {0} is {1}. ", roomObjectGO.RoomObjectBlueprint.Name, routineType.Name);
-                if (!RoutineManager.AvailableRoutineTypes.Contains(routineType))
+                if (!RoutineManager.AvailableRoutineTypes.ContainsKey(routineType.Name))
                 {
                     Logger.Log("{0} is not yet in the available routine types. We already had: ", routineType.Name);
                     for (int j = 0; j < RoutineManager.AvailableRoutineTypes.Count; j++)
                     {
-                        Logger.Log("{0}", RoutineManager.AvailableRoutineTypes[j].Name);
+                        Logger.Log("{0}", RoutineManager.AvailableRoutineTypes.ElementAt(j).Key);
                     }
                     RoutineManager.EnableRoutineType(routineType);
                 }
@@ -80,32 +80,36 @@ public class RoomManager : MonoBehaviour
         // if room object last of its kind, check if we should deregister a routine
         bool exists = RoomObjectGOs.Any(go => go.RoomObjectBlueprint.RoomObjectName == roomObjectGO.RoomObjectBlueprint.RoomObjectName);
 
+        List<CharacterRoutineType> noLongerAvailableRoutines = new List<CharacterRoutineType>();
         if (!exists)
         {
-            CharacterRoutineType[] noLongerAvailableRoutines = RoutineManager.AvailableRoutineTypes.Where(routine =>
+            for (int i = 0; i < RoutineManager.AvailableRoutineTypes.Count; i++)
             {
-                // check if available routine contains roomObject type
-                bool containsRoomObject = routine.RoomObjects.Contains(roomObjectGO.RoomObjectBlueprint.RoomObjectName);
+                CharacterRoutineType characterRoutineType = RoutineManager.AvailableRoutineTypes.ElementAt(i).Value;
+                bool containsRoomObject = characterRoutineType.RoomObjects.Contains(roomObjectGO.RoomObjectBlueprint.RoomObjectName);
                 bool isStillAvailable = false;
 
                 if (containsRoomObject)
                 {
-                    for (int i = 0; i < routine.RoomObjects.Count; i++)
+                    for (int j = 0; j < characterRoutineType.RoomObjects.Count; j++)
                     {
-                        RoomObjectName roomObjectInRoutine = routine.RoomObjects[i];
-                        if(RoomObjectGOs.Any(go => go.RoomObjectBlueprint.RoomObjectName == roomObjectInRoutine))
+                        RoomObjectName roomObjectInRoutine = characterRoutineType.RoomObjects[j];
+                        if (RoomObjectGOs.Any(go => go.RoomObjectBlueprint.RoomObjectName == roomObjectInRoutine))
                         {
                             isStillAvailable = true;
                             break;
                         }
                     }
                 }
-                return !isStillAvailable;
-            }).ToArray();
+                if(isStillAvailable)
+                {
+                    noLongerAvailableRoutines.Add(characterRoutineType);
+                }
+            }
 
-            for (int j = 0; j < noLongerAvailableRoutines.Length; j++)
+            for (int k = 0; k < noLongerAvailableRoutines.Count; k++)
             {
-                RoutineManager.DisableRoutineType(noLongerAvailableRoutines[j]);
+                RoutineManager.DisableRoutineType(noLongerAvailableRoutines[k]);
             }
         }
     }
