@@ -80,7 +80,7 @@ public class CharacterManager : MonoBehaviour
     public Character SetupCharacter(GameObject characterGO, CharacterStats characterStats)
     {
         Character character = AddCharacterRole(characterGO, characterStats);
-        character.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image);
+        character.Setup(characterStats.Name, characterStats.Age, characterStats.Gender, characterStats.Image, characterStats.Role);
 
         Characters.Add(character);
         return character;

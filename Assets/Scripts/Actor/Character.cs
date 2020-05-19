@@ -11,6 +11,7 @@ public class Character : MonoBehaviour
     public int Age;
     public Gender Gender;
     public string Image;
+    public Role Role;
 
     public CharacterLocomotion PlayerLocomotion;
     public CharacterAnimationHandler CharacterAnimationHandler;
@@ -74,13 +75,14 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void Setup(CharacterName name, int age, Gender gender, string image)
+    public void Setup(CharacterName name, int age, Gender gender, string image, Role role)
     {
         Id = Guid.NewGuid().ToString();
         CharacterName = name;
         Age = age;
         Gender = gender;
         Image = image;
+        Role = role;
 
         SetCharacterActionState(CharacterActionState.Idle);
     }

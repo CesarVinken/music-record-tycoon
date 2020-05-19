@@ -55,7 +55,7 @@ public class CharacterRoutineTask
 
     public static CharacterRoutineTask CreateCharacterRoutineTask(Character character)
     {
-        CharacterRoutineTypeName routineTypeName = GetRandomRoutineType();
+        CharacterRoutineTypeName routineTypeName = GetRandomRoutineType(character);
         CharacterRoutineTask characterRoutineTask = new CharacterRoutineTask(routineTypeName, character)
             .WithDuration();
             
@@ -123,11 +123,26 @@ public class CharacterRoutineTask
         return;
     }
 
-    private static CharacterRoutineTypeName GetRandomRoutineType()
+    private static CharacterRoutineTypeName GetRandomRoutineType(Character character)
     {
+        List<CharacterRoutineType> availableCharacterRoutineTypes = new List<CharacterRoutineType>();
+
+        // filter out available routines that are not suitable for the character's role
+        for (int i = 0; i < RoutineManager.AvailableRoutineTypes.Count; i++)
+        {
+            CharacterRoutineType characterRoutineType = RoutineManager.AvailableRoutineTypes.ElementAt(i).Value;
+            if (characterRoutineType.CharacterRoles.Count == 0 || characterRoutineType.CharacterRoles.Contains(character.Role)) {
+                availableCharacterRoutineTypes.Add(characterRoutineType);
+            }
+        }
+
+        // TODO filter based on time of day
+
         // get value from only the possible routine types for character based on what rooms are on the map
-        int randomValue = Util.InitRandomNumber().Next(RoutineManager.AvailableRoutineTypes.Count);
-        CharacterRoutineTypeName randomCharacterRoutineType = RoutineManager.AvailableRoutineTypes.ElementAt(randomValue).Key;
+        int randomValue = Util.InitRandomNumber().Next(availableCharacterRoutineTypes.Count);
+
+
+        CharacterRoutineTypeName randomCharacterRoutineType = availableCharacterRoutineTypes[randomValue].Name;
 
         return randomCharacterRoutineType;
     }

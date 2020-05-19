@@ -61,11 +61,6 @@ public class RoomManager : MonoBehaviour
                 Logger.Warning("routine type in object {0} is {1}. ", roomObjectGO.RoomObjectBlueprint.Name, routineType.Name);
                 if (!RoutineManager.AvailableRoutineTypes.ContainsKey(routineType.Name))
                 {
-                    Logger.Log("{0} is not yet in the available routine types. We already had: ", routineType.Name);
-                    for (int j = 0; j < RoutineManager.AvailableRoutineTypes.Count; j++)
-                    {
-                        Logger.Log("{0}", RoutineManager.AvailableRoutineTypes.ElementAt(j).Key);
-                    }
                     RoutineManager.EnableRoutineType(routineType);
                 }
             }

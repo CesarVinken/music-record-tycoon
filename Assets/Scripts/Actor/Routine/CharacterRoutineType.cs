@@ -4,12 +4,13 @@ public class CharacterRoutineType
 {
     public CharacterRoutineTypeName Name;
     public List<RoomObjectName> RoomObjects; // the room objects with which a character can perform this routine task
-    // todo character types: Who can do this routine task?
+    public List<Role> CharacterRoles;
 
     private CharacterRoutineType(CharacterRoutineTypeName name)
     {
         Name = name;
         RoomObjects = new List<RoomObjectName>();
+        CharacterRoles = new List<Role>();
     }
 
     public static CharacterRoutineType Create(CharacterRoutineTypeName name)
@@ -35,6 +36,12 @@ public class CharacterRoutineType
         return this;
     }
 
+    private CharacterRoutineType ForCharacterRoles(List<Role> characterRoles)
+    {
+        CharacterRoles = characterRoles;
+        return this;
+    }
+
     private CharacterRoutineType Idle()
     {
         return this;
@@ -50,9 +57,11 @@ public class CharacterRoutineType
 
     private CharacterRoutineType Sing()
     {
+        List<Role> characterRoles = new List<Role>() { Role.Musician };
         return WithRoomObjects(new List<RoomObjectName>
         {
             RoomObjectName.ControlRoomMicrophone
-        });
+        })
+        .ForCharacterRoles(characterRoles);
     }
 }
