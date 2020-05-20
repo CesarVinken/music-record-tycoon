@@ -58,7 +58,6 @@ public class RoomManager : MonoBehaviour
             for (int i = 0; i < roomObjectGO.RoomObjectBlueprint.CharacterRoutines.Length; i++)
             {
                 CharacterRoutineType routineType = roomObjectGO.RoomObjectBlueprint.CharacterRoutines[i];
-                Logger.Warning("routine type in object {0} is {1}. ", roomObjectGO.RoomObjectBlueprint.Name, routineType.Name);
                 if (!RoutineManager.AvailableRoutineTypes.ContainsKey(routineType.Name))
                 {
                     RoutineManager.EnableRoutineType(routineType);

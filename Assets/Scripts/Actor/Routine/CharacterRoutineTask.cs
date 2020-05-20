@@ -87,9 +87,13 @@ public class CharacterRoutineTask
 
                 if (TaskLocationRoomObject == null || TaskLocationRoomObject.InteractingCharacter != null) // EG the room object targetted for routine does not exist anymore or is in use
                 {
-                    Logger.Warning("The room object targetted for routine does not exist anymore.");
+                    Logger.Warning("The room object targetted for routine does not exist anymore or is already in use.");
                     travellingToLocation = false;
                     Character.PlannedRoutine.InterruptRoutine();
+
+                    Character.SetCharacterActionState(CharacterActionState.Idle);
+                    Character.CharacterAnimationHandler.SetLocomotion(false);
+
                     return;
                 }
                 if (Character.PlayerLocomotion.Target != targetLocation)
@@ -136,13 +140,23 @@ public class CharacterRoutineTask
             }
         }
 
-        // TODO filter based on time of day
+        // weight chances for routines based on the time of day
+        float[] weightedIndeces = availableCharacterRoutineTypes.Select(routine => {
+            float originalWeight = routine.ProbabilityWeight;
+            float adjustedWeight = routine.ApplyTimeProbabilityMultiplier(originalWeight);
+            return adjustedWeight;
+            }).ToArray();
+        //for (int p = 0; p < weightedIndeces.Length; p++)
+        //{
+        //    Logger.Log("adjusted weightedIndex {0} is {1}", p, weightedIndeces[p]);
+        //}
+        //for (int q = 0; q < availableCharacterRoutineTypes.Count; q++)
+        //{
+        //    Logger.Log("availableCharacterRoutineTypes name{0} is {1}", q, availableCharacterRoutineTypes[q].Name);
+        //}
+        int randomWeightIndex = Util.GetRandomWeightedIndex(weightedIndeces);
 
-        // get value from only the possible routine types for character based on what rooms are on the map
-        int randomValue = Util.InitRandomNumber().Next(availableCharacterRoutineTypes.Count);
-
-
-        CharacterRoutineTypeName randomCharacterRoutineType = availableCharacterRoutineTypes[randomValue].Name;
+        CharacterRoutineTypeName randomCharacterRoutineType = availableCharacterRoutineTypes[randomWeightIndex].Name;
 
         return randomCharacterRoutineType;
     }

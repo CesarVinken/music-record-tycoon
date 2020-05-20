@@ -11,13 +11,13 @@ public class RoutineManager
 
     public static void EnableRoutineType(CharacterRoutineType routineType)
     {
-        Logger.Log("Enabled routine {0}", routineType.Name);
+        //Logger.Log("Enabled routine {0}", routineType.Name);
         AvailableRoutineTypes.Add(routineType.Name, routineType);
     }
 
     public static void DisableRoutineType(CharacterRoutineType routineType)
     {
-        Logger.Log("Disabled routine {0}", routineType.Name);
+        //Logger.Log("Disabled routine {0}", routineType.Name);
         AvailableRoutineTypes.Remove(routineType.Name);
     }
 }
