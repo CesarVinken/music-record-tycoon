@@ -48,17 +48,17 @@ public class CharacterManager : MonoBehaviour
         AvatarsFemale = Resources.LoadAll<Sprite>("Icons/Avatars/TestAvatarsFemale");
     }
 
-    async void Start()
+    void Start()
     {
         _avatarContainer = AvatarContainer.Instance;
 
-        await GenerateCharacter(
+        GenerateCharacter(
             new CharacterStats(
                 CharacterRoleGenerator.Generate(),
                 CharacterAgeGenerator.Generate(),
                 CharacterNameGenerator.PickGender()),
             new Vector2(0, 15));
-        await GenerateCharacter(
+        GenerateCharacter(
             new CharacterStats(
                 CharacterRoleGenerator.Generate(),
                 CharacterAgeGenerator.Generate(),
@@ -66,15 +66,15 @@ public class CharacterManager : MonoBehaviour
             new Vector2(5, 10));
     }
 
-    public async Task GenerateCharacter(CharacterStats characterStats, Vector2 position)
+    public void GenerateCharacter(CharacterStats characterStats, Vector2 position)
     {
         GameObject characterGO = GameManager.Instance.InstantiatePrefab(CharacterPrefab, SceneObjectsGO.transform, position);
 
         Character character = SetupCharacter(characterGO, characterStats);
         characterGO.name = CharacterNameGenerator.GetName(characterStats.Name);
 
-        await UpdatePathfindingGrid();
-        return;
+        //await UpdatePathfindingGrid();
+        //return;
     }
 
     public Character SetupCharacter(GameObject characterGO, CharacterStats characterStats)
@@ -122,10 +122,10 @@ public class CharacterManager : MonoBehaviour
         Destroy(character);
     }
 
-    public async Task UpdatePathfindingGrid()
+    public void UpdatePathfindingGrid(Room room)
     {
-        await Task.Yield();
-        GameManager.Instance.AstarPath.Scan();
+        room.UpdateRoomNavhMesh();
+        //GameManager.Instance.AstarPath.Scan();
 
         Logger.Log("Updated pathfinding grid");
     }

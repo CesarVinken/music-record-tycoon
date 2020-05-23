@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Pathfinding;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(GraphUpdateScene))]
 public class Room : BuildItem
 {
 
     public RoomObjectsContainer RoomObjectsContainer;
+    public GraphUpdateScene GraphUpdateScene;
 
     public Dictionary<Direction, Vector2> RoomCorners;
     public ObjectRotation RoomRotation;
@@ -30,6 +33,8 @@ public class Room : BuildItem
 
         if (RoomObjectsContainer == null)
             Logger.Error(Logger.Initialisation, "Could not find RoomObjectsContainer script");
+        if (GraphUpdateScene == null)
+            Logger.Error(Logger.Initialisation, "Could not find GraphUpdateScene script");
 
         if (WallPieces.Count == 0) Logger.Warning("There are no wall pieces found for this room. Maybe they were not yet set up.");
 
@@ -37,6 +42,7 @@ public class Room : BuildItem
         {
             WallPieces[i].Room = this;
         }
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -535,5 +541,31 @@ public class Room : BuildItem
     {
         return RoomRotation == ObjectRotation.Rotation0 || RoomRotation == ObjectRotation.Rotation180 ?
         RoomBlueprint.LeftUpAxisLength : RoomBlueprint.RightUpAxisLength;
+    }
+
+    public void SetGraphUpdateScenePoints()
+    {
+        if(Collider == null)
+        {
+            // make sure collider is setup first
+        }
+
+        if(Collider.points.Length == 0)
+        {
+
+        }
+
+        Vector3[] vector3Points = System.Array.ConvertAll<Vector2, Vector3>(Collider.points, v2 => new Vector3(v2.x, v2.y));
+        GraphUpdateScene.points = vector3Points;
+    }
+
+    public void UpdateRoomNavhMesh()
+    {
+        Logger.Log("update pathfinding grid for room");
+        GraphUpdateScene.updatePhysics = true; // make sure it is set to false again after update
+        var guo = new GraphUpdateObject(GetComponent<PolygonCollider2D>().bounds);
+
+        AstarPath.active.UpdateGraphs(guo);
+        GraphUpdateScene.updatePhysics = false;
     }
 }

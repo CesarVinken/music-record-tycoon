@@ -49,11 +49,10 @@ public class BuildHallwayTrigger : MonoBehaviour
         }
     }
 
-    public async void BuildHallway()
+    public void BuildHallway()
     {
         DeleteAllHallwayTriggers();
-        await BuilderManager.Instance.BuildRoom(BuilderManager.Instance.SelectedRoom, _startingPoint, ObjectRotation.Rotation0);
-        return;
+        BuilderManager.Instance.BuildRoom(BuilderManager.Instance.SelectedRoom, _startingPoint, ObjectRotation.Rotation0);
     }
 
     public static void DeleteAllHallwayTriggers()

@@ -120,14 +120,6 @@ public class CharacterLocomotion : MonoBehaviour
         Character.SetCharacterActionState(CharacterActionState.Moving);
     }
 
-    //public void RetryReachLocomotionTarget()
-    //{
-    //    Logger.Log("Retry locomotion target");
-
-    //    //Vector3 target = new Vector3(Character.NavActor.Target.x, Character.NavActor.Target.y, transform.position.z);
-    //    //Character.NavActor.Target = target;
-    //}
-
     public void ReachLocomotionTarget()
     {
         DestinationSetter.target = null;

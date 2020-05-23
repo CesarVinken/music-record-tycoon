@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class RoomBuilder
 {
-    public async Task BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, BuildingPlot buildingPlot)
+    public void BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, BuildingPlot buildingPlot)
     {
-        await BuildRoom(roomBlueprint, buildingTileBuilder, buildingPlotBuilder, buildingPlot.StartingPoint, buildingPlot.PlotRotation);
-        return;
+        BuildRoom(roomBlueprint, buildingTileBuilder, buildingPlotBuilder, buildingPlot.StartingPoint, buildingPlot.PlotRotation);
     }
 
-    public async Task BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, Vector2 startingPoint, ObjectRotation roomRotation)
+    public void BuildRoom(RoomBlueprint roomBlueprint, BuildingTileBuilder buildingTileBuilder, BuildingPlotBuilder buildingPlotBuilder, Vector2 startingPoint, ObjectRotation roomRotation)
     {
         GameObject roomGO = GameManager.Instance.InstantiatePrefab(BuilderManager.Instance.RegisteredRoomPrefabs[roomBlueprint.RoomName][roomRotation], BuilderManager.Instance.RoomsContainer.transform, startingPoint);
 
@@ -40,6 +39,7 @@ public class RoomBuilder
 
         room.SetupCorners(roomCorners);
         room.SetupCollider();
+        room.SetGraphUpdateScenePoints();
 
         // the sprites should already be part of the room prefab. The scripts should be on the sprites. But on start() of the room, all scripts should be initalised and added to the room's []
         //room.SetupRoomObjects();
@@ -47,9 +47,7 @@ public class RoomBuilder
         buildingTileBuilder.UpdateBuildingTiles(room);
 
         FollowUpRoomBuilding(roomBlueprint, roomCorners, buildingPlotBuilder);
-        await CharacterManager.Instance.UpdatePathfindingGrid();
-
-        return;
+        CharacterManager.Instance.UpdatePathfindingGrid(room);
     }
 
     public void FollowUpRoomBuilding(RoomBlueprint roomBlueprint, Dictionary<Direction, Vector2> roomCorners, BuildingPlotBuilder buildingPlotBuilder)

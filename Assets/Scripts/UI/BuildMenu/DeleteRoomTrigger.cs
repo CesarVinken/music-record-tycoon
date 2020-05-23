@@ -39,11 +39,10 @@ public class DeleteRoomTrigger : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public async Task DeleteRoom()
+    public void DeleteRoom()
     {
         BuilderManager.Instance.DeleteRoom(_room);
-        await CharacterManager.Instance.UpdatePathfindingGrid();
-        return;
+        CharacterManager.Instance.UpdatePathfindingGrid(_room);
     }
 
     public static void DeleteAllDeleteRoomTriggers()

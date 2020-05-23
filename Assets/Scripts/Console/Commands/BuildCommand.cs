@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BuildCommand : CommandProcedure
 {
-    public async override void Run(List<string> arguments)
+    public override void Run(List<string> arguments)
     {
         if(BuilderManager.Instance == null )
         {
@@ -16,10 +16,10 @@ public class BuildCommand : CommandProcedure
         switch (arguments[0])
         {
             case "room":
-                await BuildRoom(arguments);
+                BuildRoom(arguments);
                 break;
             case "character":
-                await BuildCharacter(arguments);
+                BuildCharacter(arguments);
                 break;
             default:
                 Console.Instance.PrintToReportText("Unknown build command to build " + arguments[0]);
@@ -35,7 +35,7 @@ public class BuildCommand : CommandProcedure
         Console.Instance.PrintToReportText(printLine);
     }
 
-    public async Task BuildRoom(List<string> arguments)
+    public void BuildRoom(List<string> arguments)
     {
         if(arguments.Count == 1)
         {
@@ -49,7 +49,7 @@ public class BuildCommand : CommandProcedure
 
         // remove all existing rooms
         RoomManager.Instance.DeleteAllRooms();
-        await CharacterManager.Instance.UpdatePathfindingGrid();
+        //await CharacterManager.Instance.UpdatePathfindingGrid();
         BuilderManager.Instance.BuildingTiles.Clear();
         BuilderManager.Instance.BuildingTileLocations.Clear();
 
@@ -72,20 +72,20 @@ public class BuildCommand : CommandProcedure
                     RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
                     RoomBlueprint hallway = RoomBlueprint.CreateBlueprint(RoomName.Hallway);
 
-                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(0, 0), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(45, -37.5f), ObjectRotation.Rotation180);
-                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(60, -75), ObjectRotation.Rotation180);
-                    await BuilderManager.Instance.BuildRoom(room1, new Vector2(-15, -67.5f), ObjectRotation.Rotation270);
+                    BuilderManager.Instance.BuildRoom(room1, new Vector2(0, 0), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(room1, new Vector2(45, -37.5f), ObjectRotation.Rotation180);
+                    BuilderManager.Instance.BuildRoom(room1, new Vector2(60, -75), ObjectRotation.Rotation180);
+                    BuilderManager.Instance.BuildRoom(room1, new Vector2(-15, -67.5f), ObjectRotation.Rotation270);
 
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, 0), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(45, -7.5f), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, -15), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(15, -22.5f), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(0, -30), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(15, -37.5f), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, -45), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(45, -52.5f), ObjectRotation.Rotation0);
-                    await BuilderManager.Instance.BuildRoom(hallway, new Vector2(0, -45), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, 0), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(45, -7.5f), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, -15), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(15, -22.5f), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(0, -30), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(15, -37.5f), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(30, -45), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(45, -52.5f), ObjectRotation.Rotation0);
+                    BuilderManager.Instance.BuildRoom(hallway, new Vector2(0, -45), ObjectRotation.Rotation0);
 
                     BuildHallwayTrigger.DeleteAllHallwayTriggers();
 
@@ -105,7 +105,7 @@ public class BuildCommand : CommandProcedure
         Console.Instance.PrintToReportText("Built room");
     }
 
-    public async Task BuildCharacter(List<string> allArguments)
+    public void BuildCharacter(List<string> allArguments)
     {
         List<string> arguments = allArguments.Where((v, i) => i != 0).ToList();
 
@@ -122,7 +122,7 @@ public class BuildCommand : CommandProcedure
 
         Vector2 startingPosition = new Vector2(15, 15);
 
-        await CharacterManager.Instance.GenerateCharacter(
+        CharacterManager.Instance.GenerateCharacter(
             characterStats,
             startingPosition);
 

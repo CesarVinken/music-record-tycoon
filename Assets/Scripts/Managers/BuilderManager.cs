@@ -77,11 +77,11 @@ public class BuilderManager : MonoBehaviour
 
     }
 
-    public async void Start()
+    public void Start()
     {
         _buildingTileBuilder.SetupInitialBuildingTiles();    // Temporary, should only happen for empty map!
 
-        await SetupInitialRoom();
+        SetupInitialRoom();
     }
 
     private void RegisterRooms()
@@ -244,10 +244,10 @@ public class BuilderManager : MonoBehaviour
         _buildingPlotBuilder.DrawAvailablePlots();
     }
 
-    public async Task SetupInitialRoom()
+    public void SetupInitialRoom()
     {
         RoomBlueprint room1 = RoomBlueprint.CreateBlueprint(RoomName.Room1);
-        await BuildRoom(room1, new Vector2(0, 0), ObjectRotation.Rotation0);
+        BuildRoom(room1, new Vector2(0, 0), ObjectRotation.Rotation0);
         return;
     }
 
@@ -256,14 +256,14 @@ public class BuilderManager : MonoBehaviour
         SelectedRoom = selectedRoom;
     }
 
-    public async Task BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint, ObjectRotation roomRotation)
+    public void BuildRoom(RoomBlueprint roomBlueprint, Vector2 startingPoint, ObjectRotation roomRotation)
     {
-        await _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, startingPoint, roomRotation);
+        _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, startingPoint, roomRotation);
     }
 
-    public async void BuildRoom(RoomBlueprint roomBlueprint, BuildingPlot buildingPlot)
+    public void BuildRoom(RoomBlueprint roomBlueprint, BuildingPlot buildingPlot)
     {
-        await _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, buildingPlot);
+        _roomBuilder.BuildRoom(roomBlueprint, _buildingTileBuilder, _buildingPlotBuilder, buildingPlot);
     }
 
     public void BuildRoomObject(RoomObjectBlueprint roomObjectBlueprint, GridLocation roomObjectLocation, Room parentRoom)
@@ -401,6 +401,8 @@ public class BuilderManager : MonoBehaviour
         room.DeleteRoom();
         Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
         tempRoomCopy.CleanUpDeletedRoomTiles();
+
+        CharacterManager.Instance.UpdatePathfindingGrid(tempRoomCopy);
 
         for (int l = 0; l < RoomManager.Rooms.Count; l++)
         {
