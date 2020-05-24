@@ -22,6 +22,8 @@ public class ShowCommand : CommandProcedure
         printLine += "\nUse 'gizmo' as a 2nd argument to toggle editor gizmos.";
         printLine += "\nUse 'building-tiles' as a 3rd argument to show in the editor what building tile locations are available or occupied";
         printLine += "\nUse 'door-location' as a 3rd argument to show in the editor where possible doors of rooms could be located.";
+        printLine += "\nUse 'grid-coordinates' as a 3rd argument to show grid coordinates in the editor.";
+        printLine += "\nUse 'grid-vector-coordinates' as a 3rd argument to show grid coordinates in vectors in the editor.";
 
         Console.Instance.PrintToReportText(printLine);
     }
@@ -53,6 +55,22 @@ public class ShowCommand : CommandProcedure
                     return;
                 }
                 GameManager.DrawDoorLocationGizmos = true;
+                return;
+            case "grid-coordinates":
+                if (arguments.Count > 1 && arguments[1] == "off")
+                {
+                    GameManager.DrawGridCoordinates = false;
+                    return;
+                }
+                GameManager.DrawGridCoordinates = true;
+                return;
+            case "grid-vector-coordinates":
+                if (arguments.Count > 1 && arguments[1] == "off")
+                {
+                    GameManager.DrawGridVectorCoordinates = false;
+                    return;
+                }
+                GameManager.DrawGridVectorCoordinates = true;
                 return;
             default:
                 Console.Instance.PrintToReportText("Unknown argument " + arguments[0] + ".");
