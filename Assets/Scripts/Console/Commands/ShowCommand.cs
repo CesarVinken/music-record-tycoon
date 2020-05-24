@@ -24,6 +24,7 @@ public class ShowCommand : CommandProcedure
         printLine += "\nUse 'door-location' as a 3rd argument to show in the editor where possible doors of rooms could be located.";
         printLine += "\nUse 'grid-coordinates' as a 3rd argument to show grid coordinates in the editor.";
         printLine += "\nUse 'grid-vector-coordinates' as a 3rd argument to show grid coordinates in vectors in the editor.";
+        printLine += "\nUse 'pathfinding-cells' as a 3rd argument to show pathfinding cells gizmos in the editor.";
 
         Console.Instance.PrintToReportText(printLine);
     }
@@ -71,6 +72,14 @@ public class ShowCommand : CommandProcedure
                     return;
                 }
                 GameManager.DrawGridVectorCoordinates = true;
+                return;
+            case "pathfinding-cells":
+                if (arguments.Count > 1 && arguments[1] == "off")
+                {
+                    GameManager.DrawPathfindingCells = false;
+                    return;
+                }
+                GameManager.DrawPathfindingCells = true;
                 return;
             default:
                 Console.Instance.PrintToReportText("Unknown argument " + arguments[0] + ".");

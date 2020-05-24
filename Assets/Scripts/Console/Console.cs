@@ -191,7 +191,7 @@ public class Console : MonoBehaviour
         if(Command == null)
         {
             Logger.Warning("Could not find a command with the name {0}", commandName);
-            PrintToReportText("Could not find a command with the name {0}");
+            PrintToReportText("Could not find a command with the name " + commandName);
             return;
         }
 

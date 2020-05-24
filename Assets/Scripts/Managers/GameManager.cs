@@ -39,6 +39,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public static bool DrawPathfindingCells
+    {
+        get { return _drawPathfindingCells; }
+        set
+        {
+            _drawPathfindingCells = value;
+            CharacterManager.Instance.DrawPathfindingCells(value);
+        }
+    }
+
 
     public Platform CurrentPlatform;
     public IPlatformConfiguration Configuration;
@@ -53,6 +63,7 @@ public class GameManager : MonoBehaviour
     private static bool _mainMenuOpen;
     private static bool _drawGridCoordinates;
     private static bool _drawGridVectorCoordinates;
+    private static bool _drawPathfindingCells;
 
     public void Awake()
     {

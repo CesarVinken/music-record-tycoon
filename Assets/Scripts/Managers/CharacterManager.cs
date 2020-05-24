@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Pathfinding;
+using System.Collections.Generic;
 using UnityEngine;
     
 public struct CharacterStats
@@ -72,9 +72,6 @@ public class CharacterManager : MonoBehaviour
 
         Character character = SetupCharacter(characterGO, characterStats);
         characterGO.name = CharacterNameGenerator.GetName(characterStats.Name);
-
-        //await UpdatePathfindingGrid();
-        //return;
     }
 
     public Character SetupCharacter(GameObject characterGO, CharacterStats characterStats)
@@ -125,9 +122,19 @@ public class CharacterManager : MonoBehaviour
     public void UpdatePathfindingGrid(Room room)
     {
         room.UpdateRoomNavhMesh();
-        //GameManager.Instance.AstarPath.Scan();
 
         Logger.Log("Updated pathfinding grid");
     }
+    
+    public void DrawPathfindingCells(bool enable)
+    {   
+        if (GameManager.Instance.AstarPath == null || GameManager.Instance.AstarPath.graphs[0] == null)
+        {
+            Logger.Warning("Could not find GameManager.Instance.AstarPath.graphs[0] for DrawPathfindingCells");
+        }
 
+        GridGraph graph = GameManager.Instance.AstarPath.graphs[0] as GridGraph;
+        graph.showMeshOutline = enable;
+        graph.showMeshSurface = enable;
+    }
 }
