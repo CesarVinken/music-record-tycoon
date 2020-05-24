@@ -15,6 +15,30 @@ public class GameManager : MonoBehaviour
     public static bool DrawBuildingTilesGizmos;
     public static bool DrawDoorLocationGizmos;
 
+    public static bool DrawGridVectorCoordinates
+    {
+        get { return _drawGridVectorCoordinates; }
+        set
+        {
+            if (DrawGridCoordinates)
+                DrawGridCoordinates = false;
+
+            _drawGridVectorCoordinates = value;
+        }
+    }
+
+    public static bool DrawGridCoordinates
+    {
+        get { return _drawGridCoordinates; }
+        set
+        {
+            if (DrawGridVectorCoordinates)
+                DrawGridVectorCoordinates = false;
+
+            _drawGridCoordinates = value;
+        }
+    }
+
 
     public Platform CurrentPlatform;
     public IPlatformConfiguration Configuration;
@@ -27,6 +51,8 @@ public class GameManager : MonoBehaviour
     public GameObject AstarGO;
 
     private static bool _mainMenuOpen;
+    private static bool _drawGridCoordinates;
+    private static bool _drawGridVectorCoordinates;
 
     public void Awake()
     {
@@ -54,6 +80,8 @@ public class GameManager : MonoBehaviour
 
         DrawBuildingTilesGizmos = false;
         DrawDoorLocationGizmos = false;
+        DrawGridVectorCoordinates = false;
+        DrawGridCoordinates = true;
     }
 
     public void Update()
@@ -78,6 +106,9 @@ public class GameManager : MonoBehaviour
 
             if (DrawDoorLocationGizmos)
                 BuilderManager.Instance.DrawDoorLocationGizmos();
+
+            if (DrawGridCoordinates)
+                BuilderManager.Instance.DrawGridCoordinates();
         }
     }
 

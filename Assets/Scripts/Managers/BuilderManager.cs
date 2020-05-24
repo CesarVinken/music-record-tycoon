@@ -358,6 +358,15 @@ public class BuilderManager : MonoBehaviour
         _buildingTileBuilder.DrawBuildingTilesGizmos();
     }
 
+    public void DrawGridCoordinates()
+    {
+        _buildingTileBuilder.DrawGridCoordinates();
+    }
+
+    public void DrawGridVectorCoordinates()
+    {
+        _buildingTileBuilder.DrawGridVectorCoordinates();
+    }
 
     public void ActivateDeleteRoomMode()
     {

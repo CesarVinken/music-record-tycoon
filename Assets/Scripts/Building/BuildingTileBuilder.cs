@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class BuildingTileBuilder
@@ -115,6 +116,26 @@ public class BuildingTileBuilder
                 Gizmos.color = Color.red;
 
             Gizmos.DrawCube(startingPoint, new Vector3(1, 1));
+        }
+    }
+
+
+    public void DrawGridCoordinates()
+    {
+        for (int i = 0; i < BuilderManager.Instance.BuildingTiles.Count; i++)
+        {
+            Vector2 startingPoint = BuilderManager.Instance.BuildingTiles[i].StartingPoint;
+            GridLocation gridCoordinates = GridHelper.VectorToGridLocation(startingPoint);
+            Handles.Label(startingPoint, gridCoordinates.UpRight + ", " + gridCoordinates.UpLeft);
+        }
+    }
+
+    public void DrawGridVectorCoordinates()
+    {
+        for (int i = 0; i < BuilderManager.Instance.BuildingTiles.Count; i++)
+        {
+            Vector2 startingPoint = BuilderManager.Instance.BuildingTiles[i].StartingPoint;
+            Handles.Label(startingPoint, startingPoint.x + ", " + startingPoint.y);
         }
     }
 }
