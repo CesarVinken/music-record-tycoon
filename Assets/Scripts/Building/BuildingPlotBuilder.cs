@@ -36,24 +36,24 @@ public class BuildingPlotBuilder
 
         bool isAvailable = true;
 
-        for (int i = 3; i <= rightUpAxisLength; i += 3)
+        for (int i = 0; i <= rightUpAxisLength - 3; i += 3)
         {
-            for (int j = leftUpAxisLength; j >= 0; j -= 3)
+            for (int j = 0; j <= leftUpAxisLength - 3; j += 3)
             {
                 BuildingTile tile = GetBuildingTileForAvailability(i, j, plotLocationStartingPoint, roomSquareTiles);
 
-                if (i == 0 || i == rightUpAxisLength || j == 0 || j == leftUpAxisLength)
-                {
-                    // skip tiles that are at the edge because they may overlap with the walls of adjacent rooms
-                    continue;
-                }
+                //if (i == 0 || i == rightUpAxisLength || j == 0 || j == leftUpAxisLength)
+                //{
+                //    // skip tiles that are at the edge because they may overlap with the walls of adjacent rooms
+                //    continue;
+                //}
 
                 if (tile == null)
                 {
                     Logger.Error(Logger.Building, "Could not find tile at {0}", GridHelper.GridToVectorLocation(plotLocationStartingPoint, i, -j));
                 }
 
-                if (tile.IsAvailable != Availability.Available)
+                if (tile.IsAvailable == Availability.Unavailable)
                 {
                     isAvailable = false;
                     break;
@@ -91,18 +91,18 @@ public class BuildingPlotBuilder
                 // the doors that are already on the map
                 GridLocation doorPositionOnExistingRoom = GridHelper.VectorToGridLocation(existingDoor.transform.position);
 
-                createdPlotForDoor = tryBuildPlot(ObjectRotation.Rotation0, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                createdPlotForDoor = TryBuildPlot(ObjectRotation.Rotation0, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 if (!createdPlotForDoor)
                 {
-                    createdPlotForDoor = tryBuildPlot(ObjectRotation.Rotation90, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                    createdPlotForDoor = TryBuildPlot(ObjectRotation.Rotation90, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 }
                 if (!createdPlotForDoor)
                 {
-                    createdPlotForDoor = tryBuildPlot(ObjectRotation.Rotation180, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                    createdPlotForDoor = TryBuildPlot(ObjectRotation.Rotation180, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 }
                 if (!createdPlotForDoor)
                 {
-                    tryBuildPlot(ObjectRotation.Rotation270, selectedRoomBlueprint, doorPositionOnExistingRoom);
+                    TryBuildPlot(ObjectRotation.Rotation270, selectedRoomBlueprint, doorPositionOnExistingRoom);
                 }      
             }
         }
@@ -114,13 +114,14 @@ public class BuildingPlotBuilder
         }
     }
 
-    public bool tryBuildPlot(ObjectRotation roomRotation, RoomBlueprint selectedRoomBlueprint, GridLocation doorPositionOnExistingRoom)
+    public bool TryBuildPlot(ObjectRotation roomRotation, RoomBlueprint selectedRoomBlueprint, GridLocation doorPositionOnExistingRoom)
     {
         for (int k = 0; k < selectedRoomBlueprint.DoorLocations.Length; k++)
         {
             GridLocation doorPositionOnBlueprint = getDoorPositionOnBlueprint(roomRotation, selectedRoomBlueprint, selectedRoomBlueprint.DoorLocations[k]);
 
-            //Logger.Log("doorPositionOnExistingRoom {0}, {1} - doorPositionOnBlueprint {2} {3}, {4}", doorPositionOnExistingRoom.UpRight, doorPositionOnExistingRoom.UpLeft, roomRotation, doorPositionOnBlueprint.UpRight, doorPositionOnBlueprint.UpLeft);
+            //Logger.Log("doorPositionOnExistingRoom {0}, {1} - doorPositionOnBlueprint {2} with rotation {3} is {4}, {5}",
+            //    doorPositionOnExistingRoom.UpRight, doorPositionOnExistingRoom.UpLeft, selectedRoomBlueprint.RoomName, roomRotation, doorPositionOnBlueprint.UpRight, doorPositionOnBlueprint.UpLeft);
             if ((doorPositionOnExistingRoom.UpRight == doorPositionOnBlueprint.UpRight) && (doorPositionOnExistingRoom.UpLeft == doorPositionOnBlueprint.UpLeft)) continue;
 
             GridLocation blueprintRoomStartPosition = new GridLocation(doorPositionOnExistingRoom.UpRight - doorPositionOnBlueprint.UpRight, (doorPositionOnExistingRoom.UpLeft - doorPositionOnBlueprint.UpLeft));
@@ -132,9 +133,13 @@ public class BuildingPlotBuilder
             }
 
             Vector2 blueprintRoomStartPositionVector = GridHelper.GridToVectorLocation((int)blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
+            //Logger.Log("the blueprintRoomStartPosition would be {0}, {1}", blueprintRoomStartPosition.UpRight, (int)blueprintRoomStartPosition.UpLeft);
+            //Logger.Log("the blueprintRoomStartPositionVector would be {0}, {1}", blueprintRoomStartPositionVector.x, blueprintRoomStartPositionVector.y);
+
             if (GetPlotIsAvailable(selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation))
             {
                 BuildMenuWorldSpaceContainer.Instance.CreateBuildingPlot(_builderManager.BuildPlotPrefab, selectedRoomBlueprint, blueprintRoomStartPositionVector, roomRotation);
+                Logger.Log(Logger.Building, "Created plot for building at {0}, {1}", blueprintRoomStartPositionVector.x, blueprintRoomStartPositionVector.y);
                 return true;
             }
         }

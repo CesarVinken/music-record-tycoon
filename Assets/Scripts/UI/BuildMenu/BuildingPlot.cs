@@ -68,7 +68,10 @@ public class BuildingPlot : MonoBehaviour
             -(int)midpointLeftUpAxisLength
         );
 
-        BuilderManager.Instance.BuildingPlotLocations.Add(midGridPoint, StartingPoint);
+        if (!BuilderManager.Instance.BuildingPlotLocations.ContainsKey(midGridPoint))
+        {
+            BuilderManager.Instance.BuildingPlotLocations.Add(midGridPoint, StartingPoint);
+        }
 
         CreateMesh(new Vector2[] { StartingPoint, point1, point2, point3 });
     }

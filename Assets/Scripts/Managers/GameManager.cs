@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
         get { return _drawGridVectorCoordinates; }
         set
         {
-            if (DrawGridCoordinates)
+            if (value == true && DrawGridCoordinates)
                 DrawGridCoordinates = false;
 
             _drawGridVectorCoordinates = value;
@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
         get { return _drawGridCoordinates; }
         set
         {
-            if (DrawGridVectorCoordinates)
+            if (value == true && DrawGridVectorCoordinates)
                 DrawGridVectorCoordinates = false;
 
             _drawGridCoordinates = value;
@@ -89,10 +89,10 @@ public class GameManager : MonoBehaviour
         Guard.CheckIsNull(BuilderManager, "PathfindingGrid");
         Guard.CheckIsNull(AstarGO, "AstarGO");
 
-        DrawBuildingTilesGizmos = false;
+        DrawBuildingTilesGizmos = true;
         DrawDoorLocationGizmos = false;
-        DrawGridVectorCoordinates = false;
-        DrawGridCoordinates = true;
+        DrawGridVectorCoordinates = true;
+        DrawGridCoordinates = false;
     }
 
     public void Update()
@@ -120,6 +120,9 @@ public class GameManager : MonoBehaviour
 
             if (DrawGridCoordinates)
                 BuilderManager.Instance.DrawGridCoordinates();
+
+            if (DrawGridVectorCoordinates)
+                BuilderManager.Instance.DrawGridVectorCoordinates();
         }
     }
 
@@ -128,10 +131,10 @@ public class GameManager : MonoBehaviour
         Logger.General.enableLogs = true;
         Logger.Time.enableLogs = false;
         Logger.Locomotion.enableLogs = false;
-        Logger.Building.enableLogs = false;
+        Logger.Building.enableLogs = true;
         Logger.Pathfinding.enableLogs = false;
         Logger.Initialisation.enableLogs = false;
-        Logger.Character.enableLogs = true;
+        Logger.Character.enableLogs = false;
         Logger.Interaction.enableLogs = false;
         Logger.UI.enableLogs = false;
     }

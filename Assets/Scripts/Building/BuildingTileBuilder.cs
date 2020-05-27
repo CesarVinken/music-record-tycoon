@@ -107,7 +107,7 @@ public class BuildingTileBuilder
         // Draw available/unavailable building tiles
         for (int i = 0; i < BuilderManager.Instance.BuildingTiles.Count; i++)
         {
-            Vector2 startingPoint = BuilderManager.Instance.BuildingTiles[i].StartingPoint;
+            Vector2 startingPoint = new Vector2(BuilderManager.Instance.BuildingTiles[i].StartingPoint.x, BuilderManager.Instance.BuildingTiles[i].StartingPoint.y + 7.5f);
             if (BuilderManager.Instance.BuildingTiles[i].IsAvailable == Availability.Available)
                 Gizmos.color = Color.green;
             else if (BuilderManager.Instance.BuildingTiles[i].IsAvailable == Availability.UpperEdge)
