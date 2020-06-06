@@ -1,23 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ObjectInteractionFirstOptionsMenu : ObjectInteractionOptionsMenu
 {
+    private List<ObjectInteractionOptionButton> _objectInteractionOptionButtons = new List<ObjectInteractionOptionButton>();
+    
     public override void Initialise(RoomObjectGO roomObject, ObjectInteraction objectInteraction)
     {
-        Logger.Log("initalise first options menu");
+        Logger.Log(Logger.Interaction, "initalise first options menu");
         RoomObject = roomObject;
         ObjectInteractionOptions = roomObject.RoomObjectBlueprint.ObjectInteractions;
-        List<ObjectInteractionOptionButton> objectInteractionOptionButtons = new List<ObjectInteractionOptionButton>();
         AddRoomObjectName(roomObject.RoomObjectBlueprint.Name);
         for (int i = 0; i < ObjectInteractionOptions.Length; i++)
         {
-            GameObject InteractionOptionGO = Instantiate(ObjectInteractionOptionsContainerGO.InteractionOptionPrefab, InteractionOptionsContainer.transform);
-            InteractionOptionGO.name = ObjectInteractionOptions[i].Name;
-
-            Logger.Log("ObjectInteractionOption {0}", ObjectInteractionOptions[i].Name);
+            Logger.Log(Logger.Interaction, "ObjectInteractionOption {0}", ObjectInteractionOptions[i].Name);
 
             ObjectInteractionOptionType optionType = ObjectInteractionOptionType.InteractionStarter;
 
@@ -32,15 +29,18 @@ public class ObjectInteractionFirstOptionsMenu : ObjectInteractionOptionsMenu
                     continue;
             }
 
+            GameObject InteractionOptionGO = Instantiate(ObjectInteractionOptionsContainerGO.InteractionOptionPrefab, InteractionOptionsContainer.transform);
+            InteractionOptionGO.name = ObjectInteractionOptions[i].Name;
+
             ObjectInteractionOptionButton objectInteractionOptionButton = CreateInteractionOptionButton(InteractionOptionGO, i, ObjectInteractionOptions.Length);
-            objectInteractionOptionButtons.Add(objectInteractionOptionButton);
+            _objectInteractionOptionButtons.Add(objectInteractionOptionButton);
             objectInteractionOptionButton.Initialise(ObjectInteractionOptions[i], RoomObject, optionType);
             objectInteractionOptionButton.SetInteractionOptionText(ObjectInteractionOptions[i].Name);
         }
 
-        if(objectInteractionOptionButtons.Count == 0)
+        if(_objectInteractionOptionButtons.Count == 0)
         {
-            Logger.Warning("not a single character in the game can currently so {0}. We need to set up something for this case", roomObject.RoomObject.RoomObjectName);
+            ShowEmptyOptionsMenu();
         }
     }
 
@@ -53,5 +53,25 @@ public class ObjectInteractionFirstOptionsMenu : ObjectInteractionOptionsMenu
 
         ObjectInteractionOptionButton objectInteractionOptionButton = parentGO.GetComponent<ObjectInteractionOptionButton>();
         return objectInteractionOptionButton;
+    }
+
+    private void ShowEmptyOptionsMenu()
+    {
+        Logger.Warning(Logger.Interaction, "not a single character in the game can currently interact with {0}. We need to set up something for this case", RoomObject.RoomObject.RoomObjectName);
+
+        ObjectInteraction emptyInteraction = ObjectInteraction.Create(ObjectInteractionType.Empty,
+            "There is no one in the studio who can interact with the " + RoomObject.RoomObjectBlueprint.Name,
+            ObjectInteractionCharacterRole.NoCharacter);
+
+        GameObject InteractionOptionGO = Instantiate(ObjectInteractionOptionsContainerGO.InteractionOptionPrefab, InteractionOptionsContainer.transform);
+        InteractionOptionGO.name = emptyInteraction.Name;
+
+        Logger.Log(Logger.Interaction, "Display empty interaction meny");
+        ObjectInteractionOptionType optionType = ObjectInteractionOptionType.InteractionStarter;
+
+        ObjectInteractionOptionButton objectInteractionOptionButton = CreateInteractionOptionButton(InteractionOptionGO, 0, ObjectInteractionOptions.Length);
+        _objectInteractionOptionButtons.Add(objectInteractionOptionButton);
+        objectInteractionOptionButton.Initialise(emptyInteraction, RoomObject, optionType);
+        objectInteractionOptionButton.SetInteractionOptionText(emptyInteraction.Name);
     }
 }

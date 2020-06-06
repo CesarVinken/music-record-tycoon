@@ -30,7 +30,7 @@ public class ObjectInteractionRunner
 
     public async void Run()
     {
-        Logger.Log("Run interaction");
+        Logger.Log("Run interaction {0}", ObjectInteraction.Name);
         Logger.Log("role {0}", ObjectInteraction.CharacterRole);
         CharacterManager.Instance.DeselectCharacter();
 
@@ -42,16 +42,19 @@ public class ObjectInteractionRunner
             await RunInteractionStep(interactionSteps[i], roomObjectLocation);
         }
 
-        RoomObject.UnsetInteractingCharacter(InteractingCharacter);
+        if(InteractingCharacter) // NoCharacter interactions do not have an interacting character
+        {
+            RoomObject.UnsetInteractingCharacter(InteractingCharacter);
 
-        if (roomObjectLocation != InteractingCharacter.PlayerLocomotion.Target && Vector2.Distance(roomObjectLocation, InteractingCharacter.PlayerLocomotion.Target) > 1f)
-        {
-            InteractingCharacter.CharacterAnimationHandler.SetLocomotion(true);
-            InteractingCharacter.SetCharacterActionState(CharacterActionState.Moving);
-        }
-        else
-        {
-            InteractingCharacter.SetCharacterActionState(CharacterActionState.Idle);
+            if (roomObjectLocation != InteractingCharacter.PlayerLocomotion.Target && Vector2.Distance(roomObjectLocation, InteractingCharacter.PlayerLocomotion.Target) > 1f)
+            {
+                InteractingCharacter.CharacterAnimationHandler.SetLocomotion(true);
+                InteractingCharacter.SetCharacterActionState(CharacterActionState.Moving);
+            }
+            else
+            {
+                InteractingCharacter.SetCharacterActionState(CharacterActionState.Idle);
+            }
         }
     }
 
