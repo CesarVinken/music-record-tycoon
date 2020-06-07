@@ -562,8 +562,29 @@ public class Room : BuildItem
     public void UpdateRoomNavhMesh()
     {
         Logger.Log("update pathfinding grid for room");
+        Logger.Log("Collider.bounds {0}", Collider.bounds.size);
+        //Logger.Log("GraphUpdateScene.bounds {0}", GraphUpdateScene.bounds.size);
         GraphUpdateScene.updatePhysics = true; // make sure it is set to false again after update
-        var guo = new GraphUpdateObject(GetComponent<PolygonCollider2D>().bounds);
+        var guo = new GraphUpdateObject(Collider.bounds);
+
+        AstarPath.active.UpdateGraphs(guo);
+        GraphUpdateScene.updatePhysics = false;
+    }
+
+    public void UpdateRoomNavhMeshForDeletion()
+    {
+        Logger.Log("update pathfinding grid for room deletion");
+        Logger.Log("Collider.bounds {0}", Collider.bounds.size);
+        //Logger.Log("GraphUpdateScene.bounds {0}", GraphUpdateScene.bounds.size);
+        GraphUpdateScene.updatePhysics = true; // make sure it is set to false again after update
+        var guo = new GraphUpdateObject(Collider.bounds);
+
+        Collider.enabled = false;
+
+        for (int i = 0; i < Doors.Count; i++)
+        {
+            Doors[i].ClosedDoorCollider.enabled = false;
+        }
 
         AstarPath.active.UpdateGraphs(guo);
         GraphUpdateScene.updatePhysics = false;

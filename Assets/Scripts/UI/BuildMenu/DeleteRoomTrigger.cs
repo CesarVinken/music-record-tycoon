@@ -42,7 +42,6 @@ public class DeleteRoomTrigger : MonoBehaviour
     public void DeleteRoom()
     {
         BuilderManager.Instance.DeleteRoom(_room);
-        CharacterManager.Instance.UpdatePathfindingGrid(_room);
     }
 
     public static void DeleteAllDeleteRoomTriggers()

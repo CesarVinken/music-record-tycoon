@@ -118,13 +118,6 @@ public class CharacterManager : MonoBehaviour
         Destroy(character.gameObject);
         Destroy(character);
     }
-
-    public void UpdatePathfindingGrid(Room room)
-    {
-        room.UpdateRoomNavhMesh();
-
-        Logger.Log("Updated pathfinding grid");
-    }
     
     public void DrawPathfindingCells(bool enable)
     {   
