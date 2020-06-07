@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class BuildingTileBuilder
 { 
@@ -122,20 +125,24 @@ public class BuildingTileBuilder
 
     public void DrawGridCoordinates()
     {
+        #if UNITY_EDITOR
         for (int i = 0; i < BuilderManager.Instance.BuildingTiles.Count; i++)
         {
             Vector2 startingPoint = BuilderManager.Instance.BuildingTiles[i].StartingPoint;
             GridLocation gridCoordinates = GridHelper.VectorToGridLocation(startingPoint);
             Handles.Label(startingPoint, gridCoordinates.UpRight + ", " + gridCoordinates.UpLeft);
-        }
+        }  
+    #endif
     }
 
     public void DrawGridVectorCoordinates()
     {
+    #if UNITY_EDITOR
         for (int i = 0; i < BuilderManager.Instance.BuildingTiles.Count; i++)
         {
             Vector2 startingPoint = BuilderManager.Instance.BuildingTiles[i].StartingPoint;
             Handles.Label(startingPoint, startingPoint.x + ", " + startingPoint.y);
         }
+    #endif
     }
 }
