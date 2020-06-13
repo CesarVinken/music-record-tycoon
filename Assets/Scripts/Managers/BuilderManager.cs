@@ -408,11 +408,11 @@ public class BuilderManager : MonoBehaviour
         room.ReenableWallpiecesFromAdjacentRooms();
         room.RemoveDoorConnectionFromAdjacentRooms();
         room.RemoveThisRoomFromAdjacentRooms();
+        tempRoomCopy.CleanUpDeletedRoomTiles();
         room.UpdateRoomNavhMeshForDeletion();
 
-        room.DeleteRoom();
         Logger.Warning(Logger.Building, "Deleting room: {0}", tempRoomCopy.Id);
-        tempRoomCopy.CleanUpDeletedRoomTiles();
+        room.DeleteRoom();
 
 
         for (int l = 0; l < RoomManager.Rooms.Count; l++)

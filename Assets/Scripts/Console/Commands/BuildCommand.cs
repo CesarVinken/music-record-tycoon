@@ -49,7 +49,7 @@ public class BuildCommand : CommandProcedure
 
         // remove all existing rooms
         RoomManager.Instance.DeleteAllRooms();
-        //await CharacterManager.Instance.UpdatePathfindingGrid();
+
         BuilderManager.Instance.BuildingTiles.Clear();
         BuilderManager.Instance.BuildingTileLocations.Clear();
 

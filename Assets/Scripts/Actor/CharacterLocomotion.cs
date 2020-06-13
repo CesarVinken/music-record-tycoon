@@ -14,8 +14,12 @@ public class CharacterLocomotion : MonoBehaviour
     private bool _listenForInput;
     public AIDestinationSetter DestinationSetter;
     public CharacterPath CharacterPath;
+    public Vector2 Target { get {
+        return new Vector2(TargetObject.transform.position.x, TargetObject.transform.position.y);
+    } }
+
     private GameObject _targetObject;
-    public Vector2 Target { get { return new Vector2(_targetObject.transform.position.x, _targetObject.transform.position.y); } }
+    public GameObject TargetObject { get => _targetObject; set => _targetObject = value; }
 
     public void Awake()
     {
@@ -47,7 +51,7 @@ public class CharacterLocomotion : MonoBehaviour
             return;
 
         CheckPointerInput();
-        if (_targetObject != null)
+        if (TargetObject != null)
         {
             HandleMovement();
         }
@@ -106,16 +110,17 @@ public class CharacterLocomotion : MonoBehaviour
 
     public void SetLocomotionTarget(Vector3 newTarget)
     {
-        if(_targetObject == null)
+        if(TargetObject == null)
         {
             GameObject targetGO = new GameObject();
+            targetGO.name = "Target object " + Character.FullName();
             targetGO.transform.SetParent(GameManager.Instance.AstarGO.transform);
-            _targetObject = targetGO;
+            TargetObject = targetGO;
         }
 
-        _targetObject.transform.position = newTarget;
+        TargetObject.transform.position = newTarget;
 
-        DestinationSetter.target = _targetObject.transform;
+        DestinationSetter.target = TargetObject.transform;
         _characterAnimationHandler.SetLocomotion(true);
         Character.SetCharacterActionState(CharacterActionState.Moving);
     }

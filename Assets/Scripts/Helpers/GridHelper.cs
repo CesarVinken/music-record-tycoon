@@ -23,6 +23,31 @@ public static class GridHelper
     {
         return new Vector2(startingPoint.x + (rightUpAxisLength + leftUpAxisLength) * 5f, startingPoint.y + (rightUpAxisLength - leftUpAxisLength) * 2.5f);
     }
+
+    public static GridLocation FindClosestGridTile(GridLocation originalGridLocation)
+    {
+        float gridUpRight = originalGridLocation.UpRight;
+        float gridUpLeft = originalGridLocation.UpLeft;
+        if (originalGridLocation.UpRight > 0)
+        {
+            gridUpRight = originalGridLocation.UpRight - (originalGridLocation.UpRight % 3);
+        }
+        else if (originalGridLocation.UpRight < 0)
+        {
+            gridUpRight = originalGridLocation.UpRight - (3 - ((originalGridLocation.UpRight % 3) * -1));
+        }
+
+        if (originalGridLocation.UpLeft > 0)
+        {
+            gridUpLeft = originalGridLocation.UpLeft - (originalGridLocation.UpLeft % 3);
+        }
+        else if (originalGridLocation.UpLeft < 0)
+        {
+            gridUpLeft = originalGridLocation.UpLeft - (3 - ((originalGridLocation.UpLeft % 3) * -1));
+        }
+
+        return new GridLocation(gridUpRight, gridUpLeft);
+    }
 }
 
 public struct GridLocation

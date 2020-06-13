@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -115,6 +116,27 @@ public class Character : MonoBehaviour
     public string FullName()
     {
         return CharacterNameGenerator.GetName(CharacterName);
+    }
+
+    public bool CheckLocomotionTargetAvailability()
+    {
+        Vector2 target = PlayerLocomotion.Target;
+        float modulusX = target.x % 15;
+        float modulusY = target.y % 7.5f;
+
+        GridLocation trueGridLocation = GridHelper.VectorToGridLocation(target);
+        GridLocation closestGridTileGridLocation = GridHelper.FindClosestGridTile(trueGridLocation);
+
+        Vector2 buildingTileCoordinates = GridHelper.GridToVectorLocation(closestGridTileGridLocation);
+        BuildingTile buildingTile = BuilderManager.Instance.BuildingTiles.SingleOrDefault(tile => tile.StartingPoint == buildingTileCoordinates);
+        if(buildingTile != null)
+        {
+            // if a tile is unavailable, it means a room is built on it
+            if (buildingTile.IsAvailable != Availability.Unavailable)
+                return false;
+        }
+
+        return true;
     }
 
 }

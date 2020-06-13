@@ -562,8 +562,8 @@ public class Room : BuildItem
     public void UpdateRoomNavhMesh()
     {
         Logger.Log("update pathfinding grid for room");
-        Logger.Log("Collider.bounds {0}", Collider.bounds.size);
         //Logger.Log("GraphUpdateScene.bounds {0}", GraphUpdateScene.bounds.size);
+
         GraphUpdateScene.updatePhysics = true; // make sure it is set to false again after update
         var guo = new GraphUpdateObject(Collider.bounds);
 
@@ -574,8 +574,8 @@ public class Room : BuildItem
     public void UpdateRoomNavhMeshForDeletion()
     {
         Logger.Log("update pathfinding grid for room deletion");
-        Logger.Log("Collider.bounds {0}", Collider.bounds.size);
         //Logger.Log("GraphUpdateScene.bounds {0}", GraphUpdateScene.bounds.size);
+
         GraphUpdateScene.updatePhysics = true; // make sure it is set to false again after update
         var guo = new GraphUpdateObject(Collider.bounds);
 
@@ -587,6 +587,22 @@ public class Room : BuildItem
         }
 
         AstarPath.active.UpdateGraphs(guo);
+
+        // maybe a character's move destination is no longer accessible. In this case, stop character
+        for (int j = 0; j < CharacterManager.Instance.Characters.Count; j++)
+        {
+            Character character = CharacterManager.Instance.Characters[j];
+            if (character.PlayerLocomotion.TargetObject == null) continue;
+
+            bool targetStillExisting = character.CheckLocomotionTargetAvailability();
+
+            if(!targetStillExisting)
+            {
+                character.PlayerLocomotion.SetLocomotionTarget(character.transform.position);
+            }
+            Logger.Log("Is the target still existing for {0}? {1}", character.FullName(), targetStillExisting);
+        }
+
         GraphUpdateScene.updatePhysics = false;
     }
 }

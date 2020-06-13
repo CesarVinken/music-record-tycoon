@@ -91,8 +91,8 @@ public class GameManager : MonoBehaviour
 
         DrawBuildingTilesGizmos = true;
         DrawDoorLocationGizmos = false;
-        DrawGridVectorCoordinates = true;
-        DrawGridCoordinates = false;
+        DrawGridVectorCoordinates = false;
+        DrawGridCoordinates = true;
     }
 
     public void Update()
